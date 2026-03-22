@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cali Fund Allocation Model (Inverted UN Scale of Assessment Option) — Explainer</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f9f9f7; color: #1a1a18; min-height: 100vh; padding: 2rem 1rem; }
+  .container { max-width: 860px; margin: 0 auto; }
+  header { margin-bottom: 2rem; }
+  header h1 { font-size: 22px; font-weight: 500; color: #1a1a18; margin-bottom: 6px; }
+  header p { font-size: 14px; color: #5f5e5a; line-height: 1.6; }
+  .step-nav { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:1.5rem; }
+  .step-btn { background:transparent; border:1px solid #b4b2a9; border-radius:8px; padding:6px 16px; font-size:13px; cursor:pointer; color:#5f5e5a; transition:all 0.15s; font-family:inherit; }
+  .step-btn.active { background:#e6f1fb; color:#185fa5; border-color:#378add; font-weight:500; }
+  .step-btn:hover:not(.active) { background:#f1efe8; }
+  .panel { display:none; } .panel.visible { display:block; }
+  .formula-plain { background:#f1efe8; border-radius:12px; padding:1.25rem 1.5rem; margin:1rem 0; font-size:15px; color:#1a1a18; border:1px solid #d3d1c7; line-height:2; }
+  .formula-tech { background:#f1efe8; border-radius:12px; padding:1rem 1.5rem; font-family:"Courier New", monospace; font-size:13px; color:#5f5e5a; border:1px solid #d3d1c7; }
+  .callout { border-left:3px solid #378add; padding:0.75rem 1rem; background:#f1efe8; border-radius:0 8px 8px 0; margin:1rem 0; font-size:14px; color:#5f5e5a; line-height:1.6; }
+  .card-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:1rem 0; }
+  .card-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin:1rem 0; }
+  .card { background:#ffffff; border-radius:12px; padding:1rem; border:1px solid #d3d1c7; }
+  .card-label { font-size:12px; color:#5f5e5a; margin-bottom:6px; }
+  .card-body { font-size:14px; font-weight:500; color:#1a1a18; line-height:1.5; }
+  .reason-card { border-radius:12px; padding:1rem 1.25rem; border:1px solid #d3d1c7; margin-bottom:10px; }
+  .slider-row { display:flex; align-items:center; gap:12px; margin:12px 0; }
+  .slider-row label { font-size:13px; color:#5f5e5a; width:170px; flex-shrink:0; }
+  .slider-row input[type=range] { flex:1; accent-color:#378add; }
+  .slider-row .val { font-size:13px; font-weight:500; min-width:50px; text-align:right; color:#1a1a18; }
+  .metric-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:1rem 0; }
+  .metric { background:#f1efe8; border-radius:8px; padding:0.75rem; }
+  .metric .mlabel { font-size:12px; color:#5f5e5a; margin-bottom:4px; }
+  .metric .mvalue { font-size:18px; font-weight:500; color:#1a1a18; }
+  details { margin-top:0.75rem; }
+  details summary { font-size:12px; color:#5f5e5a; cursor:pointer; padding:4px 0; }
+  details summary:hover { color:#1a1a18; }
+  details[open] summary { margin-bottom:0.5rem; }
+  .tag { display:inline-block; font-size:11px; padding:3px 9px; border-radius:8px; margin:2px; background:#f1efe8; color:#5f5e5a; border:1px solid #d3d1c7; }
+  .chip { display:inline-block; font-size:12px; padding:3px 10px; border-radius:20px; font-weight:500; }
+  .section-label { font-size:13px; color:#5f5e5a; margin:1.25rem 0 6px; }
+  p.body { font-size:14px; color:#5f5e5a; line-height:1.7; margin:0.5rem 0; }
+  footer { margin-top:3rem; padding-top:1.5rem; border-top:1px solid #d3d1c7; font-size:12px; color:#888780; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Cali Fund Allocation Model</h1>
+    <p style="font-size:14px; color:#888780; margin-bottom:6px; font-style:italic;">Inverted UN Scale of Assessment Option</p>
+    <p>An interactive guide to the five key concepts behind the model. For exploratory and discussion purposes — all figures are illustrative.</p>
+  </header>
+
+  <div class="step-nav">
+    <button class="step-btn active" onclick="show('purpose')">Purpose</button>
+    <button class="step-btn" onclick="show('formula')">The Formula</button>
+    <button class="step-btn" onclick="show('equity')">Equity</button>
+    <button class="step-btn" onclick="show('stewardship')">Stewardship</button>
+    <button class="step-btn" onclick="show('iplc')">IPLCs</button>
+  </div>
+
+  <!-- PANEL 1: Purpose -->
+  <div class="panel visible" id="p-purpose">
+    <p style="font-size:15px;font-weight:500;margin-bottom:0.5rem;">Purpose</p>
+    <p class="body">The Cali Fund distributes biodiversity finance among countries that are Parties to the Convention on Biological Diversity (CBD). This model produces <em>indicative, illustrative shares</em> — not binding entitlements — to support negotiations.</p>
+    <div class="card-grid-2" style="margin-top:1rem;">
+      <div class="card">
+        <div class="card-label">Core principle</div>
+        <div class="card-body">Countries that contribute less to the UN budget receive proportionally more from this fund</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Special protections</div>
+        <div class="card-body">Least Developed Countries, Small Island Developing States, and Indigenous Peoples &amp; Local Communities all receive targeted support</div>
+      </div>
+    </div>
+    <div class="callout">The model uses the <strong>UN Scale of Assessments 2025–2027</strong> as its input — a widely-accepted measure of countries' relative economic capacity.</div>
+    <p class="section-label">What the controls do</p>
+    <div style="font-size:13px;color:#5f5e5a;line-height:2.4;">
+      <span class="chip" style="background:#e6f1fb;color:#0c447c;">Fund size</span>&nbsp; Sets the total annual pot in USD &nbsp;
+      <span class="chip" style="background:#e1f5ee;color:#085041;">Land area weight</span>&nbsp; Adjusts how much land stewardship matters &nbsp;
+      <span class="chip" style="background:#faeeda;color:#633806;">Island states weight</span>&nbsp; Reserves a pool for small island nations &nbsp;
+      <span class="chip" style="background:#eeedfe;color:#3c3489;">IPLC share</span>&nbsp; Splits each allocation between governments and IPLCs
+    </div>
+  </div>
+
+  <!-- PANEL 2: The Formula -->
+  <div class="panel" id="p-formula">
+    <p style="font-size:15px;font-weight:500;margin-bottom:0.5rem;">The Formula</p>
+    <p class="body">The model has one foundation and two adjustments that together determine every country's share.</p>
+    <div class="formula-plain">
+      Each country's share =<br>
+      &nbsp;&nbsp;<span style="color:#185fa5;font-weight:500;">Inverted UN Scale of Assessment Foundation (IUSAF)</span> — the base<br>
+      &nbsp;&nbsp;+ <span style="color:#0f6e56;font-weight:500;">Terrestrial Stewardship Allocation Component (TSAC)</span> — adjustment for large countries<br>
+      &nbsp;&nbsp;+ <span style="color:#854f0b;font-weight:500;">SIDS Ocean Stewardship Allocation Component (SOSAC)</span> — adjustment for island states
+    </div>
+    <div class="card-grid-3">
+      <div class="card" style="background:#e6f1fb;border-color:#b5d4f4;">
+        <div style="font-size:11px;font-weight:500;color:#0c447c;margin-bottom:4px;">IUSAF · Foundation</div>
+        <div style="font-size:12px;color:#185fa5;line-height:1.5;">The core equity engine. Inverts UN budget shares so smaller contributors receive a larger fund share. All allocations start here.</div>
+      </div>
+      <div class="card" style="background:#e1f5ee;border-color:#9fe1cb;">
+        <div style="font-size:11px;font-weight:500;color:#085041;margin-bottom:4px;">TSAC · Adjustment</div>
+        <div style="font-size:12px;color:#0f6e56;line-height:1.5;">Recognises the terrestrial biodiversity stewardship responsibilities of countries with large land areas.</div>
+      </div>
+      <div class="card" style="background:#faeeda;border-color:#fac775;">
+        <div style="font-size:11px;font-weight:500;color:#633806;margin-bottom:4px;">SOSAC · Adjustment</div>
+        <div style="font-size:12px;color:#854f0b;line-height:1.5;">Recognises the ocean stewardship responsibilities and structural constraints of Small Island Developing States.</div>
+      </div>
+    </div>
+    <div class="callout">IUSAF is the <strong>foundation</strong>. TSAC and SOSAC are <strong>adjustments</strong> — any weight given to them reallocates money away from the IUSAF base. It is a matter for Parties to agree the appropriate balance.</div>
+    <p class="section-label">Negotiation presets</p>
+    <div>
+      <span class="tag">Equity base — IUSAF only, no adjustments</span>
+      <span class="tag">Balanced — default blend</span>
+      <span class="tag">Stewardship — more weight on large countries</span>
+      <span class="tag">Vulnerability — more weight on island states</span>
+    </div>
+    <details>
+      <summary>Show the technical formula</summary>
+      <div class="formula-tech">Final Share = (1 − β − γ) × IUSAF + β × TSAC + γ × SOSAC<br>Allocation = Fund Size × Final Share</div>
+    </details>
+  </div>
+
+  <!-- PANEL 3: Establishing Equity -->
+  <div class="panel" id="p-equity">
+    <p style="font-size:15px;font-weight:500;margin-bottom:0.5rem;">Establishing Equity (IUSAF)</p>
+    <p class="body">The UN Scale says how much each country contributes to the UN budget. The model flips this: the smaller your UN share, the larger your fund share. <strong style="color:#1a1a18;">This is the foundation of the model.</strong></p>
+    <div class="formula-plain" style="font-size:14px;">
+      Fund share = 1 ÷ UN budget share &nbsp;→&nbsp; then rescaled so all shares add up to 100%
+    </div>
+    <p class="section-label">Drag to explore — see how a country's fund share changes with its UN contribution:</p>
+    <div class="slider-row">
+      <label>Country A's UN share</label>
+      <input type="range" min="1" max="2200" step="1" value="5" id="un-slider" oninput="updateInversion()">
+      <span class="val" id="un-pct">0.005%</span>
+    </div>
+    <div id="inversion-result" style="margin:0.75rem 0;font-size:14px;color:#5f5e5a;line-height:2;"></div>
+    <p class="section-label">Fund share comparison (3 illustrative countries):</p>
+    <div id="inv-bars"></div>
+    <div class="callout">Countries with a 0% UN assessment (such as the EU as an entity) receive a zero allocation and are shown separately in the app.</div>
+  </div>
+
+  <!-- PANEL 4: Recognising Stewardship -->
+  <div class="panel" id="p-stewardship">
+    <p style="font-size:15px;font-weight:500;margin-bottom:1rem;">Recognising Stewardship (TSAC &amp; SOSAC)</p>
+    <div class="reason-card" style="background:#e1f5ee;border-color:#9fe1cb;">
+      <p style="font-size:13px;font-weight:500;color:#085041;margin-bottom:4px;">Large countries: terrestrial biodiversity stewardship (TSAC)</p>
+      <p style="font-size:13px;color:#0f6e56;line-height:1.6;">Some countries are very large and therefore carry greater responsibility for stewarding the world's terrestrial biodiversity. A land-area weight recognises this stewardship role and adjusts their share accordingly.</p>
+    </div>
+    <div class="reason-card" style="background:#faeeda;border-color:#fac775;">
+      <p style="font-size:13px;font-weight:500;color:#633806;margin-bottom:4px;">Small Island Developing States: ocean stewardship and structural constraints (SOSAC)</p>
+      <p style="font-size:13px;color:#854f0b;line-height:1.6;">Small Island Developing States carry significant ocean stewardship responsibilities and face recognised structural constraints — geographic isolation, economic vulnerability, and disproportionate exposure to environmental risks. An equal share among eligible SIDS balances these realities.</p>
+    </div>
+    <p class="body">The three components are weighted so they always add up to 100% of the fund. Giving more weight to land area (TSAC) to recognise the biodiversity stewardship responsibilities of larger countries or the ocean stewardship responsibilities of SIDS (SOSAC) reallocates money away from the inverted UN scale (IUSAF). It would be a matter for Parties to agree the appropriate balance points between IUSAF, TSAC and SOSAC.</p>
+    <div class="callout">Any weight given to TSAC or SOSAC <strong>reallocates from the IUSAF foundation</strong>. The three pools always sum to 100% of the fund.</div>
+    <p class="section-label">Adjust the weights to see how the fund is redistributed:</p>
+    <div class="slider-row">
+      <label>Stewardship weight (TSAC)</label>
+      <input type="range" min="0" max="30" step="1" value="15" id="beta-s" oninput="updateBlend()">
+      <span class="val" id="beta-v">15%</span>
+    </div>
+    <div class="slider-row">
+      <label>Island states weight (SOSAC)</label>
+      <input type="range" min="0" max="20" step="1" value="10" id="gamma-s" oninput="updateBlend()">
+      <span class="val" id="gamma-v">10%</span>
+    </div>
+    <div id="blend-warning" style="font-size:12px;color:#b45309;min-height:18px;margin:4px 0;"></div>
+    <div class="metric-row" id="blend-metrics"></div>
+    <div id="blend-bar" style="margin:0.25rem 0 1rem;"></div>
+    <p class="section-label">Negotiation presets</p>
+    <div>
+      <span class="tag">Equity base — IUSAF only, no adjustments</span>
+      <span class="tag">Balanced — default blend</span>
+      <span class="tag">Stewardship — more weight on large countries</span>
+      <span class="tag">Vulnerability — more weight on island states</span>
+    </div>
+    <details>
+      <summary>Show technical weight labels</summary>
+      <div class="formula-tech">Terrestrial stewardship weight = β (TSAC) · Ocean stewardship weight = γ (SOSAC) · Foundation weight = (1 − β − γ) (IUSAF)</div>
+    </details>
+  </div>
+
+  <!-- PANEL 5: Recognising IPLCs -->
+  <div class="panel" id="p-iplc">
+    <p style="font-size:15px;font-weight:500;margin-bottom:0.5rem;">Recognising IPLCs</p>
+    <p class="body">For simplicity the model is organised around countries as Parties. In accordance with Decision 16/2 at least 50% of Cali Funding will be allocated to IPLCs. This is achieved by splitting the allocation in half.</p>
+
+    <div style="border-left:3px solid #ba7517; padding:0.75rem 1rem; background:#fef9ee; border-radius:0 8px 8px 0; margin:1rem 0; font-size:14px; color:#5c3d0a; line-height:1.6;">
+      It is important to recognise that <strong>the amount allocated to IPLCs by the formula</strong> and <strong>appropriate pathways to disbursement</strong> are separate considerations. Different pathways to disbursement may be appropriate at the national, subnational or UN regional/sub-regional level and may be informed by existing experience, guiding principles and the programme of work of the Subsidiary Body on Article 8J and Other Provisions of the Convention.
+    </div>
+
+    <div class="formula-plain" style="font-size:14px;">
+      IPLC share = total allocation × your chosen %<br>
+      Government share = total allocation × the remainder
+    </div>
+
+    <p class="section-label">Adjust the IPLC share (50–80%):</p>
+    <div class="slider-row">
+      <label>IPLC share</label>
+      <input type="range" min="50" max="80" step="1" value="50" id="iplc-s" oninput="updateSplit()">
+      <span class="val" id="iplc-v">50%</span>
+    </div>
+
+    <p class="section-label">For a country receiving $5m from a $1 billion fund:</p>
+    <div id="split-bars" style="margin:0.5rem 0;"></div>
+
+    <div class="callout" style="margin-top:1rem;">Every table in the app shows three columns side by side: <strong>Total share</strong>, <strong>Government component</strong>, and <strong>IPLC component</strong>. A totals row at the bottom confirms everything sums exactly to the fund size.</div>
+
+    <details>
+      <summary>Show technical label</summary>
+      <div class="formula-tech">IPLC share = IPLC component · Government share = State component</div>
+    </details>
+  </div>
+
+  <footer>
+    Cali Fund Allocation Model (Inverted UN Scale of Assessment Option) · Illustrative modelling outputs for exploratory purposes only · Prepared by TierraViva AI
+  </footer>
+</div>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('visible'));
+  document.querySelectorAll('.step-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('p-' + id).classList.add('visible');
+  event.target.classList.add('active');
+  if (id === 'equity') updateInversion();
+  if (id === 'stewardship') updateBlend();
+  if (id === 'iplc') updateSplit();
+}
+
+function updateInversion() {
+  const raw = +document.getElementById('un-slider').value;
+  const pct = (raw / 100000).toFixed(5);
+  document.getElementById('un-pct').textContent = pct + '%';
+  const countries = [
+    { name: 'Country A', un: raw },
+    { name: 'Country B', un: raw * 20 },
+    { name: 'Country C', un: raw * 200 }
+  ];
+  const weights = countries.map(c => 1 / (c.un / 10000000));
+  const total = weights.reduce((a, b) => a + b, 0);
+  const shares = weights.map(w => w / total * 100);
+  const colors = ['#3266ad', '#0f6e56', '#854f0b'];
+  document.getElementById('inversion-result').innerHTML =
+    `Country A has a UN share of <strong>${pct}%</strong> → its fund share is <strong>${shares[0].toFixed(1)}%</strong>. Country C contributes 200× more to the UN → its fund share is only <strong>${shares[2].toFixed(1)}%</strong>.`;
+  document.getElementById('inv-bars').innerHTML = countries.map((c, i) =>
+    `<div style="display:flex;align-items:center;gap:10px;margin:7px 0;">
+      <span style="width:90px;font-size:12px;color:#5f5e5a;">${c.name}</span>
+      <div style="height:26px;border-radius:4px;display:flex;align-items:center;padding:0 10px;font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;min-width:40px;width:${Math.max(shares[i],1.5).toFixed(1)}%;background:${colors[i]}18;border:1px solid ${colors[i]};color:${colors[i]};">
+        ${shares[i].toFixed(1)}% of fund
+      </div>
+      <span style="font-size:11px;color:#888780;">UN: ${(c.un/100000).toFixed(3)}%</span>
+    </div>`
+  ).join('');
+}
+
+function updateBlend() {
+  const beta = +document.getElementById('beta-s').value / 100;
+  const gamma = +document.getElementById('gamma-s').value / 100;
+  document.getElementById('beta-v').textContent = (beta*100).toFixed(0) + '%';
+  document.getElementById('gamma-v').textContent = (gamma*100).toFixed(0) + '%';
+  const alpha = Math.max(0, 1 - beta - gamma);
+  document.getElementById('blend-warning').textContent = alpha < 0.60
+    ? 'Note: the IUSAF foundation is now carrying less than 60% of the weight. Parties may want to review.'
+    : '';
+  const fund = 1000;
+  document.getElementById('blend-metrics').innerHTML = `
+    <div class="metric"><div class="mlabel">IUSAF foundation</div><div class="mvalue">$${Math.round(fund*alpha)}m</div></div>
+    <div class="metric"><div class="mlabel">Reallocated to TSAC</div><div class="mvalue">$${Math.round(fund*beta)}m</div></div>
+    <div class="metric"><div class="mlabel">Reallocated to SOSAC</div><div class="mvalue">$${Math.round(fund*gamma)}m</div></div>
+  `;
+  const aw = (alpha*100).toFixed(0), bw = (beta*100).toFixed(0), gw = (gamma*100).toFixed(0);
+  document.getElementById('blend-bar').innerHTML = `
+    <div style="display:flex;height:30px;border-radius:8px;overflow:hidden;width:100%;gap:2px;">
+      <div style="width:${aw}%;background:#e6f1fb;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#0c447c;transition:width 0.3s;">${+aw>10?'IUSAF '+aw+'%':''}</div>
+      <div style="width:${bw}%;background:#e1f5ee;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#085041;transition:width 0.3s;">${+bw>6?'TSAC '+bw+'%':''}</div>
+      <div style="width:${gw}%;background:#faeeda;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;color:#633806;transition:width 0.3s;">${+gw>6?'SOSAC '+gw+'%':''}</div>
+    </div>
+    <div style="display:flex;gap:16px;margin-top:6px;font-size:11px;">
+      <span style="color:#185fa5;">IUSAF — foundation</span>
+      <span style="color:#0f6e56;">TSAC — terrestrial stewardship</span>
+      <span style="color:#854f0b;">SOSAC — ocean stewardship</span>
+    </div>
+  `;
+}
+
+function updateSplit() {
+  const iplc = +document.getElementById('iplc-s').value;
+  document.getElementById('iplc-v').textContent = iplc + '%';
+  const total = 5;
+  const iplcAmt = (total * iplc / 100).toFixed(2);
+  const stateAmt = (total - iplcAmt).toFixed(2);
+  document.getElementById('split-bars').innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin:7px 0;">
+      <span style="width:140px;font-size:12px;color:#5f5e5a;">IPLC share</span>
+      <div style="height:26px;border-radius:4px;display:flex;align-items:center;padding:0 10px;font-size:12px;font-weight:500;white-space:nowrap;width:${iplc}%;background:#eeedfe;border:1px solid #7f77dd;color:#3c3489;">$${iplcAmt}m</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin:7px 0;">
+      <span style="width:140px;font-size:12px;color:#5f5e5a;">Government share</span>
+      <div style="height:26px;border-radius:4px;display:flex;align-items:center;padding:0 10px;font-size:12px;font-weight:500;white-space:nowrap;width:${100-iplc}%;background:#e1f5ee;border:1px solid #1d9e75;color:#085041;">$${stateAmt}m</div>
+    </div>
+    <div style="font-size:12px;color:#5f5e5a;margin-top:8px;">Total: $${total.toFixed(2)}m ✓</div>
+  `;
+}
+
+updateInversion(); updateBlend(); updateSplit();
+</script>
+</body>
+</html>
