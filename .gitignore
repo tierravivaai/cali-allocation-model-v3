@@ -14,4 +14,8 @@ data_temp_*/
 .factory/
 data-raw.zip
 archive/
-
+docs/
+ahteg-reporting/
+~$*.docx
+~$*.xlsx
+~$*.pptx

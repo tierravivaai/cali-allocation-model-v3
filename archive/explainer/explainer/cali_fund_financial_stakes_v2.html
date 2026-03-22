@@ -1,0 +1,224 @@
+
+<style>
+:root{
+  --cs:#0F6E56;--cs-bg:#E1F5EE;--cs-light:rgba(15,110,86,0.15);
+  --cb:#185FA5;--cb-bg:#E6F1FB;--cb-light:rgba(24,95,165,0.15);
+  --ce:#854F0B;--ce-bg:#FAEEDA;--ce-light:rgba(133,79,11,0.15);
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --cs:#5DCAA5;--cs-bg:#085041;--cs-light:rgba(93,202,165,0.18);
+    --cb:#85B7EB;--cb-bg:#0C447C;--cb-light:rgba(133,183,235,0.18);
+    --ce:#EF9F27;--ce-bg:#633806;--ce-light:rgba(239,159,39,0.18);
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+.outer{padding:1.25rem 1rem;max-width:720px;margin:0 auto;}
+.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:1.25rem;}
+.ctrl-group{display:flex;flex-direction:column;gap:4px;}
+.ctrl-label{font-size:11px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;}
+.btn-row{display:flex;gap:4px;flex-wrap:wrap;}
+.btn{padding:5px 11px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);
+  background:var(--color-background-secondary);cursor:pointer;font-size:12px;
+  color:var(--color-text-secondary);transition:all .12s;}
+.btn:hover{border-color:var(--color-border-primary);}
+.btn.active-fund{background:var(--color-background-info);color:var(--color-text-info);border-color:var(--color-border-info);}
+.btn.active-view{background:var(--color-background-primary);color:var(--color-text-primary);border-color:var(--color-border-primary);font-weight:500;}
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:1rem;font-size:12px;color:var(--color-text-secondary);}
+.leg-item{display:flex;align-items:center;gap:5px;}
+.leg-swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+.chart-wrap{position:relative;width:100%;height:420px;margin-bottom:1rem;}
+.callout-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:0.75rem;}
+.callout{padding:12px 14px;border-radius:var(--border-radius-md);background:var(--color-background-secondary);font-size:12px;line-height:1.65;}
+.callout-head{font-weight:500;font-size:13px;margin-bottom:5px;color:var(--color-text-primary);}
+.tag{display:inline-block;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:500;margin-left:4px;vertical-align:middle;}
+.tag-gain{background:var(--cs-bg);color:var(--cs);}
+.tag-loss{background:#FCEBEB;color:#A32D2D;}
+.tag-flat{background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary);}
+@media(prefers-color-scheme:dark){.tag-loss{background:#501313;color:#F09595;}}
+.note{font-size:12px;color:var(--color-text-secondary);line-height:1.6;margin-top:0.75rem;padding-top:0.75rem;border-top:0.5px solid var(--color-border-tertiary);}
+</style>
+
+<div class="outer">
+<div class="controls">
+  <div class="ctrl-group">
+    <div class="ctrl-label">Fund size</div>
+    <div class="btn-row">
+      <button class="btn" onclick="setFund(50,this)">$50m</button>
+      <button class="btn" onclick="setFund(100,this)">$100m</button>
+      <button class="btn" onclick="setFund(200,this)">$200m</button>
+      <button class="btn" onclick="setFund(500,this)">$500m</button>
+      <button class="btn active-fund" onclick="setFund(1000,this)">$1bn</button>
+    </div>
+  </div>
+  <div class="ctrl-group">
+    <div class="ctrl-label">View</div>
+    <div class="btn-row">
+      <button class="btn active-view" onclick="setView('abs',this)">Allocation per Party</button>
+      <button class="btn" onclick="setView('diff',this)">Difference from Strict</button>
+    </div>
+  </div>
+</div>
+
+<div class="legend">
+  <span class="leg-item"><span class="leg-swatch" style="background:var(--cs)"></span>A — Strict (1.5%)</span>
+  <span class="leg-item"><span class="leg-swatch" style="background:var(--cb)"></span>B — Bounded (3.5%)</span>
+  <span class="leg-item"><span class="leg-swatch" style="background:var(--ce)"></span>C — Even (5.0%)</span>
+</div>
+
+<div class="chart-wrap" id="absWrap"><canvas id="chartAbs"></canvas></div>
+<div class="chart-wrap" id="diffWrap" style="display:none;"><canvas id="chartDiff"></canvas></div>
+
+<div class="callout-grid">
+  <div class="callout">
+    <div class="callout-head">Who gains most <span class="tag tag-gain">gains</span></div>
+    China gains <span id="china-diff"></span> and Brazil <span id="brazil-diff"></span> moving from Strict to Even. India, Argentina and Kazakhstan each gain around <span id="mid-diff"></span>.
+  </div>
+  <div class="callout">
+    <div class="callout-head">Who loses most <span class="tag tag-loss">loses</span></div>
+    The maximum loss for any Party — Band 1 SIDS — is <span id="max-loss"></span> across the full Strict-to-Even envelope. Most Band 1 LDCs lose a similar amount.
+  </div>
+  <div class="callout">
+    <div class="callout-head">Who barely moves <span class="tag tag-flat">flat</span></div>
+    Kenya, Tanzania, Colombia and similar mid-range countries shift by less than <span id="flat-diff"></span> across the entire envelope. For them the position choice is nearly irrelevant financially.
+  </div>
+</div>
+
+<p class="note">Parties are ordered from largest loss to largest gain moving from Strict to Even. All figures are illustrative modelling outputs and do not represent entitlements or predetermined disbursements.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+const T   = dark ? '#c2c0b6' : '#3d3d3a';
+const T2  = dark ? '#888780' : '#73726c';
+const G   = dark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.05)';
+const CS  = dark ? '#5DCAA5' : '#0F6E56';
+const CB  = dark ? '#85B7EB' : '#185FA5';
+const CE  = dark ? '#EF9F27' : '#854F0B';
+const CSL = dark ? 'rgba(93,202,165,0.22)'  : 'rgba(15,110,86,0.18)';
+const CBL = dark ? 'rgba(133,183,235,0.22)' : 'rgba(24,95,165,0.18)';
+const CEL = dark ? 'rgba(239,159,39,0.22)'  : 'rgba(133,79,11,0.18)';
+const LOSS= dark ? '#F09595' : '#A32D2D';
+const LLOSS=dark ? 'rgba(240,149,149,0.22)' : 'rgba(163,45,45,0.15)';
+
+const labels   = ['Tuvalu','Gambia','Burundi','Maldives','Bangladesh','Nepal',
+                  'Kenya','Tanzania','Colombia','DRC','Algeria',
+                  'Kazakhstan','Argentina','India','Brazil','China'];
+const s1 = [8.91,8.14,8.15,7.83,7.08,7.08,6.08,7.23,5.37,7.49,6.43,5.67,5.68,4.64,5.67,3.97];
+const b1 = [8.74,7.98,7.98,7.68,6.97,6.97,6.11,7.30,5.54,7.92,6.91,6.26,6.27,5.32,7.73,6.33];
+const e1 = [8.61,7.85,7.86,7.57,6.88,6.89,6.12,7.36,5.68,8.25,7.27,6.69,6.72,5.82,9.26,8.09];
+
+const fundLabels = {50:'$50 million',100:'$100 million',200:'$200 million',500:'$500 million',1000:'$1 billion'};
+let fundScale = 1.0;
+let currentView = 'abs';
+let chartAbs = null, chartDiff = null;
+
+function sc(arr){ return arr.map(v => +(v * fundScale).toFixed(3)); }
+function df(a,b){ return a.map((v,i) => +((b[i]-v)*fundScale).toFixed(3)); }
+
+function fmt(v){
+  const a = Math.abs(v);
+  if(a === 0) return '$0';
+  if(a >= 1)  return '$' + a.toFixed(2) + 'm';
+  if(a >= 0.1)return '$' + (a * 1000).toFixed(0) + 'k';
+  return '$' + (a * 1000).toFixed(0) + 'k';
+}
+function fmtSigned(v){
+  if(v === 0) return '$0';
+  const sign = v > 0 ? '+' : '−';
+  const a = Math.abs(v);
+  if(a >= 1)  return sign + '$' + a.toFixed(2) + 'm';
+  return sign + '$' + (a * 1000).toFixed(0) + 'k';
+}
+
+const baseOpts = {
+  indexAxis:'y', responsive:true, maintainAspectRatio:false,
+  plugins:{ legend:{ display:false } },
+  scales:{
+    y:{ ticks:{ color:T, font:{ size:11 } }, grid:{ display:false } },
+    x:{ ticks:{ color:T, font:{ size:11 } }, grid:{ color:G } }
+  }
+};
+
+function buildAbs(){
+  const ctx = document.getElementById('chartAbs');
+  if(chartAbs){ chartAbs.destroy(); chartAbs = null; }
+  chartAbs = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets:[
+      { label:'A — Strict',   data:sc(s1), backgroundColor:CSL, borderColor:CS, borderWidth:1.5, borderRadius:3 },
+      { label:'B — Bounded',  data:sc(b1), backgroundColor:CBL, borderColor:CB, borderWidth:1.5, borderRadius:3 },
+      { label:'C — Even',     data:sc(e1), backgroundColor:CEL, borderColor:CE, borderWidth:1.5, borderRadius:3 },
+    ]},
+    options:{ ...baseOpts,
+      plugins:{ legend:{display:false},
+        tooltip:{ callbacks:{ label:c => ` ${c.dataset.label}: ${fmt(c.parsed.x)}` } } },
+      scales:{ ...baseOpts.scales,
+        x:{ ticks:{ color:T, font:{size:11}, callback:v => fmt(v) }, grid:{color:G},
+            title:{ display:true, text:'Allocation per Party', color:T2, font:{size:11} } }
+      }
+    }
+  });
+}
+
+function buildDiff(){
+  const ctx = document.getElementById('chartDiff');
+  if(chartDiff){ chartDiff.destroy(); chartDiff = null; }
+  const dSB = df(s1, b1);
+  const dSE = df(s1, e1);
+  const bgB  = dSB.map(v => v >= 0 ? CBL : LLOSS);
+  const bdB  = dSB.map(v => v >= 0 ? CB  : LOSS);
+  const bgE  = dSE.map(v => v >= 0 ? CEL : LLOSS);
+  const bdE  = dSE.map(v => v >= 0 ? CE  : LOSS);
+  chartDiff = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets:[
+      { label:'Strict → Bounded', data:dSB, backgroundColor:bgB, borderColor:bdB, borderWidth:1.5, borderRadius:3 },
+      { label:'Strict → Even',    data:dSE, backgroundColor:bgE, borderColor:bdE, borderWidth:1.5, borderRadius:3 },
+    ]},
+    options:{ ...baseOpts,
+      plugins:{ legend:{display:false},
+        tooltip:{ callbacks:{ label:c => ` ${c.dataset.label}: ${fmtSigned(c.parsed.x)}` } } },
+      scales:{ ...baseOpts.scales,
+        x:{ ticks:{ color:T, font:{size:11}, callback:v => fmtSigned(v) }, grid:{color:G},
+            title:{ display:true, text:'Change from Strict position', color:T2, font:{size:11} } }
+      }
+    }
+  });
+}
+
+function updateCallouts(){
+  document.getElementById('china-diff').textContent  = fmt(4.121  * fundScale);
+  document.getElementById('brazil-diff').textContent = fmt(3.591  * fundScale);
+  document.getElementById('mid-diff').textContent    = fmt(1.02   * fundScale);
+  document.getElementById('max-loss').textContent    = fmt(0.298  * fundScale);
+  document.getElementById('flat-diff').textContent   = fmt(0.14   * fundScale);
+}
+
+function setFund(m, btn){
+  document.querySelectorAll('.btn').forEach(b => b.classList.remove('active-fund'));
+  btn.classList.add('active-fund');
+  fundScale = m / 1000;
+  if(currentView === 'abs') buildAbs(); else buildDiff();
+  updateCallouts();
+}
+
+function setView(v, btn){
+  document.querySelectorAll('.btn').forEach(b => b.classList.remove('active-view'));
+  btn.classList.add('active-view');
+  currentView = v;
+  if(v === 'abs'){
+    document.getElementById('absWrap').style.display = '';
+    document.getElementById('diffWrap').style.display = 'none';
+    buildAbs();
+  } else {
+    document.getElementById('absWrap').style.display = 'none';
+    document.getElementById('diffWrap').style.display = '';
+    buildDiff();
+  }
+}
+
+buildAbs();
+updateCallouts();
+</script>
