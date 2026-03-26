@@ -125,12 +125,12 @@ def test_oceans_stewardship_preset_sets_sosac_max_and_tsac_zero():
     assert at.slider(key="sosac_gamma_pct").value == 10
 
 
-def test_balanced_preset_turns_on_exclude_high_income():
+def test_gini_optimal_point_preset_turns_on_exclude_high_income():
     at = AppTest.from_file("app.py", default_timeout=30)
     at.run()
 
     at.checkbox(key="exclude_hi").set_value(False).run()
-    balanced_button = [b for b in at.button if b.label == "5. Balanced"][0]
+    balanced_button = [b for b in at.button if b.label == "5. Gini-optimal point"][0]
     balanced_button.click().run()
 
     assert at.checkbox(key="exclude_hi").value is True

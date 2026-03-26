@@ -2,6 +2,7 @@ streamlit
 duckdb
 pandas
 pytest
+pytest-cov
 jinja2
 plotly
 PyYAML

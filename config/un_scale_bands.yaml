@@ -1,5 +1,47 @@
 # UN Scale Band Configuration
 # Each band defines a weight used for IUSAF calculation in 'band_inversion' mode.
+#
+# DESIGN PRINCIPLES
+# -----------------
+# 1. Each eligible country is assigned its band weight as its individual weight.
+#    A country's share = band_weight / sum(all_country_weights) * fund_size.
+#    This means the weights ARE the per-country weights directly — Band 1
+#    countries each receive more than Band 2 countries, and so on.
+#
+# 2. Weights must be strictly decreasing to preserve monotonicity: every country
+#    in a lower-numbered band (smaller UN contributor) receives more than every
+#    country in a higher-numbered band (larger UN contributor).
+#
+# 3. Band 6 was introduced to separate China (UN assessment ~20%) from
+#    Brazil, India and Mexico (~1.1-1.4%). Treating all four identically
+#    inside a single Band 5 suppressed a genuine 18-fold difference in
+#    assessed contributions and was inconsistent with the inversion principle.
+#    Band 6 restores transparency: China receives 53% of what Brazil/India/Mexico
+#    receive under IUSAF. TSAC then provides China's stewardship uplift
+#    through an explicit, separately negotiated mechanism rather than
+#    implicitly through band membership.
+#
+# ALLOCATION SUMMARY ($1bn fund, IUSAF only, HI excluded except SIDS)
+# -------------------------------------------------------------------
+#   Band 1 (n=31):  $8,525,149 per country   — floor LDCs/small states
+#   Band 2 (n=59):  $7,388,463 per country   — small developing countries
+#   Band 3 (n=30):  $6,251,776 per country   — mid-sized developing countries
+#   Band 4 (n=18):  $5,399,261 per country   — upper-middle income / larger
+#   Band 5 (n=3):   $4,262,575 per country   — Brazil, India, Mexico
+#   Band 6 (n=1):   $2,273,373 per country   — China
+#
+#   Band 1 / Band 6 ratio: 3.75x  (Band 1 LDC receives 3.75x more than China)
+#   Band 1 / Band 5 ratio: 2.00x  (unchanged from previous 5-band version)
+#
+# NOTE ON WEIGHT 0.40 FOR CHINA
+# ------------------------------
+# The weight of 0.40 is set to place China at approximately 53% of the
+# Band 5 per-country allocation, reflecting that its UN assessment is
+# ~18x larger than Mexico's or India's. It preserves a meaningful
+# non-zero floor consistent with the banding philosophy while being
+# materially lower than Band 5. Parties may wish to discuss the precise
+# weight; any value in the range 0.30-0.55 is defensible and preserves
+# full monotonicity.
 
 bands:
   - id: 1
@@ -7,22 +49,32 @@ bands:
     max_threshold: 0.001
     weight: 1.50
     label: "Band 1: <= 0.001%"
+
   - id: 2
     min_threshold: 0.001
     max_threshold: 0.01
     weight: 1.30
     label: "Band 2: 0.001% - 0.01%"
+
   - id: 3
     min_threshold: 0.01
     max_threshold: 0.1
     weight: 1.10
     label: "Band 3: 0.01% - 0.1%"
+
   - id: 4
     min_threshold: 0.1
     max_threshold: 1.0
     weight: 0.95
     label: "Band 4: 0.1% - 1.0%"
+
   - id: 5
     min_threshold: 1.0
+    max_threshold: 10.0
     weight: 0.75
-    label: "Band 5: > 1.0%"
+    label: "Band 5: 1.0% - 10.0%"
+
+  - id: 6
+    min_threshold: 10.0
+    weight: 0.40
+    label: "Band 6: > 10.0%"

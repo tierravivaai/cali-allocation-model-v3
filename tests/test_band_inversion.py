@@ -28,7 +28,7 @@ def test_band_inversion_values():
     df = get_base_data(con)
     
     # Band 1: <= 0.001 (Weight 1.50)
-    # Band 5: > 1.0 (Weight 0.75)
+    # Band 6: > 10.0 (Weight 0.40)
     res = calculate_allocations(df, 1_000_000_000, 50, un_scale_mode="band_inversion")
     
     gb = res[res['party'].str.contains('Guinea-Bissau', case=False)].iloc[0]
@@ -36,8 +36,8 @@ def test_band_inversion_values():
     assert gb['un_band_weight'] == 1.50
     
     china = res[res['party'].str.contains('China', case=False)].iloc[0]
-    assert china['un_share'] > 1.0
-    assert china['un_band_weight'] == 0.75
+    assert china['un_share'] > 10.0
+    assert china['un_band_weight'] == 0.40
 
 def test_band_inversion_hi_exclusion():
     con = duckdb.connect(database=':memory:')

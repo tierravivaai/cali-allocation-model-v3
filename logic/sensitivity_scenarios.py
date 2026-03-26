@@ -3,8 +3,18 @@ from __future__ import annotations
 from copy import deepcopy
 
 
+# Parameter naming convention
+# ----------------------------
+# The allocation formula weights are stored internally as:
+#   tsac_beta    — the TSAC (Terrestrial Stewardship Allocation Component) weight
+#   sosac_gamma  — the SOSAC (SIDS Ocean Stewardship Allocation Component) weight
+# These names follow the convention used in the academic specification of the formula
+# (Final_share = (1-β-γ)·IUSAF + β·TSAC + γ·SOSAC).
+# Display labels in user-facing surfaces use “TSAC weight” and “SOSAC weight” for clarity.
+
+
 DEFAULT_BASELINE = {
-    "scenario_id": "balanced_baseline",
+    "scenario_id": "gini_optimal_point",
     "fund_size": 1_000_000_000,
     "un_scale_mode": "band_inversion",
     "exclude_high_income": True,
@@ -43,16 +53,42 @@ def get_scenario_library() -> dict[str, dict]:
             tsac_beta=0.0,
             sosac_gamma=0.0,
         ),
-        "balanced_baseline": _scenario(scenario_id="balanced_baseline"),
-        "balanced_5_3": _scenario(scenario_id="balanced_5_3", tsac_beta=0.05, sosac_gamma=0.03),
+        "gini_optimal_point": _scenario(
+            scenario_id="gini_optimal_point",
+            description=(
+                "Gini-optimal point: minimises Gini coefficient while keeping "
+                "Spearman vs pure IUSAF > 0.85. TSAC=5%, SOSAC=3%."
+            ),
+        ),
+        "tsac_strict_balance": {
+            **DEFAULT_BASELINE,
+            "tsac_beta": 0.015,
+            "sosac_gamma": 0.03,
+            "scenario_id": "tsac_strict_balance",
+        },
+        "tsac_modified_balance": {
+            **DEFAULT_BASELINE,
+            "tsac_beta": 0.035,
+            "sosac_gamma": 0.03,
+            "scenario_id": "tsac_modified_balance",
+        },
         "terrestrial_max": _scenario(scenario_id="terrestrial_max", tsac_beta=0.15, sosac_gamma=0.0),
         "ocean_max": _scenario(scenario_id="ocean_max", tsac_beta=0.0, sosac_gamma=0.10),
-        "balanced_floor_005": _scenario(scenario_id="balanced_floor_005", floor_pct=0.05),
-        "balanced_ceiling_1": _scenario(scenario_id="balanced_ceiling_1", ceiling_pct=1.0),
-        "balanced_floor_005_ceiling_1": _scenario(
-            scenario_id="balanced_floor_005_ceiling_1",
+        "gini_optimal_floor_005": _scenario(
+            scenario_id="gini_optimal_floor_005",
+            floor_pct=0.05,
+            description="Floor sensitivity at the gini-optimal point (0.05% floor).",
+        ),
+        "gini_optimal_ceiling_1": _scenario(
+            scenario_id="gini_optimal_ceiling_1",
+            ceiling_pct=1.0,
+            description="Ceiling sensitivity at the gini-optimal point (1.0% ceiling).",
+        ),
+        "gini_optimal_floor_005_ceiling_1": _scenario(
+            scenario_id="gini_optimal_floor_005_ceiling_1",
             floor_pct=0.05,
             ceiling_pct=1.0,
+            description="Combined floor/ceiling sensitivity at the gini-optimal point.",
         ),
         "exclude_hi_off_compare": _scenario(scenario_id="exclude_hi_off_compare", exclude_high_income=False),
         "exclude_hi_on_compare": _scenario(scenario_id="exclude_hi_on_compare", exclude_high_income=True),
@@ -90,7 +126,9 @@ def get_default_ranges() -> dict[str, list]:
         "un_scale_mode": ["raw_inversion", "band_inversion"],
         "exclude_high_income": [True, False],
         "tsac_beta": [i / 100 for i in range(0, 16)],
+        "tsac_beta_fine": [round(x * 0.005, 3) for x in range(21)],
         "sosac_gamma": [i / 100 for i in range(0, 11)],
+        "sosac_gamma_fine": [round(x * 0.005, 3) for x in range(21)],
         "iplc_share_pct": [50, 60, 70, 80],
         "floor_pct": [0.0, 0.05, 0.10, 0.25],
         "ceiling_pct": [None, 1.0, 2.0, 5.0],

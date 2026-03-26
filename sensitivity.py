@@ -3,8 +3,14 @@ from __future__ import annotations
 import duckdb
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 
+from logic.balance_analysis import (
+    generate_balance_point_summary,
+    identify_balance_points,
+    run_fine_sweep,
+)
 from logic.calculator import calculate_allocations
 from logic.data_loader import get_base_data, load_data
 from logic.reporting import (
@@ -16,13 +22,37 @@ from logic.reporting import (
 )
 from logic.sensitivity_metrics import (
     build_pure_iusaf_comparator,
+    compute_component_ratios,
     compute_country_deltas,
+    generate_integrity_checks,
     compute_local_stability_metrics,
     compute_metrics,
     run_invariant_checks,
     summarize_group_totals,
 )
 from logic.sensitivity_scenarios import DEFAULT_BASELINE, get_default_ranges, get_scenario_library, one_way_sweep, two_way_grid
+
+
+# Parameter naming convention
+# ----------------------------
+# The allocation formula weights are stored internally as:
+#   tsac_beta    — the TSAC (Terrestrial Stewardship Allocation Component) weight
+#   sosac_gamma  — the SOSAC (SIDS Ocean Stewardship Allocation Component) weight
+# These names follow the convention used in the academic specification of the formula
+# (Final_share = (1-β-γ)·IUSAF + β·TSAC + γ·SOSAC).
+# Display labels throughout the UI use “TSAC weight” and “SOSAC weight” for clarity.
+# See also: logic/sensitivity_scenarios.py, logic/sensitivity_metrics.py,
+#           logic/balance_analysis.py — same convention applies.
+
+
+PARAM_LABELS = {
+    "tsac_beta": "TSAC weight",
+    "sosac_gamma": "SOSAC weight",
+    "iplc_share_pct": "IPLC share (%)",
+    "floor_pct": "Floor (%)",
+    "ceiling_pct": "Ceiling (%)",
+    "fund_size": "Fund size",
+}
 
 
 st.set_page_config(page_title="Cali Sensitivity Testing", layout="wide")
@@ -68,7 +98,7 @@ st.title("Cali Fund Sensitivity Testing and Reporting")
 st.caption("Robustness diagnostics and analytical reporting app using the same model logic as the main calculator.")
 
 st.sidebar.header("Scenario Setup")
-library_choice = st.sidebar.selectbox("Named scenario", options=list(scenario_library.keys()), index=list(scenario_library.keys()).index("balanced_baseline"))
+library_choice = st.sidebar.selectbox("Named scenario", options=list(scenario_library.keys()), index=list(scenario_library.keys()).index("gini_optimal_point"))
 scenario = dict(scenario_library[library_choice])
 
 scenario["fund_size"] = st.sidebar.selectbox("Fund size anchor", options=ranges["fund_size"], index=ranges["fund_size"].index(scenario.get("fund_size", 1_000_000_000)))
@@ -112,11 +142,16 @@ local_stability_metrics, local_stability_table = compute_local_stability_metrics
 current_metrics = compute_metrics(scenario, current_results, iusaf_results, equality_results, local_stability=local_stability_metrics)
 country_deltas = compute_country_deltas(current_results, iusaf_results)
 group_summary = summarize_group_totals(current_results)
+no_sids_df = base_df.copy()
+no_sids_df["is_sids"] = False
+no_sids_results = run_scenario(no_sids_df, scenario)
+invariant_checks_df = run_invariant_checks(scenario, current_results, no_sids_results_df=no_sids_results)
 
 top_gainers = country_deltas[country_deltas["eligible"]].nlargest(5, "allocation_delta_m")[["party", "allocation_delta_m"]]
 top_losers = country_deltas[country_deltas["eligible"]].nsmallest(5, "allocation_delta_m")[["party", "allocation_delta_m"]]
 
 library_metrics = []
+integrity_rows = []
 for name, s in scenario_library.items():
     scenario_i = dict(s)
     scenario_i["fund_size"] = scenario["fund_size"]
@@ -133,10 +168,25 @@ for name, s in scenario_library.items():
         ranges=ranges,
     )
     library_metrics.append(compute_metrics(scenario_i, res, baseline_iusaf, baseline_eq, local_stability=local_i))
+    integrity_rows.append(
+        generate_integrity_checks(
+            scenario_id=scenario_i["scenario_id"],
+            scenario_params=scenario_i,
+            results_df=res,
+            fund_size=float(scenario_i.get("fund_size", 1_000_000_000)),
+        )
+    )
 
 library_metrics_df = pd.DataFrame(library_metrics)
+integrity_checks_df = pd.DataFrame(integrity_rows)
 
-tab1, tab2, tab3, tab4 = st.tabs(["Parameter Sweep", "Robustness Diagnostics", "Thresholds and Tipping Points", "Attack Surface Report"])
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "Parameter Sweep",
+    "Robustness Diagnostics",
+    "Thresholds and Tipping Points",
+    "Attack Surface Report",
+    "Balance Point Analysis",
+])
 
 with tab1:
     st.subheader("Single Scenario")
@@ -180,7 +230,12 @@ with tab1:
     )
 
     st.subheader("One-way Sweep")
-    one_way_param = st.selectbox("Parameter", options=["tsac_beta", "sosac_gamma", "iplc_share_pct", "floor_pct", "ceiling_pct", "fund_size"], index=0)
+    one_way_param = st.selectbox(
+        "Parameter",
+        options=list(PARAM_LABELS.keys()),
+        format_func=lambda k: PARAM_LABELS[k],
+        index=0,
+    )
     one_way_values = ranges[one_way_param]
     one_way_scenarios = one_way_sweep(scenario, one_way_param, one_way_values)
     one_way_metrics = []
@@ -224,16 +279,40 @@ with tab1:
         grid_metrics.append(compute_metrics(s, res, iusaf_ref, eq_ref))
     grid_df = pd.DataFrame(grid_metrics)
 
-    heat_metric = st.selectbox("Heatmap metric", options=["spearman_vs_pure_iusaf", "pct_below_equality", "sids_total", "hhi", "top20_turnover_vs_pure_iusaf"], index=0)
+    heat_metric = st.selectbox(
+        "Heatmap metric",
+        options=[
+            "spearman_vs_pure_iusaf",
+            "pct_below_equality",
+            "gini_coefficient",
+            "max_tsac_iusaf_ratio",
+            "sids_total",
+            "hhi",
+            "top20_turnover_vs_pure_iusaf",
+        ],
+        index=0,
+    )
     pivot = grid_df.pivot_table(index=y_col, columns=x_col, values=heat_metric, aggfunc="mean")
-    st.plotly_chart(px.imshow(pivot, aspect="auto", title=f"{grid_choice} heatmap: {heat_metric}", labels={"x": x_col, "y": y_col, "color": heat_metric}), use_container_width=True)
+    st.plotly_chart(
+        px.imshow(
+            pivot,
+            aspect="auto",
+            title=f"{grid_choice} heatmap: {heat_metric}",
+            labels={
+                "x": PARAM_LABELS.get(x_col, x_col),
+                "y": PARAM_LABELS.get(y_col, y_col),
+                "color": heat_metric,
+            },
+        ),
+        use_container_width=True,
+    )
 
     st.markdown(
         "## Interpretation\n"
         "### 1. Mechanical validity\n"
         "Sweep results are interpreted only when conservation and non-negativity checks hold.\n\n"
         "### 2. Relationship to pure IUSAF\n"
-        f"The one-way and grid views quantify policy-overlay departure using `{one_way_param}` and pure-IUSAF comparators. This departure is expected when stewardship overlays are active.\n\n"
+        f"The one-way and grid views quantify policy-overlay departure using `{PARAM_LABELS.get(one_way_param, one_way_param)}` and pure-IUSAF comparators. This departure is expected when stewardship overlays are active.\n\n"
         "### 3. Stability of the blended specification\n"
         "Local stability is assessed separately via adjacent-parameter checks rather than pure-IUSAF divergence alone.\n\n"
         "### 4. Distributional implications\n"
@@ -244,11 +323,7 @@ with tab1:
 
 with tab2:
     st.subheader("Invariant and Edge-case Diagnostics")
-    no_sids_df = base_df.copy()
-    no_sids_df["is_sids"] = False
-    no_sids_results = run_scenario(no_sids_df, scenario)
-    diag_df = run_invariant_checks(scenario, current_results, no_sids_results_df=no_sids_results)
-    st.dataframe(diag_df)
+    st.dataframe(invariant_checks_df)
 
     binding_df = pd.DataFrame(
         {
@@ -277,10 +352,11 @@ with tab3:
     threshold_df = library_metrics_df[["scenario_id", "tsac_beta", "sosac_gamma", "spearman_vs_pure_iusaf", "top20_turnover_vs_pure_iusaf", "pct_below_equality", "departure_from_pure_iusaf_flag", "local_blended_instability_flag"]].copy()
     threshold_df["stewardship_total"] = threshold_df["tsac_beta"] + threshold_df["sosac_gamma"]
     threshold_df = threshold_df.sort_values("stewardship_total")
+    threshold_display_df = threshold_df.rename(columns=PARAM_LABELS)
 
     st.plotly_chart(
         px.line(
-            threshold_df,
+            threshold_display_df,
             x="stewardship_total",
             y="spearman_vs_pure_iusaf",
             color="departure_from_pure_iusaf_flag",
@@ -347,7 +423,7 @@ with tab4:
 
     scenario_brief_md = generate_scenario_brief(current_metrics, top_gainers, top_losers)
     sweep_summary_md = generate_sweep_summary("one-way sweep", one_way_df, "spearman_vs_pure_iusaf")
-    comparative_md = generate_comparative_report(library_metrics_df, baseline_id="balanced_baseline")
+    comparative_md = generate_comparative_report(library_metrics_df, baseline_id="gini_optimal_point")
     annex_md = generate_technical_annex()
     local_stability_md = generate_local_stability_markdown(current_metrics, local_stability_table)
 
@@ -374,9 +450,201 @@ with tab4:
         st.download_button("Download Comparative Report (.md)", comparative_md, file_name="comparative_report.md")
         st.download_button("Download Technical Annex (.md)", annex_md, file_name="technical_annex.md")
 
+with tab5:
+    st.subheader("Balance Point Analysis")
+    st.markdown(
+        "Identifies the TSAC and SOSAC weights at which the IUSAF equity base remains "
+        "the **dominant component** of each Party's allocation. "
+        "The balance condition is: `tsac_component_i / iusaf_component_i ≤ 1.0` for all eligible Parties.\n\n"
+        "Three candidate TSAC balance points are identified from fine-grained sweeps at 0.5 pp intervals."
+    )
+
+    st.markdown("### Current scenario — per-Party TSAC/IUSAF ratios")
+    current_ratios = compute_component_ratios(
+        current_results,
+        float(scenario.get("tsac_beta", 0.0)),
+        float(scenario.get("sosac_gamma", 0.0)),
+    )
+
+    col_r1, col_r2, col_r3, col_r4 = st.columns(4)
+    col_r1.metric(
+        "Max TSAC/IUSAF ratio",
+        f"{current_ratios['max_tsac_iusaf_ratio']:.2f}×",
+        help="Balance condition: ≤ 1.0 for all Parties",
+    )
+    col_r2.metric(
+        "China ratio",
+        f"{current_ratios['china_tsac_iusaf_ratio']:.2f}×"
+        if current_ratios["china_tsac_iusaf_ratio"] is not None else "n/a",
+        help="Strict balance point binding constraint",
+    )
+    col_r3.metric(
+        "Brazil ratio",
+        f"{current_ratios['brazil_tsac_iusaf_ratio']:.2f}×"
+        if current_ratios["brazil_tsac_iusaf_ratio"] is not None else "n/a",
+        help="Modified balance point binding constraint",
+    )
+    col_r4.metric(
+        "Parties where TSAC > IUSAF",
+        str(current_ratios["n_parties_tsac_dominant"]),
+    )
+
+    if current_ratios["tsac_balance_exceeded"]:
+        st.warning(
+            f"TSAC is the dominant component for **{current_ratios['n_parties_tsac_dominant']} Parties** at current settings. "
+            "The balance condition is not satisfied. See sweep below for balance points."
+        )
+    else:
+        st.success("Balance condition satisfied: IUSAF is dominant for all Parties.")
+
+    if not current_ratios["ratio_df"].empty:
+        st.dataframe(
+            current_ratios["ratio_df"].head(20),
+            column_config={
+                "component_iusaf_amt": st.column_config.NumberColumn("IUSAF ($m)", format="$%.3f"),
+                "component_tsac_amt": st.column_config.NumberColumn("TSAC ($m)", format="$%.3f"),
+                "tsac_iusaf_ratio": st.column_config.NumberColumn("TSAC/IUSAF ratio", format="%.3f"),
+                "tsac_dominant": st.column_config.CheckboxColumn("TSAC dominant?"),
+            },
+            use_container_width=True,
+        )
+
+    st.divider()
+
+    st.markdown("### Fine-grained sweep (0.5 pp intervals, 0–10%)")
+    st.caption("21 TSAC scenarios + 21 SOSAC scenarios. May take 30–60 seconds.")
+
+    if "bp_tsac_sweep" not in st.session_state:
+        st.session_state["bp_tsac_sweep"] = None
+    if "bp_sosac_sweep" not in st.session_state:
+        st.session_state["bp_sosac_sweep"] = None
+    if "bp_results" not in st.session_state:
+        st.session_state["bp_results"] = None
+
+    if st.button("▶ Run fine-grained sweep", type="primary"):
+        with st.spinner("TSAC sweep…"):
+            st.session_state["bp_tsac_sweep"] = run_fine_sweep(
+                base_scenario=scenario,
+                base_df=base_df,
+                run_scenario_fn=run_scenario,
+                compute_metrics_fn=compute_metrics,
+                compute_component_ratios_fn=compute_component_ratios,
+                build_pure_iusaf_fn=build_pure_iusaf_comparator,
+                sweep_param="tsac_beta",
+                values=ranges.get("tsac_beta_fine"),
+            )
+        with st.spinner("SOSAC sweep…"):
+            sosac_base = {**scenario, "tsac_beta": 0.0}
+            st.session_state["bp_sosac_sweep"] = run_fine_sweep(
+                base_scenario=sosac_base,
+                base_df=base_df,
+                run_scenario_fn=run_scenario,
+                compute_metrics_fn=compute_metrics,
+                compute_component_ratios_fn=compute_component_ratios,
+                build_pure_iusaf_fn=build_pure_iusaf_comparator,
+                sweep_param="sosac_gamma",
+                values=ranges.get("sosac_gamma_fine"),
+            )
+        with st.spinner("Identifying balance points…"):
+            st.session_state["bp_results"] = identify_balance_points(
+                tsac_sweep_df=st.session_state["bp_tsac_sweep"],
+                sosac_sweep_df=st.session_state["bp_sosac_sweep"],
+            )
+        st.success("Sweep complete.")
+
+    if st.session_state["bp_tsac_sweep"] is not None:
+        tsac_df = st.session_state["bp_tsac_sweep"]
+        sosac_df = st.session_state["bp_sosac_sweep"]
+        bp = st.session_state["bp_results"]
+
+        fig1 = go.Figure()
+        fig1.add_trace(go.Scatter(
+            x=tsac_df["sweep_value"] * 100,
+            y=tsac_df["china_tsac_iusaf_ratio"],
+            name="China TSAC/IUSAF", mode="lines+markers",
+            line=dict(color="crimson"),
+        ))
+        fig1.add_trace(go.Scatter(
+            x=tsac_df["sweep_value"] * 100,
+            y=tsac_df["brazil_tsac_iusaf_ratio"],
+            name="Brazil TSAC/IUSAF", mode="lines+markers",
+            line=dict(color="orange"),
+        ))
+        fig1.add_hline(y=1.0, line_dash="dash", line_color="grey", annotation_text="Balance threshold")
+        fig1.update_layout(
+            title="TSAC/IUSAF ratio by TSAC weight",
+            xaxis_title="TSAC weight (%)",
+            yaxis_title="Ratio",
+        )
+        st.plotly_chart(fig1, use_container_width=True)
+
+        fig2 = go.Figure()
+        fig2.add_trace(go.Scatter(
+            x=tsac_df["sweep_value"] * 100,
+            y=tsac_df["gini_coefficient"],
+            name="Gini coefficient", mode="lines+markers",
+            line=dict(color="purple"),
+        ))
+        fig2.add_trace(go.Scatter(
+            x=tsac_df["sweep_value"] * 100,
+            y=tsac_df["spearman_vs_pure_iusaf"],
+            name="Spearman vs pure IUSAF", mode="lines+markers",
+            line=dict(color="steelblue", dash="dot"),
+            yaxis="y2",
+        ))
+        fig2.add_hline(y=0.85, line_dash="dot", line_color="steelblue", annotation_text="Moderate overlay threshold (0.85)")
+        fig2.update_layout(
+            title="Gini coefficient and Spearman by TSAC weight",
+            xaxis_title="TSAC weight (%)",
+            yaxis_title="Gini coefficient",
+            yaxis2=dict(title="Spearman", overlaying="y", side="right", range=[0, 1]),
+        )
+        st.plotly_chart(fig2, use_container_width=True)
+
+        st.markdown("#### Identified balance points")
+        if bp:
+            bp_rows = []
+            labels = {
+                "strict": "Strict (China ≤ 1.0)",
+                "modified": "Modified (Brazil ≤ 1.0)",
+                "gini_optimal": "Gini-optimal (min Gini, Spearman > 0.85)",
+                "sosac": "SOSAC balance",
+            }
+            for key, label in labels.items():
+                point = bp.get(key)
+                if point:
+                    m = point["metrics"]
+
+                    def _f(k, fmt="{:.3f}"):
+                        v = m.get(k)
+                        try:
+                            return fmt.format(v) if v is not None and not pd.isna(v) else "n/a"
+                        except Exception:
+                            return "n/a"
+
+                    bp_rows.append(
+                        {
+                            "Balance point": label,
+                            "Value": f"{point['value']:.1%}",
+                            "China ratio": _f("china_tsac_iusaf_ratio", "{:.2f}×"),
+                            "Brazil ratio": _f("brazil_tsac_iusaf_ratio", "{:.2f}×"),
+                            "Gini": _f("gini_coefficient", "{:.4f}"),
+                            "Spearman": _f("spearman_vs_pure_iusaf", "{:.4f}"),
+                            "Band 1 change": _f("band1_pct_change_vs_iusaf", "{:+.1f}%"),
+                            "SIDS total ($m)": _f("sids_total_m", "${:.1f}m"),
+                        }
+                    )
+                else:
+                    bp_rows.append({"Balance point": label, "Value": "Not found in range"})
+            st.dataframe(pd.DataFrame(bp_rows), hide_index=True, use_container_width=True)
+
+        with st.expander("Raw sweep data"):
+            st.dataframe(tsac_df, use_container_width=True)
+            st.dataframe(sosac_df, use_container_width=True)
+
 st.divider()
 st.subheader("Data Exports")
-e1, e2, e3, e4, e5 = st.columns(5)
+e1, e2, e3, e4, e5, e6, e7 = st.columns(7)
 with e1:
     st.download_button("Scenario metrics CSV", csv_bytes(library_metrics_df), file_name="scenario_metrics.csv", mime="text/csv")
 with e2:
@@ -387,3 +655,52 @@ with e4:
     st.download_button("Group summary CSV", csv_bytes(group_summary), file_name="group_summary.csv", mime="text/csv")
 with e5:
     st.download_button("Local stability checks CSV", csv_bytes(local_stability_table), file_name="local_stability_checks.csv", mime="text/csv")
+with e6:
+    st.download_button("Download Integrity checks CSV", csv_bytes(integrity_checks_df), file_name="integrity_checks.csv", mime="text/csv")
+with e7:
+    if st.session_state.get("bp_results") is not None and st.session_state.get("bp_tsac_sweep") is not None:
+        balance_point_rows = []
+        for key, payload in st.session_state["bp_results"].items():
+            row = {"balance_point": key}
+            if payload is not None:
+                row.update(
+                    {
+                        "value": payload.get("value"),
+                        "above_range": payload.get("above_range", False),
+                        "max_ratio_at_sweep_limit": payload.get("max_ratio_at_sweep_limit"),
+                        "analytical_estimate": payload.get("analytical_estimate"),
+                    }
+                )
+                row.update(payload.get("metrics", {}) or {})
+            balance_point_rows.append(row)
+        balance_points_df = pd.DataFrame(balance_point_rows)
+        bp_md = generate_balance_point_summary(
+            balance_points=st.session_state["bp_results"],
+            tsac_sweep_df=st.session_state["bp_tsac_sweep"],
+            sosac_sweep_df=st.session_state["bp_sosac_sweep"],
+        )
+        st.download_button(
+            "Balance Points CSV",
+            csv_bytes(balance_points_df),
+            file_name="balance_points.csv",
+            mime="text/csv",
+        )
+        st.download_button(
+            "Balance Point Summary (.md)",
+            bp_md.encode("utf-8"),
+            file_name="balance_point_summary.md",
+        )
+        st.download_button(
+            "TSAC Fine Sweep (.csv)",
+            csv_bytes(st.session_state["bp_tsac_sweep"]),
+            file_name="tsac_fine_sweep.csv",
+            mime="text/csv",
+        )
+        st.download_button(
+            "SOSAC Fine Sweep (.csv)",
+            csv_bytes(st.session_state["bp_sosac_sweep"]),
+            file_name="sosac_fine_sweep.csv",
+            mime="text/csv",
+        )
+    else:
+        st.caption("Run balance-point sweep to enable these exports.")

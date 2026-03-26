@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import pandas as pd
 
+from logic.balance_analysis import generate_balance_point_summary  # noqa: F401
+
 
 def classify_overlay_strength(spearman_vs_pure_iusaf: float, top20_turnover_vs_pure_iusaf: float) -> str:
     if spearman_vs_pure_iusaf >= 0.98 and top20_turnover_vs_pure_iusaf <= 0.10:
@@ -96,20 +98,47 @@ def generate_sweep_summary(sweep_name: str, sweep_df: pd.DataFrame, metric_colum
     strongest = sweep_df.iloc[(sweep_df[metric_column] - sweep_df[metric_column].median()).abs().idxmax()]
     trigger_lines = []
 
-    def _first_flag(flag_col: str, label: str, metric_ref: str | None = None):
-        if flag_col in sweep_df.columns:
-            flagged = sweep_df[sweep_df[flag_col] == True]
+    def _explain_departure_trigger(row) -> str:
+        reasons = []
+        if row.get("spearman_vs_pure_iusaf", 1.0) < 0.95:
+            reasons.append(
+                f"`spearman_vs_pure_iusaf={row['spearman_vs_pure_iusaf']:.4f}` (threshold: < 0.95)"
+            )
+        if row.get("top20_turnover_vs_pure_iusaf", 0.0) > 0.20:
+            reasons.append(
+                f"`top20_turnover_vs_pure_iusaf={row['top20_turnover_vs_pure_iusaf']:.4f}` (threshold: > 0.20)"
+            )
+        if not reasons:
+            return "trigger criterion not identified"
+        return "; ".join(reasons)
+
+    if "departure_from_pure_iusaf_flag" in sweep_df.columns:
+        flagged = sweep_df[sweep_df["departure_from_pure_iusaf_flag"] == True]
+    else:
+        flagged = sweep_df[
+            (sweep_df.get("spearman_vs_pure_iusaf", pd.Series(dtype=float)) < 0.95)
+            | (sweep_df.get("top20_turnover_vs_pure_iusaf", pd.Series(dtype=float)) > 0.20)
+        ]
+    if not flagged.empty:
+        row = flagged.iloc[0]
+        trigger_lines.append(
+            f"- departure-from-pure-IUSAF threshold: first triggered at `{row['scenario_id']}`. Trigger: {_explain_departure_trigger(row)}."
+        )
+
+    def _first_threshold(metric_col: str, label: str, mask_fn, formatter) -> None:
+        if metric_col in sweep_df.columns:
+            flagged = sweep_df[mask_fn(sweep_df[metric_col])]
             if not flagged.empty:
                 row = flagged.iloc[0]
-                detail = f" `{metric_ref}={row[metric_ref]:.4f}`" if metric_ref and metric_ref in row.index else ""
-                trigger_lines.append(f"- {label}: first triggered at `{row['scenario_id']}`.{detail}")
+                trigger_lines.append(f"- {label}: first triggered at `{row['scenario_id']}` (`{metric_col}={formatter(row[metric_col])}`).")
 
-    _first_flag("departure_from_pure_iusaf_flag", "departure-from-pure-IUSAF threshold", "spearman_vs_pure_iusaf")
     if "pct_below_equality" in sweep_df.columns:
         eq = sweep_df[sweep_df["pct_below_equality"] > 60]
         if not eq.empty:
             trigger_lines.append(f"- equality-distance threshold: first triggered at `{eq.iloc[0]['scenario_id']}` (`pct_below_equality={eq.iloc[0]['pct_below_equality']:.1f}%`).")
-    _first_flag("local_blended_instability_flag", "local blended instability threshold", "local_min_spearman_vs_baseline")
+    _first_threshold("local_min_spearman_vs_baseline", "Local min Spearman vs baseline threshold", lambda s: s < 0.94, lambda v: f"{v:.4f}")
+    _first_threshold("local_max_top20_turnover_vs_baseline", "Local top-20 turnover vs baseline threshold", lambda s: s > 0.20, lambda v: f"{v:.1%}")
+    _first_threshold("local_max_abs_share_delta", "Local max absolute share-delta threshold", lambda s: s > 0.005, lambda v: f"{v:.3%}")
     if "dominance_flag" in sweep_df.columns:
         dom = sweep_df[sweep_df["dominance_flag"] == True]
         if not dom.empty:
@@ -148,7 +177,7 @@ The sweep indicates where policy overlay departs from pure IUSAF and, separately
 """
 
 
-def generate_comparative_report(metrics_df: pd.DataFrame, baseline_id: str = "balanced_baseline") -> str:
+def generate_comparative_report(metrics_df: pd.DataFrame, baseline_id: str = "gini_optimal_point") -> str:
     baseline = metrics_df[metrics_df["scenario_id"] == baseline_id]
     baseline_row = baseline.iloc[0] if not baseline.empty else metrics_df.iloc[0]
 
@@ -170,11 +199,13 @@ def generate_comparative_report(metrics_df: pd.DataFrame, baseline_id: str = "ba
 ## Introduction
 This report compares baseline, equality, pure IUSAF, and stress scenarios while separating policy-overlay departure from local robustness.
 
+*In the codebase, the TSAC weight and SOSAC weight are stored under the internal parameter names `tsac_beta` and `sosac_gamma` respectively, following the conventional Greek-letter notation used in the original formula specification. Readers reviewing the source code will find these names throughout; they correspond exactly to the TSAC weight and SOSAC weight referred to in this document.*
+
 ## Baseline Scenario
 Baseline is `{baseline_row['scenario_id']}` with fund size `${baseline_row['fund_size']:,.0f}`, TSAC `{baseline_row['tsac_beta']:.2%}`, SOSAC `{baseline_row['sosac_gamma']:.2%}`, and UN mode `{baseline_row['un_scale_mode']}`.
 
 ## Benchmarks for Comparison
-Comparison includes pure equality, pure IUSAF (raw and band), balanced variants, and constraint/eligibility alternatives.
+Comparison includes pure equality, pure IUSAF (raw and band), gini-optimal variants, and constraint/eligibility alternatives.
 
 ## Mechanical validity
 Several scenarios are mechanically valid and reproducible under the shared calculator and diagnostics framework.
@@ -237,6 +268,11 @@ Data are loaded from the same repository sources used by the main app. Eligibili
 
 ## Formula Specification
 Final Share = (1 - beta - gamma) * IUSAF + beta * TSAC + gamma * SOSAC.
+
+*In the codebase, the TSAC weight and SOSAC weight are stored under the internal parameter names `tsac_beta` and `sosac_gamma` respectively, following the conventional Greek-letter notation used in the original formula specification. Readers reviewing the source code will find these names throughout; they correspond exactly to the TSAC weight and SOSAC weight referred to in this document.*
+
+## Historical note: stewardship-forward baseline
+Prior to the completion of the fine-grained TSAC sweep, sensitivity analysis used a provisional reference scenario called the stewardship-forward baseline (TSAC=5%, SOSAC=3%). This was a development placeholder used before balance points had been formally identified. The sweep confirmed that TSAC=5% is precisely the gini-optimal point — the setting that minimises the Gini coefficient while keeping Spearman rank correlation above 0.85. The stewardship-forward baseline was accordingly retired and replaced by the gini-optimal point, which has identical parameter values. Any outputs generated before this change that reference the stewardship-forward baseline are equivalent to outputs referencing the gini-optimal point.
 
 ## Raw vs Band Inversion
 Raw inversion uses reciprocal UN shares. Band inversion applies configured UN-share bands and weights before normalization.

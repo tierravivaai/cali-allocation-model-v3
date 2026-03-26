@@ -189,7 +189,11 @@ with st.sidebar.expander("Negotiation Presets", expanded=True):
         st.rerun()
         
     # Row 3 (Full width)
-    if st.button("5. Balanced", help="TSAC=0.05, SOSAC=0.03 (Default)", use_container_width=True):
+    if st.button(
+        "5. Gini-optimal point",
+        help="TSAC=5%, SOSAC=3% — Gini-optimal point (minimises Gini, Spearman > 0.85)",
+        use_container_width=True,
+    ):
         st.session_state["tsac_beta"] = 0.05
         st.session_state["sosac_gamma"] = 0.03
         st.session_state["tsac_beta_pct"] = 5
@@ -401,20 +405,21 @@ if st.session_state["un_scale_mode"] == "band_inversion":
     b_counts = results_df[results_df['eligible']].groupby('un_band')['party'].count().to_dict()
     
     st.sidebar.info(
-        "**Band-based inversion** groups countries into 5 broad UN assessment bands and applies a transparent graduated uplift, "
+        "**Band-based inversion** groups countries into 6 broad UN assessment bands and applies a transparent graduated uplift, "
         "instead of mechanically inverting every small difference in the UN scale. \n\n"
-        "**The 5 bands are:**\n"
+        "**The 6 bands are:**\n"
         f"- **Band 1**: <= 0.001% UN Share ({b_counts.get('Band 1: <= 0.001%', 0)})\n"
         f"- **Band 2**: 0.001% - 0.01% ({b_counts.get('Band 2: 0.001% - 0.01%', 0)})\n"
         f"- **Band 3**: 0.01% - 0.1% ({b_counts.get('Band 3: 0.01% - 0.1%', 0)})\n"
         f"- **Band 4**: 0.1% - 1.0% ({b_counts.get('Band 4: 0.1% - 1.0%', 0)})\n"
-        f"- **Band 5**: > 1.0% UN Share ({b_counts.get('Band 5: > 1.0%', 0)})"
+        f"- **Band 5**: 1.0% - 10.0% ({b_counts.get('Band 5: 1.0% - 10.0%', 0)})\n"
+        f"- **Band 6**: > 10.0% UN Share ({b_counts.get('Band 6: > 10.0%', 0)})"
     )
 
 # Baseline Logic
 # 1. If we are in Inverted UN Scale (beta=0, gamma=0, equality=False), 
 #    the baseline should be Equality (equality=True).
-# 2. If we are in any other preset (Stewardship, Balanced, etc.),
+# 2. If we are in any other preset (Balance Points, Stewardship extremes, etc.),
 #    the baseline should be Inverted UN Scale (beta=0, gamma=0, equality=False).
 # 3. If we are in Equality preset (equality=True), metrics should be 0 (baseline = current).
 
@@ -442,7 +447,7 @@ elif is_inverted_scale:
     )
     baseline_label = "Equality"
 else:
-    # Stewardship/Balanced selected: Compare against Inverted UN Scale (IUSAF)
+    # Balance point or stewardship extreme selected: Compare against Inverted UN Scale (IUSAF)
     results_df_baseline = calculate_allocations(
         st.session_state.base_df,
         fund_size_usd,
@@ -1512,7 +1517,7 @@ st.markdown("""
 **Notes**  
 The allocations shown are indicative and are generated using an inverted [UN Scale of Assessments](https://digitallibrary.un.org/record/4071844?ln=en&utm_source=chatgpt.com&v=pdf#files) for the years 2025-2027 to support discussion. Definitions of UN regions, Least developed countries (LDC) and Small Island Developing States (SIDS) are from the [UNSD M49](https://unstats.un.org/unsd/methodology/m49/) standard. [World Bank Income Classification groups](https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups) are shown to assist with interpretation and to enable the ability to toggle high income (developed) countries on or off in calculations.
 
-The Terrestrial Stewardship Allocation Component (TSAC) is calculated as the country share of the total Land Area in the FAOSTAT Land Area (Square km) table  for 1961-2023 on 2023 values available from the [World Bank Indicators Databank](https://data.worldbank.org/indicator/AG.LND.TOTL.K2).
+The Terrestrial Stewardship Allocation Component (TSAC) uses the latest available FAOSTAT land-area value for each country, as available from the [World Bank Indicators Databank](https://data.worldbank.org/indicator/AG.LND.TOTL.K2).
 
 The SIDS Ocean Stewardship Allocation Component (SOSAC) is calculated as an equal-share pool across all eligible SIDS Parties using the UNSD M49 SIDS classification. In practice, each eligible SIDS receives an equal share (`1 / number of eligible SIDS`) weighted by the SOSAC slider value. If no eligible SIDS are present, the SOSAC weight is reallocated to the IUSAF base.
 

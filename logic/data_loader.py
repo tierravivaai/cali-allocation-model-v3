@@ -2,6 +2,32 @@ import duckdb
 import pandas as pd
 import os
 
+
+LAND_AREA_NAME_MAP = {
+    "Egypt": "Egypt, Arab Rep.",
+    "Somalia": "Somalia, Fed. Rep.",
+    "Kyrgyzstan": "Kyrgyz Republic",
+    "Yemen": "Yemen, Rep.",
+    "Democratic Republic of the Congo": "Congo, Dem. Rep.",
+    "Côte d'Ivoire": "Cote d'Ivoire",
+    "Côte d’Ivoire": "Cote d'Ivoire",
+    "Iran (Islamic Republic of)": "Iran, Islamic Rep.",
+    "Türkiye": "Turkiye",
+    "Republic of Moldova": "Moldova",
+    "Micronesia (Federated States of)": "Micronesia, Fed. Sts.",
+    "United Republic of Tanzania": "Tanzania",
+    "Bolivia (Plurinational State of)": "Bolivia",
+    "Venezuela (Bolivarian Republic of)": "Venezuela, RB",
+    "Democratic People's Republic of Korea": "Korea, Dem. People's Rep.",
+    "Lao People's Democratic Republic": "Lao PDR",
+    "Congo": "Congo, Rep.",
+    "Bahamas": "Bahamas, The",
+    "Gambia": "Gambia, The",
+    "Saint Kitts and Nevis": "St. Kitts and Nevis",
+    "Saint Lucia": "St. Lucia",
+    "Saint Vincent and the Grenadines": "St. Vincent and the Grenadines",
+}
+
 def load_data(con):
     # Base paths
     base_path = "data-raw"
@@ -24,7 +50,18 @@ def load_data(con):
     # 5b. Load Land Area (World Bank)
     # The CSV has 4 header lines to skip.
     land_area_path = f"{base_path}/API_AG.LND.TOTL.K2_DS2_en_csv_v2_749/API_AG.LND.TOTL.K2_DS2_en_csv_v2_749.csv"
-    con.execute(f"CREATE TABLE land_area_raw AS SELECT * FROM read_csv_auto('{land_area_path}', skip=4)")
+    land_df = pd.read_csv(land_area_path, skiprows=4)
+    year_cols = [c for c in land_df.columns if str(c).strip().isdigit()]
+    numeric_land = land_df[year_cols].apply(pd.to_numeric, errors="coerce")
+    land_df["land_area_km2"] = numeric_land.ffill(axis=1).iloc[:, -1]
+    land_df["land_area_year"] = numeric_land.apply(
+        lambda row: next((int(col) for col in reversed(year_cols) if pd.notna(row[col])), None),
+        axis=1,
+    )
+    land_df["Country Name"] = land_df["Country Name"].replace({v: k for k, v in LAND_AREA_NAME_MAP.items()})
+    land_area_latest_df = land_df[["Country Name", "Country Code", "land_area_km2", "land_area_year"]].copy()
+    con.register("land_area_latest_df", land_area_latest_df)
+    con.execute("CREATE TABLE land_area_latest AS SELECT * FROM land_area_latest_df")
 
     # 6. Load CBD Parties List (using the budget table as source of truth for Parties)
     con.execute(f"""
@@ -75,35 +112,6 @@ def get_base_data(con):
           AND party_name NOT LIKE 'c:\%'
           AND party_name !~ '^\d{2}/\d{2}/\d{4}$'
     ),
-    -- Prepare latest non-null land area from WB data
-    land_area_melted AS (
-        UNPIVOT (
-            SELECT 
-                "Country Name", "Country Code", "Indicator Name", "Indicator Code",
-                COLUMNS('^[0-9]{4}$')::VARCHAR as years
-            FROM land_area_raw
-        )
-        ON COLUMNS(* EXCLUDE ("Country Name", "Country Code", "Indicator Name", "Indicator Code"))
-        INTO NAME year VALUE land_area
-    ),
-    land_area_clean AS (
-        SELECT 
-            "Country Name" as wb_country_name,
-            "Country Code" as wb_country_code,
-            TRY_CAST(land_area AS DOUBLE) as land_area_km2,
-            TRY_CAST(year AS INTEGER) as land_area_year
-        FROM land_area_melted
-        WHERE land_area IS NOT NULL AND land_area != ''
-    ),
-    land_area_latest AS (
-        SELECT 
-            wb_country_name,
-            wb_country_code,
-            land_area_km2,
-            land_area_year
-        FROM land_area_clean
-        QUALIFY ROW_NUMBER() OVER (PARTITION BY wb_country_code ORDER BY land_area_year DESC) = 1
-    ),
     mapped_scale AS (
         SELECT 
             COALESCE(m.party_mapped, s.party_name) as party,
@@ -140,7 +148,7 @@ def get_base_data(con):
         LEFT JOIN eu27 e ON COALESCE(s.party, c.Party) = e.party
         -- Map 4: Land Area (World Bank)
         -- Attempt join on mapped name first, then fallback to name_map check
-        LEFT JOIN land_area_latest la ON COALESCE(s.party, c.Party) = la.wb_country_name
+        LEFT JOIN land_area_latest la ON COALESCE(s.party, c.Party) = la."Country Name"
     )
     SELECT * FROM joined
     """

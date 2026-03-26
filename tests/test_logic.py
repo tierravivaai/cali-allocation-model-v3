@@ -99,6 +99,14 @@ def test_strict_data_integrity(mock_con):
     # un_share must be >= 0.0
     assert (base_df['un_share'] >= 0.0).all()
 
+
+def test_all_eligible_parties_have_land_area_after_matching_fix(mock_con):
+    base_df = get_base_data(mock_con)
+    results = calculate_allocations(base_df, 1_000_000_000, 50, exclude_high_income=True)
+    eligible = results[results['eligible']]
+    assert len(eligible) == 142
+    assert eligible['has_land_area'].all()
+
 def test_venezuela_consolidation(mock_con):
     base_df = get_base_data(mock_con)
     # Check that Venezuela exists only once

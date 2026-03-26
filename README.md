@@ -13,7 +13,7 @@ This interactive tool illustrates how Cali Fund allocations would be distributed
 - **High Income Filter**: Ability to toggle High Income countries out of the allocation pool (off by default on initial load for true-equality start).
 - **Transparency**: Toggle "Raw Inversion and Explanation" to see plain language and technical summaries of the methodology.
 - **TSAC & SOSAC Components**: Blended allocation formula incorporating land area (TSAC) and SIDS-specific structural adjustment (SOSAC).
-- **Stewardship Controls**: Initial load defaults to true equality (`TSAC=0`, `SOSAC=0`). The Balanced preset uses TSAC `0.05` and SOSAC `0.03`, with UI ranges capped at TSAC `0.15` and SOSAC `0.10` so IUSAF remains the dominant base.
+- **Stewardship Controls**: Initial load defaults to true equality (`TSAC=0`, `SOSAC=0`). The Gini-Optimal Point preset uses TSAC `0.05` and SOSAC `0.03`, with UI ranges capped at TSAC `0.15` and SOSAC `0.10` so IUSAF remains the dominant base.
 - **Blend Warnings**: Live status plus threshold warnings when combined stewardship weights become strong (`>0.15`) or potentially overriding (`>0.20`).
 - **Negotiation Dashboard**: Advanced visualizations including increases and decreases analysis, group impact charts, country-level waterfalls, and a selected-country stewardship scenario comparison chart with an equality reference line.
 
@@ -30,7 +30,7 @@ This interactive tool illustrates how Cali Fund allocations would be distributed
    streamlit run sensitivity.py
    ```
 
-`app.py` is the main negotiation/policy interface. `sensitivity.py` is a dedicated robustness-testing and reporting app for parameter sweeps, diagnostics, threshold checks, and markdown/CSV exports.
+`app.py` is the main negotiation/policy interface. `sensitivity.py` is a dedicated robustness-testing and reporting app for parameter sweeps, diagnostics, threshold checks, and markdown/CSV exports including `integrity_checks.csv`.
 
 ## Methodology
 The allocation sequence is now applied in this order:
@@ -56,7 +56,7 @@ Final share formula:
 
 ### Stewardship Slider Design
 - **Initial app defaults**: TSAC `0.00`, SOSAC `0.00` (true equality start).
-- **Balanced preset values**: TSAC `0.05`, SOSAC `0.03`.
+- **Gini-Optimal Point preset values**: TSAC `0.05`, SOSAC `0.03`.
 - **Allowed range**: TSAC `0.00` to `0.15`; SOSAC `0.00` to `0.10`; step `0.01`.
 - **Design intent**: TSAC and SOSAC recognise stewardship and special circumstances, while IUSAF remains the dominant sovereign-capacity base.
 - **UI safeguards**:

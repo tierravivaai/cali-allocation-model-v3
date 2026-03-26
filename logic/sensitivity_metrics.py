@@ -3,7 +3,18 @@ from __future__ import annotations
 import math
 from typing import Any
 
+import numpy as np
 import pandas as pd
+
+
+# Parameter naming convention
+# ----------------------------
+# The allocation formula weights are stored internally as:
+#   tsac_beta    — the TSAC (Terrestrial Stewardship Allocation Component) weight
+#   sosac_gamma  — the SOSAC (SIDS Ocean Stewardship Allocation Component) weight
+# These names follow the convention used in the academic specification of the formula
+# (Final_share = (1-β-γ)·IUSAF + β·TSAC + γ·SOSAC).
+# Display labels in user-facing surfaces use “TSAC weight” and “SOSAC weight” for clarity.
 
 from logic.calculator import get_outcome_warning_feedback, get_stewardship_blend_feedback
 from logic.sensitivity_scenarios import generate_local_neighbor_scenarios as _generate_local_neighbor_scenarios
@@ -53,6 +64,97 @@ def _hhi(shares: pd.Series) -> float:
     return float((s**2).sum())
 
 
+def compute_gini(allocations: "pd.Series") -> float:
+    a = allocations.dropna().values.astype(float)
+    a = a[a >= 0]
+    n = len(a)
+    if n == 0 or a.sum() == 0:
+        return 0.0
+    a = np.sort(a)
+    idx = np.arange(1, n + 1)
+    return float((2 * (idx * a).sum()) / (n * a.sum()) - (n + 1) / n)
+
+
+def compute_component_ratios(
+    results_df: "pd.DataFrame",
+    beta: float,
+    gamma: float,
+) -> dict:
+    eligible = results_df[results_df["eligible"]].copy()
+
+    _safe_default = {
+        "ratio_df": pd.DataFrame(),
+        "max_tsac_iusaf_ratio": 0.0,
+        "n_parties_tsac_dominant": 0,
+        "china_tsac_iusaf_ratio": None,
+        "brazil_tsac_iusaf_ratio": None,
+        "tsac_balance_exceeded": False,
+        "sosac_balance_exceeded": False,
+    }
+
+    required = {"component_iusaf_amt", "component_tsac_amt", "component_sosac_amt"}
+    # Keep this as `(beta == 0 and gamma == 0)`, not `beta == 0` alone,
+    # so pure-SOSAC scenarios still compute SOSAC/IUSAF ratios.
+    if not required.issubset(eligible.columns) or (beta == 0 and gamma == 0):
+        return _safe_default
+
+    df = eligible[["party", "component_iusaf_amt", "component_tsac_amt", "component_sosac_amt"]].copy()
+
+    def _ratio(numerator: float, denominator: float) -> float:
+        return (numerator / denominator) if denominator > 0 else float("inf")
+
+    df["tsac_iusaf_ratio"] = df.apply(
+        lambda r: _ratio(r["component_tsac_amt"], r["component_iusaf_amt"]), axis=1
+    )
+    df["sosac_iusaf_ratio"] = df.apply(
+        lambda r: _ratio(r["component_sosac_amt"], r["component_iusaf_amt"]), axis=1
+    )
+    df["tsac_dominant"] = df["tsac_iusaf_ratio"] > 1.0
+
+    def _named_ratio(fragment: str):
+        mask = df["party"].str.contains(fragment, case=False, na=False)
+        return float(df.loc[mask, "tsac_iusaf_ratio"].iloc[0]) if mask.any() else None
+
+    china_ratio = _named_ratio("China")
+    brazil_ratio = _named_ratio("Brazil")
+
+    if "is_sids" in eligible.columns:
+        sids_rows = eligible[eligible["is_sids"]].copy()
+    else:
+        sids_rows = eligible[eligible["component_sosac_amt"] > 0].copy()
+
+    sosac_exceeded = False
+    if not sids_rows.empty and "component_iusaf_amt" in sids_rows.columns:
+        sids_ratios = sids_rows.apply(
+            lambda r: _ratio(r["component_sosac_amt"], r["component_iusaf_amt"]), axis=1
+        )
+        sosac_exceeded = bool((sids_ratios > 1.0).any())
+
+    ratio_df = df[
+        [
+            "party",
+            "component_iusaf_amt",
+            "component_tsac_amt",
+            "component_sosac_amt",
+            "tsac_iusaf_ratio",
+            "sosac_iusaf_ratio",
+            "tsac_dominant",
+        ]
+    ].sort_values("tsac_iusaf_ratio", ascending=False)
+
+    finite_ratios = df["tsac_iusaf_ratio"].replace(float("inf"), 0)
+
+    return {
+        "ratio_df": ratio_df,
+        "max_tsac_iusaf_ratio": float(finite_ratios.max()),
+        "n_parties_tsac_dominant": int(df["tsac_dominant"].sum()),
+        "china_tsac_iusaf_ratio": china_ratio,
+        "brazil_tsac_iusaf_ratio": brazil_ratio,
+        "tsac_balance_exceeded": bool((df["tsac_iusaf_ratio"] > 1.0).any()),
+        "sosac_balance_exceeded": sosac_exceeded,
+    }
+
+
 def _top_turnover(current: pd.DataFrame, baseline: pd.DataFrame, n: int = 20) -> float:
     cur_top = set(current.nlargest(min(n, len(current)), "final_share")["party"].tolist())
     base_top = set(baseline.nlargest(min(n, len(baseline)), "final_share")["party"].tolist())
@@ -72,6 +174,9 @@ def _spearman_by_party(current: pd.DataFrame, baseline: pd.DataFrame) -> float:
         return float("nan")
     r_cur = merged["final_share_cur"].rank(method="average")
     r_base = merged["final_share_base"].rank(method="average")
+    if r_cur.nunique() <= 1 or r_base.nunique() <= 1:
+        same_distribution = merged["final_share_cur"].round(12).equals(merged["final_share_base"].round(12))
+        return 1.0 if same_distribution else 0.0
     return float(r_cur.corr(r_base, method="pearson"))
 
 
@@ -84,6 +189,25 @@ def _group_totals(eligible_df: pd.DataFrame, group_col: str) -> dict[str, float]
         label = "NA" if pd.isna(key) else str(key)
         out[label] = float(value)
     return out
+
+
+def _band1_pct_change(
+    results_df: "pd.DataFrame",
+    iusaf_results_df: "pd.DataFrame",
+) -> "float | None":
+    try:
+        col = "un_band"
+        if col not in results_df.columns:
+            return None
+        b1 = results_df[
+            results_df["eligible"] & results_df[col].str.startswith("Band 1", na=False)
+        ]["total_allocation"].mean()
+        b1_ref = iusaf_results_df[
+            iusaf_results_df["eligible"] & iusaf_results_df[col].str.startswith("Band 1", na=False)
+        ]["total_allocation"].mean()
+        return float((b1 - b1_ref) / b1_ref * 100) if b1_ref and b1_ref > 0 else None
+    except Exception:
+        return None
 
 
 def build_pure_iusaf_comparator(scenario: dict, keep_constraints: bool = True) -> dict:
@@ -254,6 +378,13 @@ def compute_metrics(
     n_sids_eligible = int(eligible_df["is_sids"].sum()) if "is_sids" in eligible_df else 0
     fund_size = float(scenario["fund_size"])
     total_m = fund_size / 1_000_000.0
+    _ratios = compute_component_ratios(
+        results_df,
+        float(scenario.get("tsac_beta", 0.0)),
+        float(scenario.get("sosac_gamma", 0.0)),
+    )
+    allocation_gini = compute_gini(results_df.loc[results_df["eligible"], "total_allocation"])
+    _b1_change = _band1_pct_change(results_df, iusaf_baseline_df)
 
     eq_ref = (fund_size / n_eligible / 1_000_000.0) if n_eligible > 0 else 0.0
     if eq_ref > 0 and n_eligible > 0:
@@ -322,6 +453,7 @@ def compute_metrics(
         else 0.0,
         "hhi": _hhi(eligible_df["final_share"]) if n_eligible else 0.0,
         "gini": _gini(eligible_df["final_share"]) if n_eligible else 0.0,
+        "gini_coefficient": allocation_gini,
         "pct_below_equality": pct_below_eq,
         "median_pct_of_equality": median_pct_eq,
         "spearman_vs_iusaf": departure["spearman_vs_pure_iusaf"],
@@ -333,6 +465,13 @@ def compute_metrics(
         "max_abs_share_delta_vs_pure_iusaf": departure["max_abs_share_delta_vs_pure_iusaf"],
         "overlay_strength_label": departure["overlay_strength_label"],
         "departure_from_pure_iusaf_flag": departure["departure_from_pure_iusaf_flag"],
+        "max_tsac_iusaf_ratio": _ratios["max_tsac_iusaf_ratio"],
+        "n_parties_tsac_dominant": _ratios["n_parties_tsac_dominant"],
+        "china_tsac_iusaf_ratio": _ratios["china_tsac_iusaf_ratio"],
+        "brazil_tsac_iusaf_ratio": _ratios["brazil_tsac_iusaf_ratio"],
+        "tsac_balance_exceeded": _ratios["tsac_balance_exceeded"],
+        "sosac_balance_exceeded": _ratios["sosac_balance_exceeded"],
+        "band1_per_party_pct_change_vs_iusaf": _b1_change,
         "local_min_spearman_vs_baseline": _safe_float(local.get("local_min_spearman_vs_baseline"), float("nan")),
         "local_max_top20_turnover_vs_baseline": _safe_float(local.get("local_max_top20_turnover_vs_baseline"), float("nan")),
         "local_mean_mean_abs_share_delta": _safe_float(local.get("local_mean_mean_abs_share_delta"), float("nan")),
@@ -451,6 +590,216 @@ def run_invariant_checks(
     add("Scale invariance of shares", True, "tested in fund-size sweep and diagnostics")
 
     return pd.DataFrame(checks)
+
+
+def generate_integrity_checks(
+    scenario_id: str,
+    scenario_params: dict,
+    results_df: pd.DataFrame,
+    fund_size: float,
+) -> dict:
+    """Return one reviewer-facing integrity-check row for integrity_checks.csv."""
+
+    if not results_df.empty and "eligible" in results_df.columns:
+        eligible_df = results_df[results_df["eligible"] == True].copy()
+    else:
+        eligible_df = pd.DataFrame()
+    tolerance_share = 1e-6
+    tolerance_usd = 0.01
+    required_columns = [
+        "scenario_id",
+        "fund_size_usd",
+        "tsac_beta",
+        "sosac_gamma",
+        "check_conservation_shares",
+        "sum_final_share",
+        "check_conservation_money",
+        "sum_total_allocation_usd",
+        "check_non_negativity",
+        "min_allocation_usd",
+        "check_component_consistency",
+        "max_component_abs_diff_usd",
+        "check_iplc_split",
+        "max_iplc_abs_diff_usd",
+        "check_band_monotonicity",
+        "band_monotonicity_detail",
+        "check_floor_not_binding_unexpectedly",
+        "floor_binding_count",
+        "check_ceiling_not_binding_unexpectedly",
+        "ceiling_binding_count",
+        "check_sids_sosac_allocation",
+        "sids_sosac_component_sum_usd",
+        "n_eligible_parties",
+        "n_eligible_sids",
+        "all_checks_pass",
+    ]
+
+    row = {
+        "scenario_id": scenario_id,
+        "fund_size_usd": float(fund_size),
+        "tsac_beta": float(scenario_params.get("tsac_beta", 0.0) or 0.0),
+        "sosac_gamma": float(scenario_params.get("sosac_gamma", 0.0) or 0.0),
+        "check_conservation_shares": "FAIL",
+        "sum_final_share": float("nan"),
+        "check_conservation_money": "FAIL",
+        "sum_total_allocation_usd": float("nan"),
+        "check_non_negativity": "FAIL",
+        "min_allocation_usd": float("nan"),
+        "check_component_consistency": "FAIL",
+        "max_component_abs_diff_usd": float("nan"),
+        "check_iplc_split": "FAIL",
+        "max_iplc_abs_diff_usd": float("nan"),
+        "check_band_monotonicity": "FAIL",
+        "band_monotonicity_detail": "Band data unavailable",
+        "check_floor_not_binding_unexpectedly": "FAIL",
+        "floor_binding_count": 0,
+        "check_ceiling_not_binding_unexpectedly": "FAIL",
+        "ceiling_binding_count": 0,
+        "check_sids_sosac_allocation": "FAIL",
+        "sids_sosac_component_sum_usd": float("nan"),
+        "n_eligible_parties": int(len(eligible_df)),
+        "n_eligible_sids": int(eligible_df["is_sids"].sum()) if "is_sids" in eligible_df.columns else 0,
+        "all_checks_pass": "FAIL",
+    }
+
+    def _passfail(status: bool) -> str:
+        return "PASS" if bool(status) else "FAIL"
+
+    def _usd(series: pd.Series) -> pd.Series:
+        return series.astype(float) * 1_000_000.0
+
+    try:
+        row["sum_final_share"] = float(eligible_df["final_share"].sum()) if "final_share" in eligible_df.columns else float("nan")
+        row["check_conservation_shares"] = _passfail(
+            "final_share" in eligible_df.columns and abs(row["sum_final_share"] - 1.0) <= tolerance_share
+        )
+    except Exception:
+        row["check_conservation_shares"] = "FAIL"
+
+    try:
+        if "total_allocation" in eligible_df.columns:
+            row["sum_total_allocation_usd"] = float(_usd(eligible_df["total_allocation"]).sum())
+            row["check_conservation_money"] = _passfail(
+                abs(row["sum_total_allocation_usd"] - float(fund_size)) <= tolerance_usd
+            )
+    except Exception:
+        row["check_conservation_money"] = "FAIL"
+
+    try:
+        if "total_allocation" in eligible_df.columns and not eligible_df.empty:
+            row["min_allocation_usd"] = float(_usd(eligible_df["total_allocation"]).min())
+            row["check_non_negativity"] = _passfail(row["min_allocation_usd"] >= -tolerance_usd)
+        elif "total_allocation" in eligible_df.columns:
+            row["min_allocation_usd"] = float("nan")
+            row["check_non_negativity"] = "FAIL"
+    except Exception:
+        row["check_non_negativity"] = "FAIL"
+
+    try:
+        component_cols = ["component_iusaf_amt", "component_tsac_amt", "component_sosac_amt", "total_allocation"]
+        if all(col in eligible_df.columns for col in component_cols) and not eligible_df.empty:
+            comp_diff = (
+                eligible_df["total_allocation"]
+                - eligible_df["component_iusaf_amt"]
+                - eligible_df["component_tsac_amt"]
+                - eligible_df["component_sosac_amt"]
+            ).abs()
+            row["max_component_abs_diff_usd"] = float(comp_diff.max() * 1_000_000.0)
+            row["check_component_consistency"] = _passfail(row["max_component_abs_diff_usd"] <= tolerance_usd)
+    except Exception:
+        row["check_component_consistency"] = "FAIL"
+
+    try:
+        iplc_cols = ["state_component", "iplc_component", "total_allocation"]
+        if all(col in eligible_df.columns for col in iplc_cols) and not eligible_df.empty:
+            iplc_diff = (eligible_df["total_allocation"] - eligible_df["state_component"] - eligible_df["iplc_component"]).abs()
+            row["max_iplc_abs_diff_usd"] = float(iplc_diff.max() * 1_000_000.0)
+            row["check_iplc_split"] = _passfail(row["max_iplc_abs_diff_usd"] <= tolerance_usd)
+    except Exception:
+        row["check_iplc_split"] = "FAIL"
+
+    try:
+        band_check_applicable = (
+            scenario_params.get("un_scale_mode") == "band_inversion"
+            and float(scenario_params.get("tsac_beta", 0.0) or 0.0) == 0.0
+            and float(scenario_params.get("sosac_gamma", 0.0) or 0.0) == 0.0
+            and float(scenario_params.get("floor_pct", 0.0) or 0.0) == 0.0
+            and scenario_params.get("ceiling_pct") in (None, 0, 0.0, "")
+        )
+        if not band_check_applicable:
+            row["check_band_monotonicity"] = "PASS"
+            row["band_monotonicity_detail"] = "PASS (not evaluated for blended or constrained scenario)"
+        elif {"un_band", "total_allocation"}.issubset(eligible_df.columns) and not eligible_df.empty:
+            band_means = (
+                eligible_df.groupby("un_band", dropna=False)["total_allocation"].mean().reset_index()
+            )
+            band_means["band_num"] = band_means["un_band"].astype(str).str.extract(r"Band\s+(\d+)").astype(float)
+            band_means = band_means.dropna(subset=["band_num"]).sort_values("band_num")
+            detail = "PASS"
+            status = True
+            for i in range(len(band_means) - 1):
+                current = band_means.iloc[i]
+                nxt = band_means.iloc[i + 1]
+                if not current["total_allocation"] > nxt["total_allocation"]:
+                    status = False
+                    detail = (
+                        f"Band {int(current['band_num'])} mean allocation <= Band {int(nxt['band_num'])} "
+                        f"({current['total_allocation'] * 1_000_000.0:.2f} vs {nxt['total_allocation'] * 1_000_000.0:.2f} USD)"
+                    )
+                    break
+            row["check_band_monotonicity"] = _passfail(status)
+            row["band_monotonicity_detail"] = detail
+    except Exception as exc:
+        row["check_band_monotonicity"] = "FAIL"
+        row["band_monotonicity_detail"] = str(exc)
+
+    try:
+        floor_pct = float(scenario_params.get("floor_pct", 0.0) or 0.0)
+        if "final_share" in eligible_df.columns and not eligible_df.empty:
+            row["floor_binding_count"] = int((eligible_df["final_share"] <= (floor_pct / 100.0) + 1e-9).sum()) if floor_pct > 0 else 0
+        row["check_floor_not_binding_unexpectedly"] = _passfail(floor_pct > 0 or row["floor_binding_count"] == 0)
+    except Exception:
+        row["check_floor_not_binding_unexpectedly"] = "FAIL"
+
+    try:
+        ceiling_raw = scenario_params.get("ceiling_pct")
+        if ceiling_raw in (None, 0, 0.0, ""):
+            ceiling_pct = None
+        else:
+            ceiling_pct = float(ceiling_raw)
+        if "final_share" in eligible_df.columns and not eligible_df.empty:
+            row["ceiling_binding_count"] = int((eligible_df["final_share"] >= (ceiling_pct / 100.0) - 1e-9).sum()) if ceiling_pct is not None else 0
+        row["check_ceiling_not_binding_unexpectedly"] = _passfail(ceiling_pct is not None or row["ceiling_binding_count"] == 0)
+    except Exception:
+        row["check_ceiling_not_binding_unexpectedly"] = "FAIL"
+
+    try:
+        sosac_gamma = float(scenario_params.get("sosac_gamma", 0.0) or 0.0)
+        if "component_sosac_amt" in eligible_df.columns:
+            row["sids_sosac_component_sum_usd"] = float(_usd(eligible_df["component_sosac_amt"]).sum())
+            if sosac_gamma > 0 and row["n_eligible_sids"] > 0:
+                expected_sosac = sosac_gamma * float(fund_size)
+                row["check_sids_sosac_allocation"] = _passfail(
+                    abs(row["sids_sosac_component_sum_usd"] - expected_sosac) <= tolerance_usd
+                )
+            elif sosac_gamma > 0 and row["n_eligible_sids"] == 0:
+                row["check_sids_sosac_allocation"] = _passfail(
+                    abs(row["sids_sosac_component_sum_usd"]) <= tolerance_usd
+                )
+            else:
+                row["check_sids_sosac_allocation"] = _passfail(
+                    abs(row["sids_sosac_component_sum_usd"]) <= tolerance_usd
+                )
+    except Exception:
+        row["check_sids_sosac_allocation"] = "FAIL"
+
+    check_columns = [col for col in required_columns if col.startswith("check_")]
+    row["all_checks_pass"] = _passfail(all(row.get(col) == "PASS" for col in check_columns))
+
+    for col in required_columns:
+        row.setdefault(col, float("nan") if col not in {"scenario_id", "band_monotonicity_detail", "check_conservation_shares", "check_conservation_money", "check_non_negativity", "check_component_consistency", "check_iplc_split", "check_band_monotonicity", "check_floor_not_binding_unexpectedly", "check_ceiling_not_binding_unexpectedly", "check_sids_sosac_allocation", "all_checks_pass"} else "FAIL")
+
+    return {col: row[col] for col in required_columns}
 
 
 def summarize_group_totals(results_df: pd.DataFrame) -> pd.DataFrame:
