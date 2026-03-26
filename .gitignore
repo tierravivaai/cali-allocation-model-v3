@@ -22,3 +22,4 @@ ahteg-reporting/
 ~$*.pptx
 sensitivity-reports/ahteg-outputs
 docs
+.coverage
