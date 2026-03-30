@@ -1,6 +1,6 @@
 import duckdb
 import pandas as pd
-from logic.data_loader import load_data, get_base_data
+from cali_model.data_loader import load_data, get_base_data
 
 def cross_check_cbd_parties():
     con = duckdb.connect(database=':memory:')

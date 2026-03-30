@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from logic.calculator import calculate_allocations
+from cali_model.calculator import calculate_allocations
 
 def test_equality_mode_even_split():
     # Setup a mock dataframe

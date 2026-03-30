@@ -15,7 +15,7 @@ def test_app_initializes_with_valid_dataframes():
     Test that the app initializes correctly and dataframes contain data.
     This serves as a regression test for server/download connection issues.
     """
-    at = AppTest.from_file("app.py", default_timeout=30)
+    at = AppTest.from_file("src/app.py", default_timeout=30)
     at.run()
     
     # Verify app initialized successfully
@@ -37,7 +37,7 @@ def test_streamlit_renders_data_elements():
     """
     Test that Streamlit renders dataframe elements which are needed for CSV download.
     """
-    at = AppTest.from_file("app.py", default_timeout=30)
+    at = AppTest.from_file("src/app.py", default_timeout=30)
     at.run()
     
     # Check that dataframe elements are rendered
@@ -55,7 +55,7 @@ def test_app_state_remains_consistent_after_parameter_changes():
     Test that app state remains valid after parameter changes,
     ensuring CSV download continues to work throughout user interaction.
     """
-    at = AppTest.from_file("app.py", default_timeout=30)
+    at = AppTest.from_file("src/app.py", default_timeout=30)
     at.run()
     
     # Record initial state

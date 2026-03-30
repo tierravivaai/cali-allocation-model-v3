@@ -1,8 +1,8 @@
 import pytest
 import pandas as pd
 import duckdb
-from logic.data_loader import load_data, get_base_data
-from logic.calculator import calculate_allocations, aggregate_by_region
+from cali_model.data_loader import load_data, get_base_data
+from cali_model.calculator import calculate_allocations, aggregate_by_region
 
 @pytest.fixture
 def mock_con():

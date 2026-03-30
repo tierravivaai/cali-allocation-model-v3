@@ -1,8 +1,8 @@
 import pytest
 import pandas as pd
 import duckdb
-from logic.data_loader import load_data, get_base_data
-from logic.calculator import calculate_allocations
+from cali_model.data_loader import load_data, get_base_data
+from cali_model.calculator import calculate_allocations
 
 @pytest.fixture
 def mock_con():
@@ -83,7 +83,7 @@ def test_ldc_consistency_across_tabs(mock_con):
     results_df = calculate_allocations(base_df, 1_000_000_000, 50)
     
     # 1. Total LDC Share from calculator (used in LDC Share tab)
-    from logic.calculator import aggregate_special_groups
+    from cali_model.calculator import aggregate_special_groups
     ldc_total_calc, _ = aggregate_special_groups(results_df)
     expected_ldc_total = ldc_total_calc['total_allocation']
     

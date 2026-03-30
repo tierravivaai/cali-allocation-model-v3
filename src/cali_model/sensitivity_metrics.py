@@ -16,8 +16,8 @@ import pandas as pd
 # (Final_share = (1-β-γ)·IUSAF + β·TSAC + γ·SOSAC).
 # Display labels in user-facing surfaces use “TSAC weight” and “SOSAC weight” for clarity.
 
-from logic.calculator import get_outcome_warning_feedback, get_stewardship_blend_feedback
-from logic.sensitivity_scenarios import generate_local_neighbor_scenarios as _generate_local_neighbor_scenarios
+from cali_model.calculator import get_outcome_warning_feedback, get_stewardship_blend_feedback
+from cali_model.sensitivity_scenarios import generate_local_neighbor_scenarios as _generate_local_neighbor_scenarios
 
 
 STRUCTURAL_BREAK_RULES = {

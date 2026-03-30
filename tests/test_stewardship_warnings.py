@@ -1,6 +1,6 @@
 import pandas as pd
 
-from logic.calculator import get_stewardship_blend_feedback, get_outcome_warning_feedback
+from cali_model.calculator import get_stewardship_blend_feedback, get_outcome_warning_feedback
 
 
 def test_stewardship_feedback_thresholds():

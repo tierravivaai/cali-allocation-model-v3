@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from logic.balance_analysis import generate_balance_point_summary  # noqa: F401
+from cali_model.balance_analysis import generate_balance_point_summary  # noqa: F401
 
 
 def classify_overlay_strength(spearman_vs_pure_iusaf: float, top20_turnover_vs_pure_iusaf: float) -> str:

@@ -3,8 +3,8 @@ from pathlib import Path
 
 
 def test_tsac_sosac_defaults_and_ranges_in_app_config():
-    app_text = Path("app.py").read_text(encoding="utf-8")
-    sensitivity_text = Path("sensitivity.py").read_text(encoding="utf-8")
+    app_text = Path("src/app.py").read_text(encoding="utf-8")
+    sensitivity_text = Path("src/sensitivity.py").read_text(encoding="utf-8")
 
     assert 'if "tsac_beta" not in st.session_state:' in app_text
     assert 'st.session_state["tsac_beta"] = 0.0' in app_text

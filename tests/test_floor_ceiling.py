@@ -1,8 +1,8 @@
 import pytest
 import pandas as pd
 import duckdb
-from logic.data_loader import load_data, get_base_data
-from logic.calculator import calculate_allocations, _apply_floor_ceiling_shares
+from cali_model.data_loader import load_data, get_base_data
+from cali_model.calculator import calculate_allocations, _apply_floor_ceiling_shares
 
 @pytest.fixture
 def mock_con():

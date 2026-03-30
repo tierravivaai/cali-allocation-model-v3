@@ -3,7 +3,7 @@ from streamlit.testing.v1 import AppTest
 
 
 def test_initial_load_defaults_to_true_equality():
-    at = AppTest.from_file("app.py", default_timeout=30)
+    at = AppTest.from_file("src/app.py", default_timeout=30)
     at.run()
 
     assert at.checkbox(key="exclude_hi").value is False
@@ -15,7 +15,7 @@ def test_reset_button_functionality():
     """
     Test that the 'Reset to default' button correctly resets the app state.
     """
-    at = AppTest.from_file("app.py", default_timeout=30)
+    at = AppTest.from_file("src/app.py", default_timeout=30)
     at.run()
     
     # 1. Modify some values
@@ -48,7 +48,7 @@ def test_reset_button_functionality():
 
 
 def test_inverted_un_scale_turns_on_exclude_high_income():
-    at = AppTest.from_file("app.py", default_timeout=30)
+    at = AppTest.from_file("src/app.py", default_timeout=30)
     at.run()
 
     at.checkbox(key="exclude_hi").set_value(False).run()
@@ -64,7 +64,7 @@ def test_inverted_un_scale_turns_on_exclude_high_income():
 
 
 def test_negotiation_country_caption_tracks_selected_country_across_rerun():
-    at = AppTest.from_file("app.py", default_timeout=30)
+    at = AppTest.from_file("src/app.py", default_timeout=30)
     at.run()
 
     target = "Honduras"
@@ -79,7 +79,7 @@ def test_negotiation_country_caption_tracks_selected_country_across_rerun():
 
 
 def test_fund_size_scenario_markers_update_slider():
-    at = AppTest.from_file("app.py", default_timeout=30)
+    at = AppTest.from_file("src/app.py", default_timeout=30)
     at.run()
 
     button_50m = [b for b in at.button if b.label == "$50m"][0]
@@ -100,7 +100,7 @@ def test_fund_size_scenario_markers_update_slider():
 
 
 def test_terrestrial_stewardship_preset_sets_tsac_max_and_sosac_zero():
-    at = AppTest.from_file("app.py", default_timeout=30)
+    at = AppTest.from_file("src/app.py", default_timeout=30)
     at.run()
 
     at.checkbox(key="exclude_hi").set_value(False).run()
@@ -113,7 +113,7 @@ def test_terrestrial_stewardship_preset_sets_tsac_max_and_sosac_zero():
 
 
 def test_oceans_stewardship_preset_sets_sosac_max_and_tsac_zero():
-    at = AppTest.from_file("app.py", default_timeout=30)
+    at = AppTest.from_file("src/app.py", default_timeout=30)
     at.run()
 
     at.checkbox(key="exclude_hi").set_value(False).run()
@@ -126,7 +126,7 @@ def test_oceans_stewardship_preset_sets_sosac_max_and_tsac_zero():
 
 
 def test_gini_optimal_point_preset_turns_on_exclude_high_income():
-    at = AppTest.from_file("app.py", default_timeout=30)
+    at = AppTest.from_file("src/app.py", default_timeout=30)
     at.run()
 
     at.checkbox(key="exclude_hi").set_value(False).run()

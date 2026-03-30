@@ -1,7 +1,7 @@
 import duckdb
 import pandas as pd
-from logic.data_loader import load_data, get_base_data
-from logic.calculator import calculate_allocations
+from cali_model.data_loader import load_data, get_base_data
+from cali_model.calculator import calculate_allocations
 
 def test_band_inversion_completeness():
     con = duckdb.connect(database=':memory:')

@@ -4,8 +4,8 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
-from logic.data_loader import load_data, get_base_data
-from logic.calculator import calculate_allocations, aggregate_by_region, aggregate_eu, aggregate_special_groups, aggregate_by_income, add_total_row, get_stewardship_blend_feedback, get_outcome_warning_feedback
+from cali_model.data_loader import load_data, get_base_data
+from cali_model.calculator import calculate_allocations, aggregate_by_region, aggregate_eu, aggregate_special_groups, aggregate_by_income, add_total_row, get_stewardship_blend_feedback, get_outcome_warning_feedback
 
 st.set_page_config(page_title="Cali Fund Allocation Model (Inverted UN Scale Option)", layout="wide")
 

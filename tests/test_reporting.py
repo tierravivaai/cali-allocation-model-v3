@@ -1,6 +1,6 @@
 import pandas as pd
 
-from logic.reporting import generate_sweep_summary
+from cali_model.reporting import generate_sweep_summary
 
 
 def test_sweep_summary_trigger_attribution():

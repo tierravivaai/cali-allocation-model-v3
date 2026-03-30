@@ -1,11 +1,11 @@
 import duckdb
 import pandas as pd
 
-from logic.calculator import calculate_allocations
-from logic.data_loader import get_base_data, load_data
-from logic.reporting import classify_local_stability, classify_overlay_strength, generate_sweep_summary
-from logic.sensitivity_metrics import _spearman_by_party, compute_local_stability_metrics, compute_metrics, run_invariant_checks
-from logic.sensitivity_scenarios import get_scenario_library
+from cali_model.calculator import calculate_allocations
+from cali_model.data_loader import get_base_data, load_data
+from cali_model.reporting import classify_local_stability, classify_overlay_strength, generate_sweep_summary
+from cali_model.sensitivity_metrics import _spearman_by_party, compute_local_stability_metrics, compute_metrics, run_invariant_checks
+from cali_model.sensitivity_scenarios import get_scenario_library
 
 
 def _base_df():

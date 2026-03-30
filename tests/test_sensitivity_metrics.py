@@ -3,10 +3,10 @@ from __future__ import annotations
 import duckdb
 import pandas as pd
 
-from logic.calculator import calculate_allocations
-from logic.data_loader import get_base_data, load_data
-from logic.sensitivity_metrics import generate_integrity_checks
-from logic.sensitivity_scenarios import get_scenario_library
+from cali_model.calculator import calculate_allocations
+from cali_model.data_loader import get_base_data, load_data
+from cali_model.sensitivity_metrics import generate_integrity_checks
+from cali_model.sensitivity_scenarios import get_scenario_library
 
 
 def _base_df():

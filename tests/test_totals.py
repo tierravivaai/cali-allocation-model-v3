@@ -1,8 +1,8 @@
 import pytest
 import pandas as pd
 import duckdb
-from logic.data_loader import load_data, get_base_data
-from logic.calculator import calculate_allocations, aggregate_by_region, aggregate_by_income, add_total_row
+from cali_model.data_loader import load_data, get_base_data
+from cali_model.calculator import calculate_allocations, aggregate_by_region, aggregate_by_income, add_total_row
 
 @pytest.fixture
 def mock_con():
@@ -58,7 +58,7 @@ def test_ldc_sids_total_sum(mock_con):
     results_df = calculate_allocations(base_df, fund_size, 50, exclude_high_income=False)
     
     # Simulate the manual LDC/SIDS summary logic from app.py
-    from logic.calculator import aggregate_special_groups
+    from cali_model.calculator import aggregate_special_groups
     ldc_total, sids_total = aggregate_special_groups(results_df)
     
     # LDC summary validation
@@ -186,7 +186,7 @@ def test_sids_totals_accuracy(mock_con):
     fund_size = 1_000_000_000
     results_df = calculate_allocations(base_df, fund_size, 50, exclude_high_income=False)
     
-    from logic.calculator import aggregate_special_groups
+    from cali_model.calculator import aggregate_special_groups
     _, sids_agg = aggregate_special_groups(results_df)
     
     # Manual sum
@@ -204,7 +204,7 @@ def test_sids_share_with_default_ceiling(mock_con):
     base_df = get_base_data(mock_con)
     fund_size = 1_000_000_000
     # 1.0% ceiling, exclude HI
-    from logic.calculator import calculate_allocations, aggregate_special_groups
+    from cali_model.calculator import calculate_allocations, aggregate_special_groups
     # Use 0/0 weights to match old logic for this regression test
     results_df = calculate_allocations(base_df, fund_size, 50, exclude_high_income=True, high_income_mode="exclude_all", ceiling_pct=1.0, tsac_beta=0, sosac_gamma=0)
     _, sids_agg = aggregate_special_groups(results_df)

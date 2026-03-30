@@ -5,20 +5,20 @@ import duckdb
 import pandas as pd
 import pytest
 
-from logic.balance_analysis import (
+from cali_model.balance_analysis import (
     generate_balance_point_summary,
     identify_balance_points,
     run_fine_sweep,
 )
-from logic.calculator import calculate_allocations
-from logic.data_loader import get_base_data, load_data
-from logic.sensitivity_metrics import (
+from cali_model.calculator import calculate_allocations
+from cali_model.data_loader import get_base_data, load_data
+from cali_model.sensitivity_metrics import (
     build_pure_iusaf_comparator,
     compute_component_ratios,
     compute_gini,
     compute_metrics,
 )
-from logic.sensitivity_scenarios import DEFAULT_BASELINE, get_default_ranges
+from cali_model.sensitivity_scenarios import DEFAULT_BASELINE, get_default_ranges
 
 
 @pytest.fixture(scope="module")

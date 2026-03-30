@@ -3,8 +3,8 @@ import pandas as pd
 import duckdb
 import re
 from pathlib import Path
-from logic.data_loader import load_data, get_base_data
-from logic.calculator import calculate_allocations, aggregate_by_region, aggregate_by_income, aggregate_special_groups
+from cali_model.data_loader import load_data, get_base_data
+from cali_model.calculator import calculate_allocations, aggregate_by_region, aggregate_by_income, aggregate_special_groups
 
 @pytest.fixture
 def mock_con():
@@ -74,7 +74,7 @@ def test_inversion_comparison_headlines(mock_con):
 
 
 def test_tab_order_keeps_sids_before_income_tabs():
-    app_text = Path("app.py").read_text(encoding="utf-8")
+    app_text = Path("src/app.py").read_text(encoding="utf-8")
     match = re.search(r"tabs\s*=\s*\[(.*?)\]", app_text, re.DOTALL)
     assert match is not None
 
