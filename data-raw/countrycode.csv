@@ -1,264 +1,264 @@
 iso3c,iso2c,country_code,country_name,eu27,un_region_name,un_sub_region_name,un_intermediate_region_name,un_region_clean,un_sub_region_clean,un_intermediate_region_clean,un_developed_or_developing_countries
-AFG,AF,AF,Afghanistan,False,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
-unknown,OA,OA,African Intellectual Property Organization,False,,,,,,,
-unknown,AP,AP,African Regional Intellectual Property Organization,False,,,,,,,
-ALA,AX,AX,Aland Islands,False,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-ALB,AL,AL,Albania,False,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-DZA,DZ,DZ,Algeria,False,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
-ASM,AS,AS,American Samoa,False,Oceania,Polynesia,,Oceania,Polynesia,,Developing
-AND,AD,AD,Andorra,False,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-AGO,AO,AO,Angola,False,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
-AIA,AI,AI,Anguilla,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-ATA,AQ,AQ,Antarctica,False,,,,,,,
-ATG,AG,AG,Antigua and Barbuda,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-ARG,AR,AR,Argentina,False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-ARM,AM,AM,Armenia,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-ABW,AW,AW,Aruba,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-AUS,AU,AU,Australia,False,Oceania,Australia and New Zealand,,Oceania,Australia-and-New-Zealand,,Developed
-AUT,AT,AT,Austria,True,Europe,Western Europe,,Europe,Western-Europe,,Developed
-AZE,AZ,AZ,Azerbaijan,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-BHS,BS,BS,Bahamas,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-BHR,BH,BH,Bahrain,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-BGD,BD,BD,Bangladesh,False,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
-BRB,BB,BB,Barbados,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-BLR,BY,BY,Belarus,False,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
-BEL,BE,BE,Belgium,True,Europe,Western Europe,,Europe,Western-Europe,,Developed
-BLZ,BZ,BZ,Belize,False,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
-BEN,BJ,BJ,Benin,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-BMU,BM,BM,Bermuda,False,Americas,Northern America,,Americas,Northern-America,,Developed
-BTN,BT,BT,Bhutan,False,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
-BOL,BO,BO,"Bolivia, Plurinational State of",False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-BES,BQ,BQ,"Bonaire, Sint Eustatius and Saba",False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-BIH,BA,BA,Bosnia and Herzegovina,False,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-BWA,BW,BW,Botswana,False,Africa,Sub-Saharan Africa,Southern Africa,Africa,Sub-Saharan-Africa,Southern-Africa,Developing
-BVT,BV,BV,Bouvet Island,False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-BRA,BR,BR,Brazil,False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-IOT,IO,IO,British Indian Ocean Territory,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-BRN,BN,BN,Brunei Darussalam,False,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
-BGR,BG,BG,Bulgaria,True,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
-BFA,BF,BF,Burkina Faso,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-BDI,BI,BI,Burundi,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-KHM,KH,KH,Cambodia,False,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
-CMR,CM,CM,Cameroon,False,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
-CAN,CA,CA,Canada,False,Americas,Northern America,,Americas,Northern-America,,Developed
-CPV,CV,CV,Cabo Verde,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-CYM,KY,KY,Cayman Islands,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-CAF,CF,CF,Central African Republic,False,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
-TCD,TD,TD,Chad,False,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
-CHL,CL,CL,Chile,False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-CHN,CN,CN,China,False,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developing
-CXR,CX,CX,Christmas Island,False,Oceania,Australia and New Zealand,,Oceania,Australia-and-New-Zealand,,Developed
-CCK,CC,CC,Cocos (Keeling) Islands,False,Oceania,Australia and New Zealand,,Oceania,Australia-and-New-Zealand,,Developed
-COL,CO,CO,Colombia,False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-COM,KM,KM,Comoros,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-COD,CD,CD,"Congo, the Democratic Republic of the",False,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
-COG,CG,CG,Congo,False,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
-COK,CK,CK,Cook Islands,False,Oceania,Polynesia,,Oceania,Polynesia,,Developing
-CRI,CR,CR,Costa Rica,False,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
-CIV,CI,CI,Cote d'Ivoire,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-HRV,HR,HR,Croatia,True,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-CUB,CU,CU,Cuba,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-CUW,CW,CW,Curacao,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-CYP,CY,CY,Cyprus,True,Asia,Western Asia,,Asia,Western-Asia,,Developing
-CZE,CZ,CZ,Czech Republic,True,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
-CSK,CS,CS,Czechoslovakia,False,,,,,,,
-DNK,DK,DK,Denmark,True,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-DJI,DJ,DJ,Djibouti,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-DMA,DM,DM,Dominica,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-DOM,DO,DO,Dominican Republic,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-ECU,EC,EC,Ecuador,False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-EGY,EG,EG,Egypt,False,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
-SLV,SV,SV,El Salvador,False,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
-GNQ,GQ,GQ,Equatorial Guinea,False,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
-ERI,ER,ER,Eritrea,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-EST,EE,EE,Estonia,True,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-unknown,EA,EA,Eurasian Patent Organization,False,,,,,,,
-EPO,EP,EP,European Patent Office,False,,,,,,,
-unknown,EU,EU,European Commission,True,Europe,,,Europe,,,Developed
-ETH,ET,ET,Ethiopia,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-FLK,FK,FK,Falkland Islands (Malvinas),False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-FRO,FO,FO,Faroe Islands,False,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-FJI,FJ,FJ,Fiji,False,Oceania,Melanesia,,Oceania,Melanesia,,Developing
-FIN,FI,FI,Finland,True,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-FRA,FR,FR,France,True,Europe,Western Europe,,Europe,Western-Europe,,Developed
-GUF,GF,GF,French Guiana,False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-PYF,PF,PF,French Polynesia,False,Oceania,Polynesia,,Oceania,Polynesia,,Developing
-ATF,TF,TF,French Southern Territories,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-GAB,GA,GA,Gabon,False,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
-GMB,GM,GM,Gambia,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-GEO,GE,GE,Georgia,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-DDR,DD,DD,German Democratic Republic,False,,,,,,,
-DEU,DE,DE,Germany,True,Europe,Western Europe,,Europe,Western-Europe,,Developed
-GHA,GH,GH,Ghana,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-GIB,GI,GI,Gibraltar,False,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-GRC,GR,GR,Greece,True,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-GRL,GL,GL,Greenland,False,Americas,Northern America,,Americas,Northern-America,,Developed
-GRD,GD,GD,Grenada,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-GLP,GP,GP,Guadeloupe,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-GUM,GU,GU,Guam,False,Oceania,Micronesia,,Oceania,Micronesia,,Developing
-GTM,GT,GT,Guatemala,False,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
-GGY,GG,GG,Guernsey,False,Europe,Northern Europe,Channel Islands,Europe,Northern-Europe,Channel-Islands,Developed
-GIN,GN,GN,Guinea,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-GNB,GW,GW,Guinea-Bissau,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-GUY,GY,GY,Guyana,False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-HTI,HT,HT,Haiti,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-HMD,HM,HM,Heard Island and McDonald Islands,False,Oceania,Australia and New Zealand,,Oceania,Australia-and-New-Zealand,,Developed
-VAT,VA,VA,Holy See (Vatican City State),False,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-HND,HN,HN,Honduras,False,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
-HKG,HK,HK,Hong Kong,False,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developing
-HUN,HU,HU,Hungary,True,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
-ISL,IS,IS,Iceland,False,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-IND,IN,IN,India,False,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
-IDN,ID,ID,Indonesia,False,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
-IRN,IR,IR,"Iran, Islamic Republic of",False,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
-IRQ,IQ,IQ,Iraq,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-IRL,IE,IE,Ireland,True,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-IMN,IM,IM,Isle of Man,False,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-ISR,IL,IL,Israel,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-ITA,IT,IT,Italy,True,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-JAM,JM,JM,Jamaica,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-JPN,JP,JP,Japan,False,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developed
-JEY,JE,JE,Jersey,False,Europe,Northern Europe,Channel Islands,Europe,Northern-Europe,Channel-Islands,Developed
-JOR,JO,JO,Jordan,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-KAZ,KZ,KZ,Kazakhstan,False,Asia,Central Asia,,Asia,Central-Asia,,Developing
-KEN,KE,KE,Kenya,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-KIR,KI,KI,Kiribati,False,Oceania,Micronesia,,Oceania,Micronesia,,Developing
-PRK,KP,KP,"Korea, Democratic People's Republic of",False,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developing
-KOR,KR,KR,"Korea, Republic of",False,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developing
-unknown,unknown,XK,Kosovo,False,,,,,,,
-KWT,KW,KW,Kuwait,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-KGZ,KG,KG,Kyrgyzstan,False,Asia,Central Asia,,Asia,Central-Asia,,Developing
-LAO,LA,LA,Lao People's Democratic Republic,False,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
-LVA,LV,LV,Latvia,True,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-LBN,LB,LB,Lebanon,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-LSO,LS,LS,Lesotho,False,Africa,Sub-Saharan Africa,Southern Africa,Africa,Sub-Saharan-Africa,Southern-Africa,Developing
-LBR,LR,LR,Liberia,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-LBY,LY,LY,Libya,False,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
-LIE,LI,LI,Liechtenstein,False,Europe,Western Europe,,Europe,Western-Europe,,Developed
-LTU,LT,LT,Lithuania,True,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-LUX,LU,LU,Luxembourg,True,Europe,Western Europe,,Europe,Western-Europe,,Developed
-MAC,MO,MO,Macao,False,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developing
-MKD,MK,MK,"Macedonia, the former Yugoslav Republic of",False,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-MDG,MG,MG,Madagascar,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-MWI,MW,MW,Malawi,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-MYS,MY,MY,Malaysia,False,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
-MDV,MV,MV,Maldives,False,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
-MLI,ML,ML,Mali,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-MLT,MT,MT,Malta,True,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-MHL,MH,MH,Marshall Islands,False,Oceania,Micronesia,,Oceania,Micronesia,,Developing
-MTQ,MQ,MQ,Martinique,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-MRT,MR,MR,Mauritania,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-MUS,MU,MU,Mauritius,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-MYT,YT,YT,Mayotte,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-MEX,MX,MX,Mexico,False,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
-FSM,FM,FM,"Micronesia, Federated States of",False,Oceania,Micronesia,,Oceania,Micronesia,,Developing
-MDA,MD,MD,"Moldova, Republic of",False,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
-MCO,MC,MC,Monaco,False,Europe,Western Europe,,Europe,Western-Europe,,Developed
-MNG,MN,MN,Mongolia,False,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developing
-MNE,ME,ME,Montenegro,False,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-MSR,MS,MS,Montserrat,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-MAR,MA,MA,Morocco,False,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
-MOZ,MZ,MZ,Mozambique,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-MMR,MM,MM,Myanmar,False,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
-NAM,,,Namibia,False,Africa,Sub-Saharan Africa,Southern Africa,Africa,Sub-Saharan-Africa,Southern-Africa,Developing
-NRU,NR,NR,Nauru,False,Oceania,Micronesia,,Oceania,Micronesia,,Developing
-NPL,NP,NP,Nepal,False,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
-NLD,NL,NL,Netherlands,True,Europe,Western Europe,,Europe,Western-Europe,,Developed
-ANT,AN,AN,Netherlands Antilles,False,,,,,,,
-NCL,NC,NC,New Caledonia,False,Oceania,Melanesia,,Oceania,Melanesia,,Developing
-NZL,NZ,NZ,New Zealand,False,Oceania,Australia and New Zealand,,Oceania,Australia-and-New-Zealand,,Developed
-NIC,NI,NI,Nicaragua,False,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
-NER,NE,NE,Niger,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-NGA,NG,NG,Nigeria,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-NIU,NU,NU,Niue,False,Oceania,Polynesia,,Oceania,Polynesia,,Developing
-NFK,NF,NF,Norfolk Island,False,Oceania,Australia and New Zealand,,Oceania,Australia-and-New-Zealand,,Developed
-MNP,MP,MP,Northern Mariana Islands,False,Oceania,Micronesia,,Oceania,Micronesia,,Developing
-NOR,NO,NO,Norway,False,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-OMN,OM,OM,Oman,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-PAK,PK,PK,Pakistan,False,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
-PLW,PW,PW,Palau,False,Oceania,Micronesia,,Oceania,Micronesia,,Developing
-PSE,PS,PS,"Palestine, State of",False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-PAN,PA,PA,Panama,False,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
-PNG,PG,PG,Papua New Guinea,False,Oceania,Melanesia,,Oceania,Melanesia,,Developing
-PRY,PY,PY,Paraguay,False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-unknown,WO,WO,Patent Cooperation Treaty,False,,,,,,,
-unknown,GC,GC,Patent Office of the Cooperation Council for the Arab States of the Gulf,False,,,,,,,
-PER,PE,PE,Peru,False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-PHL,PH,PH,Philippines,False,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
-PCN,PN,PN,Pitcairn,False,Oceania,Polynesia,,Oceania,Polynesia,,Developing
-POL,PL,PL,Poland,True,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
-PRT,PT,PT,Portugal,True,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-PRI,PR,PR,Puerto Rico,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-QAT,QA,QA,Qatar,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-REU,RE,RE,Reunion,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-ROU,RO,RO,Romania,True,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
-RUS,RU,RU,Russian Federation,False,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
-RWA,RW,RW,Rwanda,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-BLM,BL,BL,Saint Barthelemy,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-SHN,SH,SH,"Saint Helena, Ascension and Tristan da Cunha",False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-KNA,KN,KN,Saint Kitts and Nevis,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-LCA,LC,LC,Saint Lucia,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-MAF,MF,MF,Saint Martin (French part),False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-SPM,PM,PM,Saint Pierre and Miquelon,False,Americas,Northern America,,Americas,Northern-America,,Developed
-VCT,VC,VC,Saint Vincent and the Grenadines,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-WSM,WS,WS,Samoa,False,Oceania,Polynesia,,Oceania,Polynesia,,Developing
-SMR,SM,SM,San Marino,False,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-STP,ST,ST,Sao Tome and Principe,False,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
-SAU,SA,SA,Saudi Arabia,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-SEN,SN,SN,Senegal,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-SRB,RS,RS,Serbia,False,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-SYC,SC,SC,Seychelles,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-SLE,SL,SL,Sierra Leone,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-SGP,SG,SG,Singapore,False,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
-SXM,SX,SX,Sint Maarten (Dutch part),False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-SVK,SK,SK,Slovakia,True,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
-SVN,SI,SI,Slovenia,True,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-SLB,SB,SB,Solomon Islands,False,Oceania,Melanesia,,Oceania,Melanesia,,Developing
-SOM,SO,SO,Somalia,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-ZAF,ZA,ZA,South Africa,False,Africa,Sub-Saharan Africa,Southern Africa,Africa,Sub-Saharan-Africa,Southern-Africa,Developing
-SGS,GS,GS,South Georgia and the South Sandwich Islands,False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-SSD,SS,SS,South Sudan,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-ESP,ES,ES,Spain,True,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
-LKA,LK,LK,Sri Lanka,False,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
-SDN,SD,SD,Sudan,False,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
-SUR,SR,SR,Suriname,False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-SJM,SJ,SJ,Svalbard and Jan Mayen,False,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-SWZ,SZ,SZ,Swaziland,False,Africa,Sub-Saharan Africa,Southern Africa,Africa,Sub-Saharan-Africa,Southern-Africa,Developing
-SWE,SE,SE,Sweden,True,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-CHE,CH,CH,Switzerland,False,Europe,Western Europe,,Europe,Western-Europe,,Developed
-SYR,SY,SY,Syrian Arab Republic,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-TWN,TW,TW,"Taiwan, Province of China",False,,,,,,,
-TJK,TJ,TJ,Tajikistan,False,Asia,Central Asia,,Asia,Central-Asia,,Developing
-TZA,TZ,TZ,"Tanzania, United Republic of",False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-THA,TH,TH,Thailand,False,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
-TLS,TL,TL,Timor-Leste,False,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
-TGO,TG,TG,Togo,False,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
-TKL,TK,TK,Tokelau,False,Oceania,Polynesia,,Oceania,Polynesia,,Developing
-TON,TO,TO,Tonga,False,Oceania,Polynesia,,Oceania,Polynesia,,Developing
-TTO,TT,TT,Trinidad and Tobago,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-TUN,TN,TN,Tunisia,False,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
-TUR,TR,TR,Turkey,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-TKM,TM,TM,Turkmenistan,False,Asia,Central Asia,,Asia,Central-Asia,,Developing
-TCA,TC,TC,Turks and Caicos Islands,False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-TUV,TV,TV,Tuvalu,False,Oceania,Polynesia,,Oceania,Polynesia,,Developing
-UGA,UG,UG,Uganda,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-UKR,UA,UA,Ukraine,False,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
-ARE,AE,AE,United Arab Emirates,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-GBR,GB,GB,United Kingdom,False,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
-USA,US,US,United States,False,Americas,Northern America,,Americas,Northern-America,,Developed
-UMI,UM,UM,United States Minor Outlying Islands,False,Oceania,Micronesia,,Oceania,Micronesia,,Developing
-URY,UY,UY,Uruguay,False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-UZB,UZ,UZ,Uzbekistan,False,Asia,Central Asia,,Asia,Central-Asia,,Developing
-VUT,VU,VU,Vanuatu,False,Oceania,Melanesia,,Oceania,Melanesia,,Developing
-VEN,VE,VE,"Venezuela, Bolivarian Republic of",False,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
-VNM,VN,VN,Viet Nam,False,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
-VGB,VG,VG,"Virgin Islands, British",False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-VIR,VI,VI,"Virgin Islands, U.S.",False,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
-WLF,WF,WF,Wallis and Futuna,False,Oceania,Polynesia,,Oceania,Polynesia,,Developing
-ESH,EH,EH,Western Sahara,False,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
-YEM,YE,YE,Yemen,False,Asia,Western Asia,,Asia,Western-Asia,,Developing
-YMD,YD,YD,Yemen People's Republic,False,,,,,,,
-YUG,YU,YU,Yugoslavia,False,,,,,,,
-ZMB,ZM,ZM,Zambia,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-ZWE,ZW,ZW,Zimbabwe,False,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
-unknown,IB,IB,Patent Cooperation Treaty,False,,,,,,,
+AFG,AF,AF,Afghanistan,FALSE,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
+unknown,OA,OA,African Intellectual Property Organization,FALSE,,,,,,,
+unknown,AP,AP,African Regional Intellectual Property Organization,FALSE,,,,,,,
+ALA,AX,AX,Aland Islands,FALSE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+ALB,AL,AL,Albania,FALSE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+DZA,DZ,DZ,Algeria,FALSE,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
+ASM,AS,AS,American Samoa,FALSE,Oceania,Polynesia,,Oceania,Polynesia,,Developing
+AND,AD,AD,Andorra,FALSE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+AGO,AO,AO,Angola,FALSE,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
+AIA,AI,AI,Anguilla,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+ATA,AQ,AQ,Antarctica,FALSE,,,,,,,
+ATG,AG,AG,Antigua and Barbuda,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+ARG,AR,AR,Argentina,FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+ARM,AM,AM,Armenia,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+ABW,AW,AW,Aruba,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+AUS,AU,AU,Australia,FALSE,Oceania,Australia and New Zealand,,Oceania,Australia-and-New-Zealand,,Developed
+AUT,AT,AT,Austria,TRUE,Europe,Western Europe,,Europe,Western-Europe,,Developed
+AZE,AZ,AZ,Azerbaijan,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+BHS,BS,BS,Bahamas,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+BHR,BH,BH,Bahrain,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+BGD,BD,BD,Bangladesh,FALSE,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
+BRB,BB,BB,Barbados,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+BLR,BY,BY,Belarus,FALSE,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
+BEL,BE,BE,Belgium,TRUE,Europe,Western Europe,,Europe,Western-Europe,,Developed
+BLZ,BZ,BZ,Belize,FALSE,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
+BEN,BJ,BJ,Benin,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+BMU,BM,BM,Bermuda,FALSE,Americas,Northern America,,Americas,Northern-America,,Developed
+BTN,BT,BT,Bhutan,FALSE,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
+BOL,BO,BO,"Bolivia, Plurinational State of",FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+BES,BQ,BQ,"Bonaire, Sint Eustatius and Saba",FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+BIH,BA,BA,Bosnia and Herzegovina,FALSE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+BWA,BW,BW,Botswana,FALSE,Africa,Sub-Saharan Africa,Southern Africa,Africa,Sub-Saharan-Africa,Southern-Africa,Developing
+BVT,BV,BV,Bouvet Island,FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+BRA,BR,BR,Brazil,FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+IOT,IO,IO,British Indian Ocean Territory,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+BRN,BN,BN,Brunei Darussalam,FALSE,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
+BGR,BG,BG,Bulgaria,TRUE,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
+BFA,BF,BF,Burkina Faso,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+BDI,BI,BI,Burundi,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+KHM,KH,KH,Cambodia,FALSE,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
+CMR,CM,CM,Cameroon,FALSE,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
+CAN,CA,CA,Canada,FALSE,Americas,Northern America,,Americas,Northern-America,,Developed
+CPV,CV,CV,Cabo Verde,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+CYM,KY,KY,Cayman Islands,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+CAF,CF,CF,Central African Republic,FALSE,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
+TCD,TD,TD,Chad,FALSE,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
+CHL,CL,CL,Chile,FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+CHN,CN,CN,China,FALSE,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developing
+CXR,CX,CX,Christmas Island,FALSE,Oceania,Australia and New Zealand,,Oceania,Australia-and-New-Zealand,,Developed
+CCK,CC,CC,Cocos (Keeling) Islands,FALSE,Oceania,Australia and New Zealand,,Oceania,Australia-and-New-Zealand,,Developed
+COL,CO,CO,Colombia,FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+COM,KM,KM,Comoros,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+COD,CD,CD,"Congo, the Democratic Republic of the",FALSE,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
+COG,CG,CG,Congo,FALSE,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
+COK,CK,CK,Cook Islands,FALSE,Oceania,Polynesia,,Oceania,Polynesia,,Developing
+CRI,CR,CR,Costa Rica,FALSE,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
+CIV,CI,CI,Cote d'Ivoire,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+HRV,HR,HR,Croatia,TRUE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+CUB,CU,CU,Cuba,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+CUW,CW,CW,Curacao,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+CYP,CY,CY,Cyprus,TRUE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+CZE,CZ,CZ,Czech Republic,TRUE,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
+CSK,CS,CS,Czechoslovakia,FALSE,,,,,,,
+DNK,DK,DK,Denmark,TRUE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+DJI,DJ,DJ,Djibouti,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+DMA,DM,DM,Dominica,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+DOM,DO,DO,Dominican Republic,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+ECU,EC,EC,Ecuador,FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+EGY,EG,EG,Egypt,FALSE,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
+SLV,SV,SV,El Salvador,FALSE,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
+GNQ,GQ,GQ,Equatorial Guinea,FALSE,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
+ERI,ER,ER,Eritrea,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+EST,EE,EE,Estonia,TRUE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+unknown,EA,EA,Eurasian Patent Organization,FALSE,,,,,,,
+EPO,EP,EP,European Patent Office,FALSE,,,,,,,
+unknown,EU,EU,European Commission,TRUE,Europe,,,Europe,,,Developed
+ETH,ET,ET,Ethiopia,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+FLK,FK,FK,Falkland Islands (Malvinas),FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+FRO,FO,FO,Faroe Islands,FALSE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+FJI,FJ,FJ,Fiji,FALSE,Oceania,Melanesia,,Oceania,Melanesia,,Developing
+FIN,FI,FI,Finland,TRUE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+FRA,FR,FR,France,TRUE,Europe,Western Europe,,Europe,Western-Europe,,Developed
+GUF,GF,GF,French Guiana,FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+PYF,PF,PF,French Polynesia,FALSE,Oceania,Polynesia,,Oceania,Polynesia,,Developing
+ATF,TF,TF,French Southern Territories,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+GAB,GA,GA,Gabon,FALSE,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
+GMB,GM,GM,Gambia,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+GEO,GE,GE,Georgia,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+DDR,DD,DD,German Democratic Republic,FALSE,,,,,,,
+DEU,DE,DE,Germany,TRUE,Europe,Western Europe,,Europe,Western-Europe,,Developed
+GHA,GH,GH,Ghana,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+GIB,GI,GI,Gibraltar,FALSE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+GRC,GR,GR,Greece,TRUE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+GRL,GL,GL,Greenland,FALSE,Americas,Northern America,,Americas,Northern-America,,Developed
+GRD,GD,GD,Grenada,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+GLP,GP,GP,Guadeloupe,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+GUM,GU,GU,Guam,FALSE,Oceania,Micronesia,,Oceania,Micronesia,,Developing
+GTM,GT,GT,Guatemala,FALSE,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
+GGY,GG,GG,Guernsey,FALSE,Europe,Northern Europe,Channel Islands,Europe,Northern-Europe,Channel-Islands,Developed
+GIN,GN,GN,Guinea,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+GNB,GW,GW,Guinea-Bissau,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+GUY,GY,GY,Guyana,FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+HTI,HT,HT,Haiti,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+HMD,HM,HM,Heard Island and McDonald Islands,FALSE,Oceania,Australia and New Zealand,,Oceania,Australia-and-New-Zealand,,Developed
+VAT,VA,VA,Holy See (Vatican City State),FALSE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+HND,HN,HN,Honduras,FALSE,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
+HKG,HK,HK,Hong Kong,FALSE,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developing
+HUN,HU,HU,Hungary,TRUE,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
+ISL,IS,IS,Iceland,FALSE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+IND,IN,IN,India,FALSE,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
+IDN,ID,ID,Indonesia,FALSE,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
+IRN,IR,IR,"Iran, Islamic Republic of",FALSE,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
+IRQ,IQ,IQ,Iraq,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+IRL,IE,IE,Ireland,TRUE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+IMN,IM,IM,Isle of Man,FALSE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+ISR,IL,IL,Israel,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+ITA,IT,IT,Italy,TRUE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+JAM,JM,JM,Jamaica,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+JPN,JP,JP,Japan,FALSE,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developed
+JEY,JE,JE,Jersey,FALSE,Europe,Northern Europe,Channel Islands,Europe,Northern-Europe,Channel-Islands,Developed
+JOR,JO,JO,Jordan,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+KAZ,KZ,KZ,Kazakhstan,FALSE,Asia,Central Asia,,Asia,Central-Asia,,Developing
+KEN,KE,KE,Kenya,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+KIR,KI,KI,Kiribati,FALSE,Oceania,Micronesia,,Oceania,Micronesia,,Developing
+PRK,KP,KP,"Korea, Democratic People's Republic of",FALSE,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developing
+KOR,KR,KR,"Korea, Republic of",FALSE,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developed
+unknown,unknown,XK,Kosovo,FALSE,,,,,,,
+KWT,KW,KW,Kuwait,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+KGZ,KG,KG,Kyrgyzstan,FALSE,Asia,Central Asia,,Asia,Central-Asia,,Developing
+LAO,LA,LA,Lao People's Democratic Republic,FALSE,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
+LVA,LV,LV,Latvia,TRUE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+LBN,LB,LB,Lebanon,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+LSO,LS,LS,Lesotho,FALSE,Africa,Sub-Saharan Africa,Southern Africa,Africa,Sub-Saharan-Africa,Southern-Africa,Developing
+LBR,LR,LR,Liberia,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+LBY,LY,LY,Libya,FALSE,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
+LIE,LI,LI,Liechtenstein,FALSE,Europe,Western Europe,,Europe,Western-Europe,,Developed
+LTU,LT,LT,Lithuania,TRUE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+LUX,LU,LU,Luxembourg,TRUE,Europe,Western Europe,,Europe,Western-Europe,,Developed
+MAC,MO,MO,Macao,FALSE,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developing
+MKD,MK,MK,"Macedonia, the former Yugoslav Republic of",FALSE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+MDG,MG,MG,Madagascar,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+MWI,MW,MW,Malawi,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+MYS,MY,MY,Malaysia,FALSE,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
+MDV,MV,MV,Maldives,FALSE,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
+MLI,ML,ML,Mali,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+MLT,MT,MT,Malta,TRUE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+MHL,MH,MH,Marshall Islands,FALSE,Oceania,Micronesia,,Oceania,Micronesia,,Developing
+MTQ,MQ,MQ,Martinique,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+MRT,MR,MR,Mauritania,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+MUS,MU,MU,Mauritius,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+MYT,YT,YT,Mayotte,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+MEX,MX,MX,Mexico,FALSE,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
+FSM,FM,FM,"Micronesia, Federated States of",FALSE,Oceania,Micronesia,,Oceania,Micronesia,,Developing
+MDA,MD,MD,"Moldova, Republic of",FALSE,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
+MCO,MC,MC,Monaco,FALSE,Europe,Western Europe,,Europe,Western-Europe,,Developed
+MNG,MN,MN,Mongolia,FALSE,Asia,Eastern Asia,,Asia,Eastern-Asia,,Developing
+MNE,ME,ME,Montenegro,FALSE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+MSR,MS,MS,Montserrat,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+MAR,MA,MA,Morocco,FALSE,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
+MOZ,MZ,MZ,Mozambique,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+MMR,MM,MM,Myanmar,FALSE,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
+NAM,NA,NA,Namibia,FALSE,Africa,Sub-Saharan Africa,Southern Africa,Africa,Sub-Saharan-Africa,Southern-Africa,Developing
+NRU,NR,NR,Nauru,FALSE,Oceania,Micronesia,,Oceania,Micronesia,,Developing
+NPL,NP,NP,Nepal,FALSE,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
+NLD,NL,NL,Netherlands,TRUE,Europe,Western Europe,,Europe,Western-Europe,,Developed
+ANT,AN,AN,Netherlands Antilles,FALSE,,,,,,,
+NCL,NC,NC,New Caledonia,FALSE,Oceania,Melanesia,,Oceania,Melanesia,,Developing
+NZL,NZ,NZ,New Zealand,FALSE,Oceania,Australia and New Zealand,,Oceania,Australia-and-New-Zealand,,Developed
+NIC,NI,NI,Nicaragua,FALSE,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
+NER,NE,NE,Niger,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+NGA,NG,NG,Nigeria,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+NIU,NU,NU,Niue,FALSE,Oceania,Polynesia,,Oceania,Polynesia,,Developing
+NFK,NF,NF,Norfolk Island,FALSE,Oceania,Australia and New Zealand,,Oceania,Australia-and-New-Zealand,,Developed
+MNP,MP,MP,Northern Mariana Islands,FALSE,Oceania,Micronesia,,Oceania,Micronesia,,Developing
+NOR,NO,NO,Norway,FALSE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+OMN,OM,OM,Oman,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+PAK,PK,PK,Pakistan,FALSE,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
+PLW,PW,PW,Palau,FALSE,Oceania,Micronesia,,Oceania,Micronesia,,Developing
+PSE,PS,PS,"Palestine, State of",FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+PAN,PA,PA,Panama,FALSE,Americas,Latin America and the Caribbean,Central America,Americas,Latin-America-and-the-Caribbean,Central-America,Developing
+PNG,PG,PG,Papua New Guinea,FALSE,Oceania,Melanesia,,Oceania,Melanesia,,Developing
+PRY,PY,PY,Paraguay,FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+unknown,WO,WO,Patent Cooperation Treaty,FALSE,,,,,,,
+unknown,GC,GC,Patent Office of the Cooperation Council for the Arab States of the Gulf,FALSE,,,,,,,
+PER,PE,PE,Peru,FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+PHL,PH,PH,Philippines,FALSE,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
+PCN,PN,PN,Pitcairn,FALSE,Oceania,Polynesia,,Oceania,Polynesia,,Developing
+POL,PL,PL,Poland,TRUE,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
+PRT,PT,PT,Portugal,TRUE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+PRI,PR,PR,Puerto Rico,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+QAT,QA,QA,Qatar,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+REU,RE,RE,Reunion,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+ROU,RO,RO,Romania,TRUE,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
+RUS,RU,RU,Russian Federation,FALSE,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
+RWA,RW,RW,Rwanda,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+BLM,BL,BL,Saint Barthelemy,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+SHN,SH,SH,"Saint Helena, Ascension and Tristan da Cunha",FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+KNA,KN,KN,Saint Kitts and Nevis,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+LCA,LC,LC,Saint Lucia,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+MAF,MF,MF,Saint Martin (French part),FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+SPM,PM,PM,Saint Pierre and Miquelon,FALSE,Americas,Northern America,,Americas,Northern-America,,Developed
+VCT,VC,VC,Saint Vincent and the Grenadines,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+WSM,WS,WS,Samoa,FALSE,Oceania,Polynesia,,Oceania,Polynesia,,Developing
+SMR,SM,SM,San Marino,FALSE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+STP,ST,ST,Sao Tome and Principe,FALSE,Africa,Sub-Saharan Africa,Middle Africa,Africa,Sub-Saharan-Africa,Middle-Africa,Developing
+SAU,SA,SA,Saudi Arabia,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+SEN,SN,SN,Senegal,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+SRB,RS,RS,Serbia,FALSE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+SYC,SC,SC,Seychelles,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+SLE,SL,SL,Sierra Leone,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+SGP,SG,SG,Singapore,FALSE,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
+SXM,SX,SX,Sint Maarten (Dutch part),FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+SVK,SK,SK,Slovakia,TRUE,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
+SVN,SI,SI,Slovenia,TRUE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+SLB,SB,SB,Solomon Islands,FALSE,Oceania,Melanesia,,Oceania,Melanesia,,Developing
+SOM,SO,SO,Somalia,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+ZAF,ZA,ZA,South Africa,FALSE,Africa,Sub-Saharan Africa,Southern Africa,Africa,Sub-Saharan-Africa,Southern-Africa,Developing
+SGS,GS,GS,South Georgia and the South Sandwich Islands,FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+SSD,SS,SS,South Sudan,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+ESP,ES,ES,Spain,TRUE,Europe,Southern Europe,,Europe,Southern-Europe,,Developed
+LKA,LK,LK,Sri Lanka,FALSE,Asia,Southern Asia,,Asia,Southern-Asia,,Developing
+SDN,SD,SD,Sudan,FALSE,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
+SUR,SR,SR,Suriname,FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+SJM,SJ,SJ,Svalbard and Jan Mayen,FALSE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+SWZ,SZ,SZ,Swaziland,FALSE,Africa,Sub-Saharan Africa,Southern Africa,Africa,Sub-Saharan-Africa,Southern-Africa,Developing
+SWE,SE,SE,Sweden,TRUE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+CHE,CH,CH,Switzerland,FALSE,Europe,Western Europe,,Europe,Western-Europe,,Developed
+SYR,SY,SY,Syrian Arab Republic,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+TWN,TW,TW,"Taiwan, Province of China",FALSE,,,,,,,
+TJK,TJ,TJ,Tajikistan,FALSE,Asia,Central Asia,,Asia,Central-Asia,,Developing
+TZA,TZ,TZ,"Tanzania, United Republic of",FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+THA,TH,TH,Thailand,FALSE,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
+TLS,TL,TL,Timor-Leste,FALSE,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
+TGO,TG,TG,Togo,FALSE,Africa,Sub-Saharan Africa,Western Africa,Africa,Sub-Saharan-Africa,Western-Africa,Developing
+TKL,TK,TK,Tokelau,FALSE,Oceania,Polynesia,,Oceania,Polynesia,,Developing
+TON,TO,TO,Tonga,FALSE,Oceania,Polynesia,,Oceania,Polynesia,,Developing
+TTO,TT,TT,Trinidad and Tobago,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+TUN,TN,TN,Tunisia,FALSE,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
+TUR,TR,TR,Turkey,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+TKM,TM,TM,Turkmenistan,FALSE,Asia,Central Asia,,Asia,Central-Asia,,Developing
+TCA,TC,TC,Turks and Caicos Islands,FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+TUV,TV,TV,Tuvalu,FALSE,Oceania,Polynesia,,Oceania,Polynesia,,Developing
+UGA,UG,UG,Uganda,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+UKR,UA,UA,Ukraine,FALSE,Europe,Eastern Europe,,Europe,Eastern-Europe,,Developed
+ARE,AE,AE,United Arab Emirates,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+GBR,GB,GB,United Kingdom,FALSE,Europe,Northern Europe,,Europe,Northern-Europe,,Developed
+USA,US,US,United States,FALSE,Americas,Northern America,,Americas,Northern-America,,Developed
+UMI,UM,UM,United States Minor Outlying Islands,FALSE,Oceania,Micronesia,,Oceania,Micronesia,,Developing
+URY,UY,UY,Uruguay,FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+UZB,UZ,UZ,Uzbekistan,FALSE,Asia,Central Asia,,Asia,Central-Asia,,Developing
+VUT,VU,VU,Vanuatu,FALSE,Oceania,Melanesia,,Oceania,Melanesia,,Developing
+VEN,VE,VE,"Venezuela, Bolivarian Republic of",FALSE,Americas,Latin America and the Caribbean,South America,Americas,Latin-America-and-the-Caribbean,South-America,Developing
+VNM,VN,VN,Viet Nam,FALSE,Asia,South-eastern Asia,,Asia,South-eastern-Asia,,Developing
+VGB,VG,VG,"Virgin Islands, British",FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+VIR,VI,VI,"Virgin Islands, U.S.",FALSE,Americas,Latin America and the Caribbean,Caribbean,Americas,Latin-America-and-the-Caribbean,Caribbean,Developing
+WLF,WF,WF,Wallis and Futuna,FALSE,Oceania,Polynesia,,Oceania,Polynesia,,Developing
+ESH,EH,EH,Western Sahara,FALSE,Africa,Northern Africa,,Africa,Northern-Africa,,Developing
+YEM,YE,YE,Yemen,FALSE,Asia,Western Asia,,Asia,Western-Asia,,Developing
+YMD,YD,YD,Yemen People's Republic,FALSE,,,,,,,
+YUG,YU,YU,Yugoslavia,FALSE,,,,,,,
+ZMB,ZM,ZM,Zambia,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+ZWE,ZW,ZW,Zimbabwe,FALSE,Africa,Sub-Saharan Africa,Eastern Africa,Africa,Sub-Saharan-Africa,Eastern-Africa,Developing
+unknown,IB,IB,Patent Cooperation Treaty,FALSE,,,,,,,
