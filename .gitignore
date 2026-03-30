@@ -20,6 +20,9 @@ ahteg-reporting/
 ~$*.docx
 ~$*.xlsx
 ~$*.pptx
+*.docx
+*.xlsx
+*.pptx
 sensitivity-reports/ahteg-outputs
 sensitivity-reports/v2-sensitivity-reports
 docs
