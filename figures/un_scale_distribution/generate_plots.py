@@ -165,6 +165,72 @@ def compute_raw_inversion(shares):
     return data
 
 
+def plot_distribution_5band(shares, title, filename, color="#3B82F6"):
+    """5-band bar chart — original structure with China grouped in Band 5 (1–10%)."""
+    fig, ax = plt.subplots(figsize=(10, 6))
+    fig.patch.set_facecolor("white")
+
+    n_total = len(shares)
+    n_zero = int((shares["un_share"] == 0).sum())
+    nonzero = shares[shares["un_share"] > 0]["un_share"].values
+
+    bands = [
+        (-0.0001, 0.001, "≤ 0.001%"),
+        (0.001, 0.01, "0.001–0.01%"),
+        (0.01, 0.1, "0.01–0.1%"),
+        (0.1, 1.0, "0.1–1%"),
+        (1.0, 100.0, "1–10%+"),
+    ]
+
+    labels = []
+    counts = []
+    all_shares = shares["un_share"].values
+    for lo, hi, label in bands:
+        count = int(np.sum((all_shares > lo) & (all_shares <= hi)))
+        labels.append(label)
+        counts.append(count)
+
+    x_pos = np.arange(len(labels))
+    bars = ax.bar(x_pos, counts, color=color, edgecolor="white", width=0.7, alpha=0.85)
+
+    for bar, count in zip(bars, counts):
+        ax.text(
+            bar.get_x() + bar.get_width() / 2,
+            bar.get_height() + 1,
+            str(count),
+            ha="center", va="bottom", fontsize=10, fontweight="bold", color="#333333"
+        )
+
+    ax.set_xticks(x_pos)
+    ax.set_xticklabels(labels, fontsize=10)
+    ax.set_xlabel("UN Scale of Assessment Share (%)", fontsize=11)
+    ax.set_ylabel("Number of Parties", fontsize=11)
+    ax.set_title(title, fontsize=13, fontweight="bold")
+    ax.grid(True, axis="y", alpha=0.3)
+    ax.set_ylim(0, max(counts) * 1.15)
+
+    stats_lines = [f"N = {n_total}"]
+    if n_zero > 0:
+        stats_lines.append(f"({n_zero} with 0% share)")
+    stats_lines.append(f"Median = {np.median(nonzero):.4f}%")
+    stats_text = "\n".join(stats_lines)
+    ax.text(
+        0.97, 0.85, stats_text, transform=ax.transAxes,
+        fontsize=9, verticalalignment="top", horizontalalignment="right",
+        bbox=dict(boxstyle="round,pad=0.5", facecolor="#F0F0F0", alpha=0.9)
+    )
+
+    plt.tight_layout()
+    svg_path = os.path.join(OUTPUT_DIR, filename)
+    plt.savefig(svg_path, format="svg", bbox_inches="tight", facecolor="white")
+    png_path = os.path.splitext(svg_path)[0] + ".png"
+    plt.savefig(png_path, format="png", dpi=200, bbox_inches="tight", facecolor="white")
+    plt.close()
+    print(f"Saved: {svg_path}")
+    print(f"Saved: {png_path}")
+    return svg_path
+
+
 def save_csv(data, filename):
     csv_path = os.path.join(OUTPUT_DIR, filename)
     data.to_csv(csv_path, index=False)
@@ -348,6 +414,14 @@ if __name__ == "__main__":
         color="#22C55E",
     )
     fig2_csv = save_csv(fig2_data, "fig_2_non_high_income.csv")
+
+    print("\nBuilding Figure 2b: 5-band distribution (China in Band 5)...")
+    fig2b_path = plot_distribution_5band(
+        fig2_data,
+        "Distribution of UN Scale of Assessment Shares (2027)\nCBD Parties — 5-band structure (China grouped with Band 5)",
+        "fig_2b_5band.svg",
+        color="#22C55E",
+    )
 
     no_top = fig2_data[fig2_data["party_name"] != "China"].copy()
 
