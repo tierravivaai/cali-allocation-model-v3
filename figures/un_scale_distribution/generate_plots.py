@@ -276,6 +276,15 @@ if __name__ == "__main__":
         color="#6366F1",
     )
 
+    print("\nBuilding Figure 4: Ranked bars without China...")
+    no_china = fig2_data[fig2_data["party_name"] != "China"].copy()
+    fig4_path = plot_ranked_bars(
+        no_china,
+        "UN Scale of Assessment Shares (2027) — Without China\nCBD Parties ranked highest to lowest (High income excluded, SIDS preserved)",
+        "fig_4_ranked_bars_no_china.svg",
+        color="#8B5CF6",
+    )
+
     print("\nGenerating README.md...")
     generate_readme(fig1_data, fig2_data, fig1_path, fig2_path, fig1_csv, fig2_csv)
 
