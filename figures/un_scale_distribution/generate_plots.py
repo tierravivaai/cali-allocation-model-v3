@@ -71,7 +71,7 @@ def build_filtered_distribution(df):
     return result.reset_index(drop=True)
 
 
-def plot_distribution(shares, title, filename, color="#3B82F6"):
+def plot_distribution(shares, title, filename, color="#3B82F6", y_label="Number of Parties"):
     """Create a bar chart with percentage bands on x-axis and party counts on y-axis."""
     fig, ax = plt.subplots(figsize=(10, 6))
     fig.patch.set_facecolor("white")
@@ -114,7 +114,7 @@ def plot_distribution(shares, title, filename, color="#3B82F6"):
     ax.set_xticks(x_pos)
     ax.set_xticklabels(labels, fontsize=10)
     ax.set_xlabel("UN Scale of Assessment Share (%)", fontsize=11)
-    ax.set_ylabel("Number of Parties", fontsize=11)
+    ax.set_ylabel(y_label, fontsize=11)
     ax.set_title(title, fontsize=13, fontweight="bold")
     ax.grid(True, axis="y", alpha=0.3)
     ax.set_ylim(0, max(counts) * 1.15)
@@ -402,6 +402,7 @@ if __name__ == "__main__":
         "Distribution of UN Scale of Assessment Shares (2027)\nAll countries with non-zero share",
         "fig_1_full_distribution.svg",
         color="#3B82F6",
+        y_label="Number of UN Member States",
     )
     fig1_csv = save_csv(fig1_data, "fig_1_full_distribution.csv")
 
