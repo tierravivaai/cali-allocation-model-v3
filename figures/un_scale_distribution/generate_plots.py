@@ -169,24 +169,24 @@ def save_csv(data, filename):
     return csv_path
 
 
-def plot_ranked_bars(shares, title, filename, color="#6366F1"):
+def plot_ranked_bars(shares, title, filename, color="#6366F1", value_col="un_share", y_label="UN Scale of Assessment Share (%)"):
     """Create a ranked bar chart: each Party as one bar, sorted highest to lowest."""
     fig, ax = plt.subplots(figsize=(14, 5))
     fig.patch.set_facecolor("white")
 
     # Filter out EU, keep zero-rated Parties
     plot_data = shares[shares["party_name"] != "European Union"].copy()
-    plot_data = plot_data.sort_values("un_share", ascending=False).reset_index(drop=True)
+    plot_data = plot_data.sort_values(value_col, ascending=False).reset_index(drop=True)
 
     n_total = len(plot_data)
     x_pos = np.arange(n_total)
-    values = plot_data["un_share"].values
+    values = plot_data[value_col].values
 
     ax.bar(x_pos, values, color=color, edgecolor="none", width=0.85, alpha=0.85)
 
     ax.set_xlim(-0.5, n_total - 0.5)
-    ax.set_xlabel(f"Parties ranked by UN Scale share (N={n_total})", fontsize=11)
-    ax.set_ylabel("UN Scale of Assessment Share (%)", fontsize=11)
+    ax.set_xlabel(f"Parties ranked by share (N={n_total})", fontsize=11)
+    ax.set_ylabel(y_label, fontsize=11)
     ax.set_title(title, fontsize=13, fontweight="bold")
     ax.grid(True, axis="y", alpha=0.3)
 
@@ -351,31 +351,17 @@ if __name__ == "__main__":
     # --- Raw inversion of UN Scale ---
     print("\nComputing raw IUSAF inversion...")
     iusaf_data = compute_raw_inversion(fig2_data)
-    iusaf_no_top = compute_raw_inversion(no_top)
 
-    print("\nBuilding Figure 5: Two-panel IUSAF ranked bars (142 eligible Parties)...")
-    fig5_path = plot_ranked_bars_two_panel(
+    print("\nBuilding Figure 5: IUSAF ranked bars (142 eligible Parties)...")
+    fig5_path = plot_ranked_bars(
         iusaf_data,
-        "Inverted UN Scale (IUSAF) Shares — Raw Inversion\nCBD Parties (High income excluded, SIDS preserved)",
-        "fig_5_iusaf_two_panel.svg",
+        "Inverted UN Scale (IUSAF) Shares — Raw Inversion (2027)\nCBD Parties (High income excluded, SIDS preserved)",
+        "fig_5_iusaf_ranked.svg",
         color="#059669",
-        zoom_ymax=1.5,
         value_col="iusaf_share",
         y_label="IUSAF Share (%)",
     )
-    fig5_csv = save_csv(iusaf_data, "fig_5_iusaf_two_panel.csv")
-
-    print("\nBuilding Figure 6: Two-panel IUSAF ranked bars without top contributor...")
-    fig6_path = plot_ranked_bars_two_panel(
-        iusaf_no_top,
-        "Inverted UN Scale (IUSAF) Shares — Without Top Contributor\nCBD Parties (High income excluded, SIDS preserved)",
-        "fig_6_iusaf_two_panel_no_top.svg",
-        color="#0D9488",
-        zoom_ymax=1.5,
-        value_col="iusaf_share",
-        y_label="IUSAF Share (%)",
-    )
-    fig6_csv = save_csv(iusaf_no_top, "fig_6_iusaf_two_panel_no_top.csv")
+    fig5_csv = save_csv(iusaf_data, "fig_5_iusaf_ranked.csv")
 
     print("\nBuilding Figure 3: Two-panel ranked bars (142 eligible Parties)...")
     fig3_path = plot_ranked_bars_two_panel(
