@@ -321,43 +321,22 @@ if __name__ == "__main__":
     )
     fig2_csv = save_csv(fig2_data, "fig_2_non_high_income.csv")
 
-    print("\nBuilding Figure 3: Ranked bars (142 eligible Parties, EU excluded)...")
-    fig3_data = fig2_data[fig2_data["party_name"] != "European Union"].copy()
-    fig3_data = fig3_data.sort_values("un_share", ascending=False).reset_index(drop=True)
-    fig3_path = plot_ranked_bars(
-        fig2_data,
-        "UN Scale of Assessment Shares (2027)\nCBD Parties ranked highest to lowest (High income excluded, SIDS preserved)",
-        "fig_3_ranked_bars.svg",
-        color="#6366F1",
-    )
-    fig3_csv = save_csv(fig3_data, "fig_3_ranked_bars.csv")
+    no_top = fig2_data[fig2_data["party_name"] != "China"].copy()
 
-    print("\nBuilding Figure 4: Ranked bars without China...")
-    no_china = fig2_data[fig2_data["party_name"] != "China"].copy()
-    fig4_data = no_china[no_china["party_name"] != "European Union"].copy()
-    fig4_data = fig4_data.sort_values("un_share", ascending=False).reset_index(drop=True)
-    fig4_path = plot_ranked_bars(
-        no_china,
-        "UN Scale of Assessment Shares (2027) — Without China\nCBD Parties ranked highest to lowest (High income excluded, SIDS preserved)",
-        "fig_4_ranked_bars_no_china.svg",
-        color="#8B5CF6",
-    )
-    fig4_csv = save_csv(fig4_data, "fig_4_ranked_bars_no_china.csv")
-
-    print("\nBuilding Figure 5: Two-panel ranked bars (142 eligible Parties)...")
-    fig5_path = plot_ranked_bars_two_panel(
+    print("\nBuilding Figure 3: Two-panel ranked bars (142 eligible Parties)...")
+    fig3_path = plot_ranked_bars_two_panel(
         fig2_data,
         "UN Scale of Assessment Shares (2027)\nCBD Parties (High income excluded, SIDS preserved)",
-        "fig_5_two_panel_ranked.svg",
+        "fig_3_two_panel_ranked.svg",
         color="#6366F1",
         zoom_ymax=1.5,
     )
 
-    print("\nBuilding Figure 6: Two-panel ranked bars without China...")
-    fig6_path = plot_ranked_bars_two_panel(
-        no_china,
-        "UN Scale of Assessment Shares (2027) — Without China\nCBD Parties (High income excluded, SIDS preserved)",
-        "fig_6_two_panel_ranked_no_china.svg",
+    print("\nBuilding Figure 4: Two-panel ranked bars without top contributor...")
+    fig4_path = plot_ranked_bars_two_panel(
+        no_top,
+        "UN Scale of Assessment Shares (2027) — Without Top Contributor\nCBD Parties (High income excluded, SIDS preserved)",
+        "fig_4_two_panel_ranked_no_top.svg",
         color="#8B5CF6",
         zoom_ymax=1.5,
     )
