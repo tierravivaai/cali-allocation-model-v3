@@ -171,8 +171,11 @@ def plot_ranked_bars(shares, title, filename, color="#6366F1"):
     plt.tight_layout()
     svg_path = os.path.join(OUTPUT_DIR, filename)
     plt.savefig(svg_path, format="svg", bbox_inches="tight", facecolor="white")
+    png_path = os.path.splitext(svg_path)[0] + ".png"
+    plt.savefig(png_path, format="png", dpi=200, bbox_inches="tight", facecolor="white")
     plt.close()
     print(f"Saved: {svg_path}")
+    print(f"Saved: {png_path}")
     return svg_path
 
 
@@ -269,21 +272,27 @@ if __name__ == "__main__":
     fig2_csv = save_csv(fig2_data, "fig_2_non_high_income.csv")
 
     print("\nBuilding Figure 3: Ranked bars (142 eligible Parties, EU excluded)...")
+    fig3_data = fig2_data[fig2_data["party_name"] != "European Union"].copy()
+    fig3_data = fig3_data.sort_values("un_share", ascending=False).reset_index(drop=True)
     fig3_path = plot_ranked_bars(
         fig2_data,
         "UN Scale of Assessment Shares (2027)\nCBD Parties ranked highest to lowest (High income excluded, SIDS preserved)",
         "fig_3_ranked_bars.svg",
         color="#6366F1",
     )
+    fig3_csv = save_csv(fig3_data, "fig_3_ranked_bars.csv")
 
     print("\nBuilding Figure 4: Ranked bars without China...")
     no_china = fig2_data[fig2_data["party_name"] != "China"].copy()
+    fig4_data = no_china[no_china["party_name"] != "European Union"].copy()
+    fig4_data = fig4_data.sort_values("un_share", ascending=False).reset_index(drop=True)
     fig4_path = plot_ranked_bars(
         no_china,
         "UN Scale of Assessment Shares (2027) — Without China\nCBD Parties ranked highest to lowest (High income excluded, SIDS preserved)",
         "fig_4_ranked_bars_no_china.svg",
         color="#8B5CF6",
     )
+    fig4_csv = save_csv(fig4_data, "fig_4_ranked_bars_no_china.csv")
 
     print("\nGenerating README.md...")
     generate_readme(fig1_data, fig2_data, fig1_path, fig2_path, fig1_csv, fig2_csv)
