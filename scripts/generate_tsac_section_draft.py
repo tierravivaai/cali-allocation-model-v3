@@ -439,6 +439,112 @@ def main():
         "boundary at TSAC = 3.0% as the structural ceiling."
     ).paragraph_format.space_after = Pt(12)
 
+    # ---- SECTION: Band Transfer Analysis ----
+    h2 = doc.add_heading("Band Transfer Analysis: Who Gains and Who Loses", level=2)
+    for run in h2.runs:
+        run.font.name = FONT
+
+    # Band composition summary
+    doc.add_paragraph(
+        "A critical consideration for Parties is how TSAC reallocates funds between bands. "
+        "Table D shows the composition of each IUSAF band under the pure IUSAF baseline. "
+        "Band 2 is the largest group with 59 eligible Parties, including 31 LDCs and 11 SIDS. "
+        "Band 6 contains a single upper-middle-income Party (China)."
+    ).paragraph_format.space_after = Pt(6)
+
+    band_comp_headers = ['IUSAF Band', 'Parties', 'LDCs', 'SIDS', 'Income distribution',
+                         'IUSAF total\n(USD M)', 'Per-Party\n(USD M)']
+    band_comp_rows = [
+        ['Band 1 (≤0.001%)', '31', '13', '22', '7 Low, 10 Lower-mid, 9 Upper-mid, 5 High', '264.28', '8.53'],
+        ['Band 2 (0.001–0.01%)', '59', '31', '11', '19 Low, 23 Lower-mid, 14 Upper-mid, 3 High', '435.92', '7.39'],
+        ['Band 3 (0.01–0.1%)', '30', '0', '4', '12 Lower-mid, 15 Upper-mid, 3 High', '187.55', '6.25'],
+        ['Band 4 (0.1–1.0%)', '18', '0', '2', '5 Lower-mid, 12 Upper-mid, 1 High', '97.19', '5.40'],
+        ['Band 5 (1.0–10.0%)', '3', '0', '0', '1 Lower-mid, 2 Upper-mid', '12.79', '4.26'],
+        ['Band 6 (>10.0%)', '1', '0', '0', '1 Upper-mid', '2.27', '2.27'],
+    ]
+    styled_table(doc, band_comp_headers, band_comp_rows,
+                 col_widths=[Cm(3.0), Cm(1.5), Cm(1.0), Cm(1.0), Cm(5.0), Cm(2.0), Cm(2.0)])
+
+    cap = doc.add_paragraph()
+    cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = cap.add_run("Table D1. IUSAF band composition (142 eligible Parties, high-income excluded)")
+    run.font.name = FONT
+    run.font.size = Pt(8.5)
+    run.font.italic = True
+
+    doc.add_paragraph()
+
+    # Band transfer table
+    doc.add_paragraph(
+        "Table D2 shows how total band allocations change relative to the pure IUSAF baseline "
+        "as TSAC increases. Positive values indicate the band gains funds; negative values "
+        "indicate the band loses funds."
+    ).paragraph_format.space_after = Pt(6)
+
+    # Compute band transfer data
+    transfer_betas = [(0.015, '1.5%'), (0.025, '2.5%'), (0.03, '3.0%'), (0.035, '3.5%'), (0.05, '5.0%')]
+    band_keys = ['Band 1', 'Band 2', 'Band 3', 'Band 4', 'Band 5', 'Band 6']
+    band_full = ['Band 1: <= 0.001%', 'Band 2: 0.001% - 0.01%', 'Band 3: 0.01% - 0.1%',
+                 'Band 4: 0.1% - 1.0%', 'Band 5: 1.0% - 10.0%', 'Band 6: > 10.0%']
+
+    transfer_headers = ['Band', 'Parties', 'Δ at 1.5%\n(USD M)', 'Δ at 2.5%\n(USD M)',
+                        'Δ at 3.0%\n(USD M)', 'Δ at 3.5%\n(USD M)', 'Δ at 5.0%\n(USD M)']
+    transfer_rows = []
+
+    # Compute pure IUSAF band totals
+    base_df_ref = get_base_data(con)
+    pure_ref = calculate_allocations(base_df_ref, FUND, IPLC, exclude_high_income=True,
+                                     tsac_beta=0, sosac_gamma=0, equality_mode=False,
+                                     un_scale_mode="band_inversion")
+    pure_elig_ref = pure_ref[pure_ref['eligible']]
+
+    for bk, bf in zip(band_keys, band_full):
+        pure_band = pure_elig_ref[pure_elig_ref['un_band'] == bf]
+        n = len(pure_band)
+        pure_total = pure_band['total_allocation'].sum()
+        row = [bk, str(n)]
+        for beta, label in transfer_betas:
+            df_t = calculate_allocations(base_df_ref, FUND, IPLC, exclude_high_income=True,
+                                          tsac_beta=beta, sosac_gamma=0.03, equality_mode=False,
+                                          un_scale_mode="band_inversion")
+            eligible_t = df_t[df_t['eligible']]
+            band_t = eligible_t[eligible_t['un_band'] == bf]
+            change = band_t['total_allocation'].sum() - pure_total
+            row.append(f"{change:+.2f}")
+        transfer_rows.append(row)
+
+    styled_table(doc, transfer_headers, transfer_rows,
+                 col_widths=[Cm(2.5), Cm(1.5), Cm(2.5), Cm(2.5), Cm(2.5), Cm(2.5), Cm(2.5)],
+                 highlight_rows={1: "red"})
+
+    cap = doc.add_paragraph()
+    cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = cap.add_run("Table D2. Change in total band allocation vs pure IUSAF (USD M, SOSAC = 3%)")
+    run.font.name = FONT
+    run.font.size = Pt(8.5)
+    run.font.italic = True
+
+    doc.add_paragraph(
+        "The transfer analysis reveals a striking pattern: Band 2, containing 59 eligible "
+        "Parties (including 31 LDCs and 11 SIDS), consistently bears the largest absolute "
+        "loss at every TSAC level, while Band 6 (a single upper-middle-income Party, China) "
+        "receives the largest absolute gain. At the Gini-minimum (TSAC = 2.5%), Band 2 loses "
+        "$7.79M while Band 6 gains $2.88M — a 126.5% increase for Band 6 funded by a 1.8% "
+        "reduction for Band 2. At TSAC = 3.5% (the former 'Bounded' point), Band 2 loses "
+        "$9.06M while Band 6 gains $4.05M — a 178.3% increase."
+    ).paragraph_format.space_after = Pt(6)
+
+    doc.add_paragraph(
+        "This raises an important political consideration: TSAC reallocates funds from the "
+        "largest group of developing countries (Band 2, predominantly low and lower-middle "
+        "income) towards the Party with the largest land area (Band 6, an upper-middle-income "
+        "country). Beyond the band-order boundary at TSAC = 3.0%, this transfer also "
+        "subverts the IUSAF ranking, giving China (Band 6) a higher per-Party allocation than "
+        "Brazil, India and Mexico (Band 5). The Gini-minimum (TSAC = 2.5%) represents the "
+        "point at which the equality gains from this transfer are maximised while the band "
+        "ordering that protects Band 5 is still preserved."
+    ).paragraph_format.space_after = Pt(12)
+
     # ---- SECTION 7: Beyond the Boundary ----
     h2 = doc.add_heading("Reference Points Beyond the Policy Range", level=2)
     for run in h2.runs:
