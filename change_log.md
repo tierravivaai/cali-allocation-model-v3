@@ -55,11 +55,10 @@
 - Added explanatory wording in reports clarifying that internal code parameters `tsac_beta` and `sosac_gamma` correspond to the user-facing TSAC and SOSAC weights.
 - Refined the V3 balance-point outputs so SOSAC is now reported as above the scanned range rather than as an identified in-range point, with an analytical estimate of approximately `17.4%`.
 - Regenerated V3 sensitivity outputs after the land-area matching fix so balance-point and scenario metrics reflect the corrected land-area denominator.
-- Renamed the TSAC=5% / SOSAC=3% reference scenario from `practical_balance_point` to `gini_optimal_point`, and renamed related floor/ceiling variants to the `gini_optimal_*` pattern.
-- Renamed the corresponding balance-point label from `practical` to `gini_optimal` in balance-point analysis outputs and summaries.
+- Renamed the TSAC=5% / SOSAC=3% reference scenario from `practical_balance_point` to `gini_optimal_point`, and renamed related floor/ceiling variants to the `gini_optimal_*` pattern. (Further renamed to `gini_minimum_point` in v4.0 — see below.)
+- Renamed the corresponding balance-point label from `practical` to `gini_optimal` in balance-point analysis outputs and summaries. (Further renamed to `gini_minimum` in v4.0 — see below.)
 - Corrected sweep-summary trigger attribution so Spearman and top-20 turnover threshold crossings are reported separately, rather than always being attributed to the Spearman trigger.
 - Added `integrity_checks.csv` as a sensitivity-app export for reviewer-facing invariant checks.
-- Updated the Gini-optimal balance-point note to explain that the Spearman constraint binds: the unconstrained Gini minimum occurs at `5.5%`, but the constrained optimum is `5.0%` because Spearman must remain above `0.85`.
 - Regenerated the V3 sensitivity report pack so exported outputs now include the reviewer-facing `integrity_checks.csv` with one row per scenario (`14` rows total) and `all_checks_pass=PASS` for all standard library scenarios.
 
 ### Testing and quality
@@ -68,7 +67,7 @@
 - Added coverage reporting via `pytest-cov` and `pytest.ini`.
 - Fixed sensitivity warnings caused by constant-distribution Spearman calculations.
 - Restored the local virtual environment to match `requirements.txt` and confirmed the full suite passes.
-- Updated sensitivity, balance-analysis, UI, and reporting tests for the `gini_optimal` / `gini_optimal_point` rename.
+- Updated sensitivity, balance-analysis, UI, and reporting tests for the `gini_optimal` / `gini_optimal_point` rename. (Further renamed to `gini_minimum` in v4.0 — see below.)
 - Added a reporting test to verify sweep summaries attribute Spearman and turnover triggers separately.
 - Added integrity-check export tests covering schema completeness, valid-scenario pass behaviour, and deliberate non-conservation failure detection.
 
@@ -80,6 +79,52 @@
   - App state remains consistent after parameter changes
 - Updated `.gitignore` to exclude `sensitivity-reports/v2-sensitivity-reports`
 
-### Current validated status
+### Current validated status (v3)
 - Full automated test suite passing (`138` tests, including 3 new app dataframe tests).
 - V3 sensitivity markdown and CSV outputs regenerated successfully, including `integrity_checks.csv`.
+
+---
+
+## v4.0 — Option D threshold revision (2026-04-18)
+
+### Methodological change: band-order preservation replaces Spearman 0.85 threshold
+- Assessed the hard-coded Spearman ρ=0.85 threshold and found no empirical structural break at that value; the only clear breakpoint is band-order overturn at ρ≈0.93 (TSAC=3.0%).
+- Created `docs/spearman-threshold-assessment.md` documenting the assessment, four grounding options, and resolution.
+- Deprecated `break_point_timeline.svg` and `decision_boundaries.svg` to `deprecated/spearman-0.85-threshold/` with explanatory README.
+- Implemented Option D (multi-criterion approach): replaced the arbitrary Spearman constraint with a structural band-order preservation constraint plus a Spearman safety floor.
+- Added `_band_mean()`, `_band_order_preserved()`, and `_min_gini_preserving_band_order()` in `balance_analysis.py` — the Gini-minimum now requires Band 5 mean allocation > Band 6 mean allocation, with a Spearman safety floor of 0.80.
+- Added band-order columns to sweep output: `band_order_preserved`, `band6_mean_alloc_m`, `band5_mean_alloc_m`.
+- Made `_spearman_by_party()` self-filtering with internal `_eligible()` calls so it is robust to unfiltered input (previously inflated ρ from 0.852 to 0.945 by including ineligible parties).
+
+### Rename: gini_optimal → gini_minimum
+- Renamed `gini_optimal` → `gini_minimum` across all code, UI, tests, and documentation to reflect that the constraint identifies the minimum Gini subject to structural constraints, not an unconstrained optimum.
+- Renamed `gini_optimal_point` → `gini_minimum_point` in scenario definitions, balance-point labels, and reporting.
+
+### Default baseline change
+- Updated DEFAULT_BASELINE TSAC from 5% to 2.5% in `sensitivity_scenarios.py`.
+- Updated preset button in `app.py` from TSAC=5% to TSAC=2.5%.
+- Updated Combined Stewardship Position: 94.5% IUSAF, 2.5% TSAC, 3% SOSAC.
+
+### Figure and reference line updates
+- Replaced Spearman 0.85 horizontal reference line in `update_figures.py` with band-order overturn vertical line at TSAC=3%.
+- Updated `sensitivity.py` reference line from 0.85 to 0.80 (Spearman safety floor).
+- Updated `band-analysis/break-points/readme.md` with deprecation note for 0.85 threshold.
+
+### Verified results at Gini-minimum (TSAC=2.5%, SOSAC=3%)
+- Spearman ρ = 0.945 (safety floor 0.80 does not bind; slack = 0.145).
+- Band-order margin = 5.4% (Band 5 mean 5.44M > Band 6 mean 5.15M).
+- Band-order overturn at TSAC = 3.0% (Band 6 mean 5.74M > Band 5 mean 5.70M).
+- Gini = 0.0886.
+
+### Documentation updates
+- Updated `docs/component-rationale.md` with band-order preservation framing, revised ranking trajectory table, and updated threshold summary.
+- Added `optiond-threshold-revision-rationale.md` at repo root as implementation specification.
+
+### Testing and quality
+- All 138 tests passing after updates for renamed parameters, new constraint logic, and changed baseline values.
+- Updated test assertions: TSAC baseline 0.025 (was 0.05), Spearman floor 0.80 (was 0.85), preset slider 2.5 (was 5).
+
+### Git workflow
+- Tagged main as `v3.final` (pre-Option D state).
+- Merged `optiond` branch with `--no-ff` to preserve branch history.
+- Tagged main as `v4.0`.
