@@ -307,6 +307,85 @@ def main():
         "if IUSAF is accepted as the stable baseline, the question for consideration by Parties "
         "would be how to allocate the $45–65 million stewardship pool. Note that the size of "
         "the stewardship pool will scale in accordance with the overall size of the Cali Fund."
+    ).paragraph_format.space_after = Pt(6)
+
+    # ---- Table: Stewardship pool by fund size ----
+    doc.add_paragraph(
+        "Table E1 shows how the stewardship pool and its IUSAF, TSAC, and SOSAC components "
+        "break down under each balance point at different projected fund sizes."
+    ).paragraph_format.space_after = Pt(6)
+
+    pool_betas = [
+        ('Strict (1.5%, 3%)', 0.015, 0.03),
+        ('Gini-minimum (2.5%, 3%)', 0.025, 0.03),
+        ('Band-order boundary (3.0%, 3%)', 0.03, 0.03),
+    ]
+    fund_sizes_bn = [0.05, 0.2, 0.5, 1.0, 5.0, 10.0]
+
+    pool_headers = ['Balance Point', 'IUSAF %', 'TSAC %', 'SOSAC %']
+    for fs in fund_sizes_bn:
+        label = f"${int(fs*1000)}m" if fs < 1 else f"${fs:.0f}bn"
+        pool_headers.append(f'{label}\nIUSAF|TSAC|SOSAC\n(USD M)')
+
+    pool_rows = []
+    for name, beta, gamma in pool_betas:
+        iusaf_pct = (1 - beta - gamma) * 100
+        tsac_pct = beta * 100
+        sosac_pct = gamma * 100
+        row = [name, f"{iusaf_pct:.1f}%", f"{tsac_pct:.1f}%", f"{sosac_pct:.0f}%"]
+        for fs in fund_sizes_bn:
+            fund_m = fs * 1000
+            iusaf_m = fund_m * (1 - beta - gamma)
+            tsac_m = fund_m * beta
+            sosac_m = fund_m * gamma
+            row.append(f"{iusaf_m:.1f}|{tsac_m:.1f}|{sosac_m:.1f}")
+        pool_rows.append(row)
+
+    styled_table(doc, pool_headers, pool_rows,
+                 col_widths=[Cm(3.5), Cm(1.5), Cm(1.5), Cm(1.5)] + [Cm(2.2)] * len(fund_sizes_bn))
+
+    cap = doc.add_paragraph()
+    cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = cap.add_run("Table E1. Component allocation by balance point and fund size (USD millions, IUSAF | TSAC | SOSAC)")
+    run.font.name = FONT
+    run.font.size = Pt(8.5)
+    run.font.italic = True
+
+    doc.add_paragraph()
+
+    # ---- Table: Stewardship pool totals ----
+    doc.add_paragraph(
+        "Table E2 shows the total stewardship pool (TSAC + SOSAC) under each balance point, "
+        "making clear the amount 'in play' at different fund sizes."
+    ).paragraph_format.space_after = Pt(6)
+
+    pool2_headers = ['Balance Point', 'Pool %', 'Pool at\n$50m', 'Pool at\n$200m',
+                     'Pool at\n$500m', 'Pool at\n$1bn', 'Pool at\n$5bn', 'Pool at\n$10bn']
+    pool2_rows = []
+    for name, beta, gamma in pool_betas:
+        pool_pct = (beta + gamma) * 100
+        row = [name, f"{pool_pct:.1f}%"]
+        for fs in fund_sizes_bn:
+            fund_m = fs * 1000
+            pool_m = fund_m * (beta + gamma)
+            row.append(f"${pool_m:.1f}m")
+        pool2_rows.append(row)
+
+    styled_table(doc, pool2_headers, pool2_rows,
+                 col_widths=[Cm(3.5), Cm(1.5)] + [Cm(2.0)] * len(fund_sizes_bn))
+
+    cap = doc.add_paragraph()
+    cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = cap.add_run("Table E2. Total stewardship pool (TSAC + SOSAC) by balance point and fund size")
+    run.font.name = FONT
+    run.font.size = Pt(8.5)
+    run.font.italic = True
+
+    doc.add_paragraph(
+        "These tables confirm that regardless of fund size, the IUSAF equity base accounts for "
+        "93.5–95.5% of the Cali Fund and the stewardship pool is 4.5–6.5%. At the most likely "
+        "fund sizes under discussion ($200m–$1bn), the stewardship pool ranges from $9m to $55m "
+        "at the Gini-minimum, and from $9m to $60m at the band-order boundary."
     ).paragraph_format.space_after = Pt(12)
 
     # ---- SECTION 4: Band-Order Preservation Table ----
