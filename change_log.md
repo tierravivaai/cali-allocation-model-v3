@@ -130,6 +130,12 @@
 - Updated `test_ldc_sids_total_sum` to verify both `exclude_hi=False` (sums to 196) and `exclude_hi=True` (sums to 142).
 - Updated `test_sids_filtering_logic` to use the eligible mask.
 
+### Scenario table and figure regeneration for Option D
+- Updated `band-analysis/break-points/analysis.py`: replaced `even` scenario (TSAC=5%) with `gini_minimum` (TSAC=2.5%) and added `band_order_overturn` (TSAC=3.0%); replaced deprecated 0.85 threshold with safety floor 0.80; updated visualization labels.
+- Regenerated scenario CSVs: `gini_minimum.csv`, `band_order_overturn.csv` (replacing `even.csv`).
+- Updated `scripts/rank_panels_scenarios.py` and `scripts/rank_change_scenarios.py` with new scenario names and labels.
+- Regenerated Word table documents in `model-tables/`.
+
 ### Git workflow
 - Tagged main as `v3.final` (pre-Option D state).
 - Merged `optiond` branch with `--no-ff` to preserve branch history.

@@ -27,10 +27,11 @@ FONT_SIZE = Pt(7.5)
 DOC1_SCENARIOS = [
     ("Strict (β=1.5%, γ=3%)", "strict.csv"),
     ("Bounded (β=3.5%, γ=3%)", "bounded.csv"),
-    ("Even (β=5.0%, γ=3%)", "even.csv"),
+    ("Gini-minimum (β=2.5%, γ=3%)", "gini_minimum.csv"),
 ]
 
 DOC2_SCENARIOS = [
+    ("Band-order Overturn (β=3.0%, γ=3%)", "band_order_overturn.csv"),
     ("TSAC Overturn (β≈9.2%, γ=3%)", "tsac_overturn.csv"),
     ("SOSAC Overturn (β=0%, γ≈12.5%)", "sosac_overturn.csv"),
 ]

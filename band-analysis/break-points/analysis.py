@@ -37,10 +37,9 @@ EXCLUDE_HIGH_INCOME = True
 UN_SCALE_MODE = "band_inversion"
 SOSAC_GAMMA_DEFAULT = 0.03
 
-# DEPRECATED: The 0.85 Spearman threshold below is a design parameter without empirical
-# foundation. It will be replaced by a multi-criterion approach (Option D) on a future branch.
-# See docs/spearman-threshold-assessment.md for full assessment.
-SPEARMAN_THRESHOLD_DEPRECATED = 0.85
+# DEPRECATED: The 0.85 Spearman threshold was replaced by Option D (band-order preservation
+# + Spearman safety floor 0.80) in v4.0. See docs/spearman-threshold-assessment.md.
+SPEARMAN_SAFETY_FLOOR = 0.80
 
 # Output directory
 OUTPUT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -263,8 +262,9 @@ def create_break_point_timeline(tsac_sweep_path: str, sosac_sweep_path: str,
     
     # Balance point lines
     ax1.axvline(x=1.5, color='#1D9E75', linestyle='--', linewidth=1.5, alpha=0.8, label='Strict (1.5%)')
-    ax1.axvline(x=3.5, color='#378ADD', linestyle='--', linewidth=1.5, alpha=0.8, label='Bounded (3.5%)')
-    ax1.axvline(x=5.0, color='#8B5CF6', linestyle='--', linewidth=1.5, alpha=0.8, label='Even (5.0%)')
+    ax1.axvline(x=2.5, color='#378ADD', linestyle='--', linewidth=1.5, alpha=0.8, label='Gini-minimum (2.5%)')
+    ax1.axvline(x=3.0, color='#8B5CF6', linestyle='--', linewidth=1.5, alpha=0.8, label='Band-order overturn (3.0%)')
+    ax1.axvline(x=3.5, color='#BA7517', linestyle='--', linewidth=1.5, alpha=0.8, label='Bounded (3.5%)')
     ax1.axvline(x=tsac_crossover * 100, color='#EF4444', linestyle='-', linewidth=2, 
                 label=f'TSAC Overturn ({tsac_crossover*100:.2f}%)')
     
@@ -403,9 +403,10 @@ def create_decision_boundaries(scenario_metrics: Dict[str, Dict], output_path: s
     
     summary_text = "Decision Boundaries Summary\n\n"
     summary_text += "• Lower Bound: Strict (β=1.5%)\n  IUSAF dominant for all Parties\n\n"
-    summary_text += "• Upper Bound (TSAC): β where TSAC overtakes IUSAF\n\n"
-    summary_text += "• Upper Bound (SOSAC): γ where SOSAC overtakes IUSAF for SIDS\n\n"
-    summary_text += "⚠️ Beyond overturn points, overlay components\n   become primary allocation drivers"
+    summary_text += "• Gini-minimum (β=2.5%): Lowest Gini\n  preserving IUSAF band order\n\n"
+    summary_text += "• Band-order overturn (β=3.0%):\n  Band 6 overtakes Band 5\n\n"
+    summary_text += "• Upper Bound (TSAC): β where TSAC\n  overtakes IUSAF for any Party\n\n"
+    summary_text += "• Upper Bound (SOSAC): γ where SOSAC\n  overtakes IUSAF for SIDS"
     
     ax.text(0.1, 0.9, summary_text, transform=ax.transAxes, fontsize=10,
             verticalalignment='top', fontfamily='monospace',
@@ -467,7 +468,8 @@ def main():
         'pure_iusaf': (0.0, 0.0),
         'strict': (0.015, 0.03),
         'bounded': (0.035, 0.03),
-        'even': (0.05, 0.03),
+        'gini_minimum': (0.025, 0.03),
+        'band_order_overturn': (0.03, 0.03),
         'tsac_overturn': (tsac_crossover, 0.03),
         'sosac_overturn': (0.0, sosac_crossover),
     }

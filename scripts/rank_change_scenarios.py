@@ -18,8 +18,9 @@ HEADER_BG = "D9D9D9"
 SCENARIOS = [
     ("Pure IUSAF", "pure_iusaf.csv", 0.0, 0.0),
     ("Strict\n(β=1.5%)", "strict.csv", 0.015, 0.03),
+    ("Gini-minimum\n(β=2.5%)", "gini_minimum.csv", 0.025, 0.03),
+    ("Band-order\noverturn\n(β=3.0%)", "band_order_overturn.csv", 0.03, 0.03),
     ("Bounded\n(β=3.5%)", "bounded.csv", 0.035, 0.03),
-    ("Even\n(β=5.0%)", "even.csv", 0.05, 0.03),
     ("TSAC Overturn\n(β≈9.2%)", "tsac_overturn.csv", 0.092, 0.03),
     ("SOSAC Overturn\n(γ≈12.5%)", "sosac_overturn.csv", 0.0, 0.125),
 ]
