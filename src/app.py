@@ -190,13 +190,13 @@ with st.sidebar.expander("Negotiation Presets", expanded=True):
         
     # Row 3 (Full width)
     if st.button(
-        "5. Gini-optimal point",
-        help="TSAC=5%, SOSAC=3% — Gini-optimal point (minimises Gini, Spearman > 0.85)",
+        "5. Gini-minimum point",
+        help="TSAC=2.5%, SOSAC=3% — Gini-minimum point (minimises Gini, preserves IUSAF band order)",
         use_container_width=True,
     ):
-        st.session_state["tsac_beta"] = 0.05
+        st.session_state["tsac_beta"] = 0.025
         st.session_state["sosac_gamma"] = 0.03
-        st.session_state["tsac_beta_pct"] = 5
+        st.session_state["tsac_beta_pct"] = 2.5
         st.session_state["sosac_gamma_pct"] = 3
         st.session_state["exclude_hi"] = True
         st.session_state["equality_mode"] = False

@@ -248,9 +248,8 @@ def create_scenario_comparison():
     ax.set_ylabel('Spearman Correlation')
     ax.set_title('Rank Correlation with Pure IUSAF\n(1.0 = identical ranking)', fontsize=11, fontweight='bold')
     ax.set_ylim(0.8, 1.05)
-    # DEPRECATED: 0.85 line is a design parameter, not an empirical threshold.
-    # See docs/spearman-threshold-assessment.md. Figures with this line are in deprecated/.
-    # ax.axhline(y=0.85, color='#EF4444', linestyle='--', alpha=0.5, label='Moderate overlay threshold')
+    # Band-order overturn reference line at TSAC = 3.0%
+    ax.axvline(x=0.03, color='#EF4444', linestyle='--', alpha=0.5, label='Band-order overturn (TSAC=3.0%)')
     ax.legend(fontsize=9)
     ax.grid(True, axis='y', alpha=0.3)
     

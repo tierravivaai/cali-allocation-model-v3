@@ -40,10 +40,10 @@ def test_tsac_sosac_defaults_and_ranges_in_app_config():
     assert 'sosac_gamma = sosac_gamma_pct / 100.0' in app_text
 
     assert 'if tsac_beta + sosac_gamma >= 1.0:' in app_text
-    assert 'st.session_state["tsac_beta"] = 0.05' in app_text
+    assert 'st.session_state["tsac_beta"] = 0.025' in app_text
     assert 'st.session_state["sosac_gamma"] = 0.03' in app_text
-    assert '"5. Gini-optimal point"' in app_text
-    assert 'Gini-optimal point (minimises Gini, Spearman > 0.85)' in app_text
+    assert '"5. Gini-minimum point"' in app_text
+    assert 'Gini-minimum point (minimises Gini, preserves IUSAF band order)' in app_text
     assert 'file_name="integrity_checks.csv"' in sensitivity_text
 
     assert '**How stewardship settings affect this country**' in app_text

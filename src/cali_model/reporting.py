@@ -177,7 +177,7 @@ The sweep indicates where policy overlay departs from pure IUSAF and, separately
 """
 
 
-def generate_comparative_report(metrics_df: pd.DataFrame, baseline_id: str = "gini_optimal_point") -> str:
+def generate_comparative_report(metrics_df: pd.DataFrame, baseline_id: str = "gini_minimum_point") -> str:
     baseline = metrics_df[metrics_df["scenario_id"] == baseline_id]
     baseline_row = baseline.iloc[0] if not baseline.empty else metrics_df.iloc[0]
 

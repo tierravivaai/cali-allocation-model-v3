@@ -98,7 +98,7 @@ st.title("Cali Fund Sensitivity Testing and Reporting")
 st.caption("Robustness diagnostics and analytical reporting app using the same model logic as the main calculator.")
 
 st.sidebar.header("Scenario Setup")
-library_choice = st.sidebar.selectbox("Named scenario", options=list(scenario_library.keys()), index=list(scenario_library.keys()).index("gini_optimal_point"))
+library_choice = st.sidebar.selectbox("Named scenario", options=list(scenario_library.keys()), index=list(scenario_library.keys()).index("gini_minimum_point"))
 scenario = dict(scenario_library[library_choice])
 
 scenario["fund_size"] = st.sidebar.selectbox("Fund size anchor", options=ranges["fund_size"], index=ranges["fund_size"].index(scenario.get("fund_size", 1_000_000_000)))
@@ -423,7 +423,7 @@ with tab4:
 
     scenario_brief_md = generate_scenario_brief(current_metrics, top_gainers, top_losers)
     sweep_summary_md = generate_sweep_summary("one-way sweep", one_way_df, "spearman_vs_pure_iusaf")
-    comparative_md = generate_comparative_report(library_metrics_df, baseline_id="gini_optimal_point")
+    comparative_md = generate_comparative_report(library_metrics_df, baseline_id="gini_minimum_point")
     annex_md = generate_technical_annex()
     local_stability_md = generate_local_stability_markdown(current_metrics, local_stability_table)
 
@@ -592,7 +592,7 @@ with tab5:
             line=dict(color="steelblue", dash="dot"),
             yaxis="y2",
         ))
-        fig2.add_hline(y=0.85, line_dash="dot", line_color="steelblue", annotation_text="Moderate overlay threshold (0.85)")
+        fig2.add_hline(y=0.80, line_dash="dot", line_color="steelblue", annotation_text="Spearman safety floor (0.80)")
         fig2.update_layout(
             title="Gini coefficient and Spearman by TSAC weight",
             xaxis_title="TSAC weight (%)",
@@ -607,7 +607,7 @@ with tab5:
             labels = {
                 "strict": "Strict (China ≤ 1.0)",
                 "modified": "Modified (Brazil ≤ 1.0)",
-                "gini_optimal": "Gini-optimal (min Gini, Spearman > 0.85)",
+                "gini_minimum": "Gini-minimum (min Gini, preserves band order)",
                 "sosac": "SOSAC balance",
             }
             for key, label in labels.items():

@@ -20,14 +20,14 @@ def test_scenario_library_contains_required_entries():
         "pure_equality",
         "pure_iusaf_raw",
         "pure_iusaf_band",
-        "gini_optimal_point",
+        "gini_minimum_point",
         "tsac_strict_balance",
         "tsac_modified_balance",
         "terrestrial_max",
         "ocean_max",
-        "gini_optimal_floor_005",
-        "gini_optimal_ceiling_1",
-        "gini_optimal_floor_005_ceiling_1",
+        "gini_minimum_floor_005",
+        "gini_minimum_ceiling_1",
+        "gini_minimum_floor_005_ceiling_1",
         "exclude_hi_off_compare",
         "exclude_hi_on_compare",
         "raw_vs_band_compare",
@@ -35,9 +35,9 @@ def test_scenario_library_contains_required_entries():
     assert required.issubset(set(library.keys()))
 
 
-def test_metrics_and_invariants_run_for_gini_optimal_point():
+def test_metrics_and_invariants_run_for_gini_minimum_point():
     df = _base_df()
-    scenario = get_scenario_library()["gini_optimal_point"]
+    scenario = get_scenario_library()["gini_minimum_point"]
     current = calculate_allocations(df, scenario["fund_size"], scenario["iplc_share_pct"], exclude_high_income=scenario["exclude_high_income"], floor_pct=scenario["floor_pct"], ceiling_pct=scenario["ceiling_pct"], tsac_beta=scenario["tsac_beta"], sosac_gamma=scenario["sosac_gamma"], equality_mode=scenario["equality_mode"], un_scale_mode=scenario["un_scale_mode"])
     iusaf = calculate_allocations(df, scenario["fund_size"], scenario["iplc_share_pct"], exclude_high_income=scenario["exclude_high_income"], tsac_beta=0.0, sosac_gamma=0.0, equality_mode=False, un_scale_mode=scenario["un_scale_mode"])
     equality = calculate_allocations(df, scenario["fund_size"], scenario["iplc_share_pct"], exclude_high_income=scenario["exclude_high_income"], tsac_beta=0.0, sosac_gamma=0.0, equality_mode=True, un_scale_mode=scenario["un_scale_mode"])
@@ -99,18 +99,18 @@ def test_retired_baseline_keys_absent():
     assert retired_stewardship_key not in library
     assert retired_balanced_key not in library
     assert retired_practical_key not in library
-    assert "gini_optimal_point" in library
+    assert "gini_minimum_point" in library
 
 
-def test_gini_optimal_scenario_key():
+def test_gini_minimum_scenario_key():
     library = get_scenario_library()
-    assert "gini_optimal_point" in library
+    assert "gini_minimum_point" in library
     assert "practical_balance_point" not in library
 
 
-def test_gini_optimal_point_parameters():
-    scenario = get_scenario_library()["gini_optimal_point"]
-    assert abs(scenario["tsac_beta"] - 0.05) < 0.001
+def test_gini_minimum_point_parameters():
+    scenario = get_scenario_library()["gini_minimum_point"]
+    assert abs(scenario["tsac_beta"] - 0.025) < 0.001
     assert abs(scenario["sosac_gamma"] - 0.03) < 0.001
 
 
@@ -125,7 +125,7 @@ def test_floor_ceiling_variants_renamed():
         "practical" + "_floor_005_ceiling_1",
     ]:
         assert old_key not in library
-    for new_key in ["gini_optimal_floor_005", "gini_optimal_ceiling_1", "gini_optimal_floor_005_ceiling_1"]:
+    for new_key in ["gini_minimum_floor_005", "gini_minimum_ceiling_1", "gini_minimum_floor_005_ceiling_1"]:
         assert new_key in library
 
 
