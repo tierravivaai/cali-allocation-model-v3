@@ -75,7 +75,7 @@ class TestComputeGini:
         g = compute_gini(results.loc[results["eligible"], "total_allocation"])
         assert 0.0 <= g <= 1.0
 
-    def test_gini_optimal_point_higher_gini_than_iusaf(self, base_df):
+    def test_gini_minimum_point_higher_gini_than_iusaf(self, base_df):
         iusaf = _run(base_df)
         sf = _run(base_df, tsac_beta=0.05, sosac_gamma=0.03)
         g_iusaf = compute_gini(iusaf.loc[iusaf["eligible"], "total_allocation"])
@@ -117,8 +117,8 @@ class TestComputeComponentRatios:
             assert col in r["ratio_df"].columns
 
 
-def _sweep_row(val, china, brazil, gini, spearman):
-    return {
+def _sweep_row(val, china, brazil, gini, spearman, band_order=True, band6_mean=None, band5_mean=None):
+    row = {
         "sweep_value": val,
         "china_tsac_iusaf_ratio": china,
         "brazil_tsac_iusaf_ratio": brazil,
@@ -126,7 +126,11 @@ def _sweep_row(val, china, brazil, gini, spearman):
         "spearman_vs_pure_iusaf": spearman,
         "max_tsac_iusaf_ratio": max(china, brazil),
         "max_sosac_iusaf_ratio": max(china, brazil),
+        "band_order_preserved": band_order,
+        "band6_mean_alloc_m": band6_mean,
+        "band5_mean_alloc_m": band5_mean,
     }
+    return row
 
 
 class TestIdentifyBalancePoints:
@@ -150,38 +154,40 @@ class TestIdentifyBalancePoints:
         assert bp["modified"] is not None
         assert bp["modified"]["value"] == pytest.approx(0.045, abs=0.001)
 
-    def test_gini_optimal_is_min_gini_above_spearman(self):
+    def test_gini_minimum_is_min_gini_preserving_band_order(self):
         rows = [
-            _sweep_row(0.010, 0.40, 0.20, 0.20, 0.95),
-            _sweep_row(0.020, 0.80, 0.40, 0.13, 0.92),
-            _sweep_row(0.090, 3.00, 1.50, 0.26, 0.79),
+            _sweep_row(0.010, 0.40, 0.20, 0.20, 0.95, band_order=True, band6_mean=2.5, band5_mean=4.5),
+            _sweep_row(0.020, 0.80, 0.40, 0.13, 0.92, band_order=True, band6_mean=4.0, band5_mean=4.2),
+            _sweep_row(0.030, 1.20, 0.60, 0.10, 0.88, band_order=False, band6_mean=5.5, band5_mean=5.0),
+            _sweep_row(0.090, 3.00, 1.50, 0.26, 0.79, band_order=False, band6_mean=12.0, band5_mean=6.0),
         ]
         df = pd.DataFrame(rows)
-        bp = identify_balance_points(df, df, spearman_moderate_threshold=0.85)
-        assert bp["gini_optimal"] is not None
-        assert bp["gini_optimal"]["value"] == pytest.approx(0.020, abs=0.001)
+        bp = identify_balance_points(df, df, spearman_safety_floor=0.80)
+        assert bp["gini_minimum"] is not None
+        assert bp["gini_minimum"]["value"] == pytest.approx(0.020, abs=0.001)
 
-    def test_gini_optimal_label(self):
+    def test_gini_minimum_label(self):
         rows = [
-            _sweep_row(0.010, 0.40, 0.20, 0.20, 0.95),
-            _sweep_row(0.020, 0.80, 0.40, 0.13, 0.92),
-            _sweep_row(0.090, 3.00, 1.50, 0.26, 0.79),
+            _sweep_row(0.010, 0.40, 0.20, 0.20, 0.95, band_order=True),
+            _sweep_row(0.020, 0.80, 0.40, 0.13, 0.92, band_order=True),
+            _sweep_row(0.090, 3.00, 1.50, 0.26, 0.79, band_order=False),
         ]
         df = pd.DataFrame(rows)
         df["tsac_balance_exceeded"] = [False, True, True]
-        bp = identify_balance_points(df, df, spearman_moderate_threshold=0.85)
-        assert bp["gini_optimal"] is not None
-        assert bp["gini_optimal"]["metrics"]["tsac_balance_exceeded"] is True
+        bp = identify_balance_points(df, df, spearman_safety_floor=0.80)
+        assert bp["gini_minimum"] is not None
+        assert bp["gini_minimum"]["metrics"]["tsac_balance_exceeded"] is True
 
-    def test_practical_label_retired(self):
+    def test_no_legacy_labels(self):
         rows = [
-            _sweep_row(0.010, 0.40, 0.20, 0.20, 0.95),
-            _sweep_row(0.020, 0.80, 0.40, 0.13, 0.92),
+            _sweep_row(0.010, 0.40, 0.20, 0.20, 0.95, band_order=True),
+            _sweep_row(0.020, 0.80, 0.40, 0.13, 0.92, band_order=True),
         ]
         df = pd.DataFrame(rows)
-        bp = identify_balance_points(df, df, spearman_moderate_threshold=0.85)
+        bp = identify_balance_points(df, df, spearman_safety_floor=0.80)
         assert "practical" not in bp
-        assert "gini_optimal" in bp
+        assert "gini_optimal" not in bp
+        assert "gini_minimum" in bp
 
     def test_returns_none_when_never_satisfied(self):
         rows = [_sweep_row(0.01, 1.5, 1.2, 0.20, 0.92)]
@@ -223,7 +229,7 @@ class TestGenerateBalancePointSummary:
                 },
             },
             "modified": None,
-            "gini_optimal": None,
+            "gini_minimum": None,
             "sosac": None,
         }
 
@@ -233,14 +239,14 @@ class TestGenerateBalancePointSummary:
 
     def test_contains_all_four_sections(self):
         md = generate_balance_point_summary(
-            {"strict": None, "modified": None, "gini_optimal": None, "sosac": None},
+            {"strict": None, "modified": None, "gini_minimum": None, "sosac": None},
             pd.DataFrame(),
             pd.DataFrame(),
         )
         for section in [
             "Strict balance point",
             "Modified balance point",
-            "Gini-optimal point",
+            "Gini-minimum point",
             "SOSAC balance point",
         ]:
             assert section in md
@@ -249,40 +255,39 @@ class TestGenerateBalancePointSummary:
         md = generate_balance_point_summary(self._bp(), pd.DataFrame(), pd.DataFrame())
         assert "2.4%" in md
 
-    def test_gini_optimal_point_mentioned(self):
+    def test_gini_minimum_point_mentioned(self):
         md = generate_balance_point_summary(self._bp(), pd.DataFrame(), pd.DataFrame())
-        assert "gini-optimal point" in md.lower()
+        assert "gini-minimum point" in md.lower()
 
-    def test_gini_optimal_note_present(self):
+    def test_gini_minimum_note_present(self):
         bp = {
             "strict": None,
             "modified": None,
-            "gini_optimal": {
-                "value": 0.05,
+            "gini_minimum": {
+                "value": 0.025,
                 "metrics": {
-                    "sweep_value": 0.05,
-                    "spearman_vs_pure_iusaf": 0.8520,
-                    "gini_coefficient": 0.0829,
-                    "china_tsac_iusaf_ratio": 2.869,
-                    "brazil_tsac_iusaf_ratio": 1.362,
+                    "sweep_value": 0.025,
+                    "spearman_vs_pure_iusaf": 0.9450,
+                    "gini_coefficient": 0.0886,
+                    "china_tsac_iusaf_ratio": 1.397,
+                    "brazil_tsac_iusaf_ratio": 0.663,
                     "tsac_balance_exceeded": True,
+                    "band_order_preserved": True,
+                    "band6_mean_alloc_m": 5.15,
+                    "band5_mean_alloc_m": 5.44,
                 },
             },
             "sosac": None,
         }
         md = generate_balance_point_summary(bp, pd.DataFrame(), pd.DataFrame())
-        assert "The Spearman constraint (> 0.85) binds" in md
-        assert "the unconstrained Gini minimum is at TSAC=5.5%" in md
-        assert "Spearman=0.822" in md
-        assert '"minimises the Gini coefficient while keeping Spearman rank correlation vs pure IUSAF > 0.85"' in md
-        assert "does not satisfy the TSAC/IUSAF dominance balance condition" in md
-        assert "`tsac_balance_exceeded` is `True`" in md
+        assert "band-order constraint" in md
+        assert "Spearman safety floor" in md
 
     def test_sosac_above_range_text_present(self):
         bp = {
             "strict": None,
             "modified": None,
-            "gini_optimal": None,
+            "gini_minimum": None,
             "sosac": {
                 "value": None,
                 "above_range": True,

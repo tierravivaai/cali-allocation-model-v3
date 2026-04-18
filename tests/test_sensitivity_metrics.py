@@ -32,11 +32,11 @@ def _run_scenario(df, scenario):
 
 def test_integrity_checks_all_pass_for_valid_scenario():
     df = _base_df()
-    scenario = get_scenario_library()["gini_optimal_point"]
+    scenario = get_scenario_library()["gini_minimum_point"]
     results_df = _run_scenario(df, scenario)
 
     row = generate_integrity_checks(
-        scenario_id="gini_optimal_point",
+        scenario_id="gini_minimum_point",
         scenario_params=scenario,
         results_df=results_df,
         fund_size=1_000_000_000,
