@@ -196,13 +196,13 @@ At TSAC ≈ 2.0%, the TSAC component equals the IUSAF component for China — me
 
 At TSAC ≈ 4.0%, the TSAC component equals the IUSAF component for Brazil — the first Band 5 Party where TSAC overtakes IUSAF. At this point, both China and Brazil have TSAC-dominant allocations.
 
-**3. Gini-Minimum / Spearman Boundary (TSAC = 5.0%)**
+**3. Gini-Minimum / Band-Order Boundary (TSAC = 2.5%)**
 
-At TSAC = 5.0% (the Gini-minimum setting), the Spearman rank correlation drops to ρ = 0.852 — the threshold currently used as the constraint for the Gini-optimal point identification. This threshold is a design parameter, not an empirically derived breakpoint; no observable structural change in the allocation rankings occurs at or near ρ = 0.85. See `docs/spearman-threshold-assessment.md` for a full assessment. The Gini coefficient reaches its minimum (0.0829) at this point. This is the point of maximum statistical equality and maximum rank departure simultaneously.
+At TSAC = 2.5% (the Gini-minimum setting under the revised definition), the Gini coefficient is minimised subject to the structural constraint that the IUSAF band hierarchy is preserved — specifically, that Band 6 mean allocation remains below Band 5 mean allocation. A Spearman safety floor of 0.80 is retained as a diagnostic check but does not bind. At TSAC = 2.5%, Spearman ρ ≈ 0.945, well above the 0.80 floor. See `docs/spearman-threshold-assessment.md` for the full assessment of the previous 0.85 threshold and the rationale for the revision.
 
-**4. Spearman Below Threshold (TSAC > 5.5%)**
+**4. Band-Order Overturn (TSAC = 3.0%)**
 
-At TSAC = 5.5%, the Spearman correlation drops below 0.85 (ρ = 0.822), crossing the design-parameter threshold used in the Gini-optimal constraint. Beyond this point, the allocation rankings diverge further from pure IUSAF. No structural discontinuity marks this boundary — see `docs/spearman-threshold-assessment.md`.
+At TSAC = 3.0%, the IUSAF band hierarchy inverts: Band 6 mean exceeds Band 5 mean. This is the structural breakpoint identified empirically. Beyond this point, the allocation formula no longer preserves the ordering implied by the IUSAF band structure.
 
 **5. Rank Re-stabilisation (TSAC > ~8%)**
 
@@ -214,13 +214,13 @@ The full ranking trajectory at SOSAC = 3% (setup b):
 |------|-------|---------|-----------|-----------------|------------------|--------------|
 | 0% | 3% | 97% | 0.977 | 0.00 | 0.00 | SOSAC only — modest rank shift among SIDS |
 | 1.5% | 3% | 95.5% | 0.951 | 0.83 | 0.39 | Strict — IUSAF dominant for all Parties |
-| **2.0%** | **3%** | **95.0%** | **0.948** | **1.11** | **0.53** | **China component overturn — TSAC ≥ IUSAF for China** |
-| **4.0%** | **3%** | **93.0%** | **0.898** | **2.27** | **1.08** | **Brazil component overturn — TSAC ≥ IUSAF for Brazil** |
-| **5.0%** | **3%** | **92.0%** | **0.852** | **2.87** | **1.36** | **Gini-minimum — Spearman at 0.85 boundary** |
-| 5.5% | 3% | 91.5% | 0.822 | 3.17 | 1.51 | Spearman below 0.85 threshold |
-| 10.0% | 3% | 87.0% | 0.666 | 6.07 | 2.88 | Rank order no longer recognisably IUSAF-driven |
+| **2.5%** | **3%** | **94.5%** | **0.945** | **1.40** | **0.66** | **Gini-minimum — band order preserved with margin** |
+| **3.0%** | **3%** | **94.0%** | **0.929** | **1.69** | **0.80** | **Band-order overturn — Band 6 > Band 5** |
+| 3.5% | 3% | 93.5% | 0.917 | 1.98 | 0.94 | Band order already overturned |
+| 5.0% | 3% | 92.0% | 0.852 | 2.87 | 1.36 | Former Gini-minimum (0.85 threshold, now superseded) |
+| 7.5% | 3% | 89.5% | 0.762 | 4.42 | 2.10 | Top-20 full turnover |
 
-The ranking trajectory is monotonic within setup (b): Spearman declines steadily as TSAC increases. The policy-relevant range lies between the strict point (TSAC = 1.5%) and the Gini-minimum (TSAC = 5.0%), where the ranking is in active transition from IUSAF-driven to TSAC-influenced but remains recognisably similar to the IUSAF baseline.
+The ranking trajectory is monotonic: Spearman declines steadily as TSAC increases. The Gini-minimum at TSAC = 2.5% is the last point where band order is preserved with margin (Band 6 mean ≈ USD 5.15M vs Band 5 mean ≈ USD 5.44M). The policy-relevant range lies between the strict point (TSAC = 1.5%) and the band-order overturn (TSAC = 3.0%), where the ranking is in transition but band structure remains intact.
 
 ### Effect on Country Rankings (Setup a: SOSAC = 0%)
 
@@ -247,16 +247,16 @@ At TSAC ≈ 9.2%, the TSAC component overtakes the IUSAF component for China. In
 
 ## Combined Stewardship Position
 
-At the Gini-minimum setting (TSAC = 5%, SOSAC = 3%):
+At the Gini-minimum setting (TSAC = 2.5%, SOSAC = 3%):
 
 | Component | Weight | Share of Formula |
 |-----------|--------|-----------------|
-| IUSAF | 92% | Dominant equity base |
-| TSAC | 5% | Stewardship correction |
+| IUSAF | 94.5% | Dominant equity base |
+| TSAC | 2.5% | Stewardship correction |
 | SOSAC | 3% | SIDS-specific recognition |
-| **Total stewardship** | **8%** | **Modest overlay on IUSAF** |
+| **Total stewardship** | **5.5%** | **Modest overlay on IUSAF** |
 
-This position is 42 percentage points below the model overturn threshold (TSAC + SOSAC = 50%) and well within the "conservative" negotiation zone (TSAC + SOSAC < 20%).
+This position is 44.5 percentage points below the model overturn threshold (TSAC + SOSAC = 50%) and well within the "conservative" negotiation zone (TSAC + SOSAC < 20%).
 
 ---
 
@@ -278,8 +278,8 @@ This position is 42 percentage points below the model overturn threshold (TSAC +
 | Brazil component overturn | TSAC ≈ 4.0% | TSAC/IUSAF ≥ 1.0 for Brazil (Band 5) |
 | TSAC balance (strict) | TSAC ≈ 1.5% | TSAC/IUSAF ≤ 1.0 for all Parties |
 | TSAC balance (bounded) | TSAC ≈ 3.5% | TSAC/IUSAF ≤ 1.0 for Band 5 Parties |
-| Gini-minimum | TSAC = 5.0% | Minimises Gini, Spearman = 0.852 |
-| Spearman below threshold | TSAC = 5.5% | Spearman < 0.85 vs pure IUSAF |
+| **Gini-minimum (revised)** | **TSAC ≈ 2.5%** | **Minimises Gini, preserves band order, Spearman > 0.80** |
+| Band-order overturn | TSAC = 3.0% | Band 6 mean ≥ Band 5 mean |
 
 ### TSAC Thresholds — Setup a: SOSAC = 0% (provisional, review needed)
 

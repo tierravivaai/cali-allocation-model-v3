@@ -145,4 +145,15 @@ Regardless of which option is chosen, the Spearman calculation inconsistency (Se
 
 ---
 
+## 10. Resolution
+
+**Option D (multi-criterion) has been adopted**, implemented on the `optiond` branch (2026-04-18). The Gini-minimum constraint is now defined as:
+
+- **Binding constraint**: IUSAF band-order preservation (Band 6 mean < Band 5 mean)
+- **Safety floor**: Spearman ρ > 0.80 (diagnostic; not expected to bind)
+
+This produces a Gini-minimum at TSAC ≈ 2.5% with Spearman ≈ 0.945, preserving the band hierarchy with margin. The `gini_optimal` label has been retired and replaced with `gini_minimum` throughout the codebase. See `optiond-threshold-revision-rationale.md` for the full specification.
+
+---
+
 *This document was prepared as part of the IUSAF Allocation Model v3 documentation. The empirical analysis uses the TSAC fine sweep (SOSAC = 3%, TSAC 0–10% at 0.5 pp intervals) with 142 eligible parties.*
