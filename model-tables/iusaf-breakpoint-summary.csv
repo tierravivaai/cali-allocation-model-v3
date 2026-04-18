@@ -1,0 +1,7 @@
+TSAC,SOSAC,IUSAF %,Spearman rho,What Happens
+0%,3%,97.0,0.977,SOSAC only — modest rank shift among SIDS
+1.5%,3%,95.5,0.951,Strict — IUSAF dominant for all Parties
+2.5%,3%,94.5,0.945,Gini-minimum — band order preserved (margin 5.4%)
+3.0%,3%,94.0,0.929,Band-order overturn — Band 6 > Band 5
+3.5%,3%,93.5,0.917,Bounded — band order already overturned
+9.2%,3%,87.8,0.696,TSAC component overturn for China

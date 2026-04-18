@@ -254,14 +254,71 @@ def write_breakpoint_summary_table(con, path):
     print(f"Saved: {path}")
 
 
+def write_band_order_csv(con, path):
+    """Generate the band-order preservation CSV."""
+    scenarios = [
+        ('0% (Pure IUSAF)', 0.0, 0.0),
+        ('1.5% (Strict)', 0.015, 0.03),
+        ('2.5% (Gini-minimum)', 0.025, 0.03),
+        ('3.0% (Band-order overturn)', 0.03, 0.03),
+        ('3.5% (Bounded)', 0.035, 0.03),
+        ('9.2% (TSAC component overturn)', 0.092, 0.03),
+    ]
+    rows = []
+    for label, beta, gamma in scenarios:
+        m = compute_scenario(con, beta, gamma)
+        preserved = ("YES (margin {:.1f}%)".format(m['margin'])
+                     if m['order_ok'] and m['margin'] < 10 else
+                     "YES" if m['order_ok'] else
+                     "NO — Band 6 overtakes Band 5")
+        rows.append({
+            'TSAC Level': label,
+            'Band 6 mean China (USD M)': round(m['b6_mean'], 2),
+            'Band 5 mean Brazil India Mexico (USD M)': round(m['b5_mean'], 2),
+            'Band 5 vs Band 6 margin (%)': round(m['margin'], 1),
+            'IUSAF Band Order Preserved': preserved,
+        })
+    pd.DataFrame(rows).to_csv(path, index=False)
+    print(f"Saved: {path}")
+
+
+def write_breakpoint_summary_csv(con, path):
+    """Generate the break-point summary CSV."""
+    scenarios = [
+        ('0%', '3%', 0.0, 0.03, 'SOSAC only — modest rank shift among SIDS'),
+        ('1.5%', '3%', 0.015, 0.03, 'Strict — IUSAF dominant for all Parties'),
+        ('2.5%', '3%', 0.025, 0.03, 'Gini-minimum — band order preserved (margin 5.4%)'),
+        ('3.0%', '3%', 0.03, 0.03, 'Band-order overturn — Band 6 > Band 5'),
+        ('3.5%', '3%', 0.035, 0.03, 'Bounded — band order already overturned'),
+        ('9.2%', '3%', 0.092, 0.03, 'TSAC component overturn for China'),
+    ]
+    rows = []
+    for tsac_label, sosac_label, beta, gamma, desc in scenarios:
+        m = compute_scenario(con, beta, gamma)
+        rows.append({
+            'TSAC': tsac_label,
+            'SOSAC': sosac_label,
+            'IUSAF %': round(m['iusaf_pct'], 1),
+            'Spearman rho': round(m['spearman'], 3),
+            'What Happens': desc,
+        })
+    pd.DataFrame(rows).to_csv(path, index=False)
+    print(f"Saved: {path}")
+
+
 def main():
     con = duckdb.connect(database=':memory:')
     load_data(con)
 
     os.makedirs(OUT_DIR, exist_ok=True)
 
+    # Word tables
     write_band_order_table(con, os.path.join(OUT_DIR, "iusaf-band-order-preservation.docx"))
     write_breakpoint_summary_table(con, os.path.join(OUT_DIR, "iusaf-breakpoint-summary.docx"))
+
+    # CSV companions
+    write_band_order_csv(con, os.path.join(OUT_DIR, "iusaf-band-order-preservation.csv"))
+    write_breakpoint_summary_csv(con, os.path.join(OUT_DIR, "iusaf-breakpoint-summary.csv"))
 
 
 if __name__ == "__main__":
