@@ -1,195 +1,200 @@
 # Cali Fund Allocation Model (Inverted UN Scale Option)
 
-This interactive tool illustrates how Cali Fund allocations would be distributed if based on the **latest UN Scale of Assessments (2025-2027)**, inverted to reflect relative need.
+An interactive policy-support tool for biodiversity fund allocation under the CBD Cali Fund. The model uses the inverted UN Scale of Assessments (IUSAF) with optional stewardship overlays (TSAC, SOSAC) to compute indicative allocations for CBD Parties.
 
-## Features
-- **Adjustable Fund Size**: Scale the annual Cali Fund from $0.002bn ($2m) to $10.0bn. Scenario steps at 50, 200, 500, 1 billion
-- **IPLC Component**: Set the percentage for Indigenous Peoples & Local Communities (50% to 80%).
-- **Multi-perspective views**:
-    - Detailed Party-level table.
-    - Regional aggregations (UNSD M49).
-    - Share by WB Income Group.
-    - Developmental groupings (LDC, SIDS).
-- **High Income Filter**: Ability to toggle High Income countries out of the allocation pool (off by default on initial load for true-equality start).
-- **Transparency**: Toggle "Raw Inversion and Explanation" to see plain language and technical summaries of the methodology.
-- **TSAC & SOSAC Components**: Blended allocation formula incorporating land area (TSAC) and SIDS-specific structural adjustment (SOSAC).
-- **Stewardship Controls**: Initial load defaults to true equality (`TSAC=0`, `SOSAC=0`). The Gini-Optimal Point preset uses TSAC `0.05` and SOSAC `0.03`, with UI ranges capped at TSAC `0.15` and SOSAC `0.10` so IUSAF remains the dominant base.
-- **Blend Warnings**: Live status plus threshold warnings when combined stewardship weights become strong (`>0.15`) or potentially overriding (`>0.20`).
-- **Negotiation Dashboard**: Advanced visualizations including increases and decreases analysis, group impact charts, country-level waterfalls, and a selected-country stewardship scenario comparison chart with an equality reference line.
+## The Formula
 
-## Installation & Setup
+**Final Share = (1 − β − γ) × IUSAF + β × TSAC + γ × SOSAC**
 
-1. **Clone the repository**
-2. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. **Run the applications**:
-   ```bash
-   streamlit run app.py
-   streamlit run sensitivity.py
-   ```
+- **IUSAF**: Inverted UN Scale — the equity base, tilted towards lower-income and LDC countries.
+- **TSAC**: Terrestrial Stewardship — proportional to land area (km²).
+- **SOSAC**: SIDS Ocean Stewardship — equal-share pool for eligible SIDS.
+- **β, γ**: User-adjustable overlay weights. **The central policy question is where to set the balance between the equity base and the stewardship overlays.**
 
-`app.py` is the main negotiation/policy interface. `sensitivity.py` is a dedicated robustness-testing and reporting app for parameter sweeps, diagnostics, threshold checks, and markdown/CSV exports including `integrity_checks.csv`.
+→ Full methodology: [reference/methodology.md](reference/methodology.md)
 
-## Methodology
-The allocation sequence is now applied in this order:
+## Quick Start
 
-1. **Raw inversion (IUSAF raw)**
-   - Each eligible Party’s UN assessed share is inverted (`1/share`) and normalised.
-   - This is the raw sovereign-capacity baseline and is included for
-   transparency.
+```bash
+# Install dependencies
+pip install -r requirements.txt
 
-2. **Banded inversion (IUSAF default)**
-   - As an alternative to raw inversion, Parties are grouped into UN-share bands.
-   - Band weights are then normalised to form the IUSAF base.
-   - This reduces sensitivity to very small share differences while preserving an inverted-capacity logic.
-   - This is the default IUSAF baseline
+# Run the main negotiation app
+streamlit run src/app.py
 
-3. **Stewardship adjustments (TSAC and SOSAC)**
-   - **TSAC (Terrestrial Stewardship Allocation Component)**: proportional to land area (km²).
-   - **SOSAC (SIDS Ocean Stewardship Allocation Component)**: equal-share pool across eligible SIDS.
-   - These adjustments are blended on top of the selected IUSAF base using user-adjustable weights ($\beta$ for TSAC and $\gamma$ for SOSAC).
+# Run the sensitivity/robustness app
+streamlit run src/sensitivity.py
 
-Final share formula:
-> **Final Share = (1 - $\beta$ - $\gamma$) * IUSAF + $\beta$ * TSAC + $\gamma$ * SOSAC**
+# Run the experimental banded TSAC variant (terrestrial branch)
+streamlit run src/banded_app.py --server.port 8502
+```
 
-### Stewardship Slider Design
-- **Initial app defaults**: TSAC `0.00`, SOSAC `0.00` (true equality start).
-- **Gini-Optimal Point preset values**: TSAC `0.05`, SOSAC `0.03`.
-- **Allowed range**: TSAC `0.00` to `0.15`; SOSAC `0.00` to `0.10`; step `0.01`.
-- **Design intent**: TSAC and SOSAC recognise stewardship and special circumstances, while IUSAF remains the dominant sovereign-capacity base.
-- **UI safeguards**:
-  - Live blend status is always shown.
-  - Mild warning when `TSAC + SOSAC > 0.15`.
-  - Strong warning when `TSAC + SOSAC > 0.20`.
-  - Hard stop if `TSAC + SOSAC >= 1.0`.
+## Repository Structure
+
+```
+├── src/                          # Application and model code
+│   ├── app.py                    # Main Streamlit negotiation app
+│   ├── sensitivity.py            # Sensitivity analysis & reporting app
+│   ├── banded_app.py             # Experimental banded TSAC variant (terrestrial branch)
+│   └── cali_model/              # Core calculation library
+│       ├── calculator.py         # calculate_allocations() and aggregation functions
+│       ├── data_loader.py         # DuckDB-based ETL (raw data → base_df)
+│       ├── balance_analysis.py   # Fine sweeps, Gini-minimum identification
+│       ├── sensitivity_metrics.py # Gini, Spearman, component ratios
+│       ├── sensitivity_scenarios.py # Scenario definitions and two-way grids
+│       └── reporting.py          # Markdown/CSV export generation
+│
+├── tests/                        # Pytest suite (178+ tests)
+│   ├── test_logic.py             # Party count, inversion, allocation sums
+│   ├── test_band_inversion.py    # Band assignment and weight validation
+│   ├── test_tsac_sosac.py       # Component blending and isolation
+│   ├── test_totals.py            # Aggregation (region, income, LDC, SIDS)
+│   ├── test_floor_ceiling.py     # Constraint redistribution
+│   ├── test_equality_mode.py    # Equality mode switching
+│   ├── test_tiny_scenarios.py   # Fund conservation at extreme sizes
+│   ├── test_negotiator_dashboard.py # Baseline comparisons
+│   ├── test_ui_reset.py         # Preset and reset behaviour
+│   └── ...                       # 16 more test modules
+│
+├── scripts/                      # Standalone generation scripts
+│   ├── generate_balance_point_rankings.py  # Balance-point tables
+│   ├── generate_optiond_tables.py         # Option D threshold tables
+│   ├── generate_tsac_section_draft.py      # TSAC section Word output
+│   ├── rank_change_scenarios.py            # Rank-change panel figures
+│   ├── csv_to_word_lib.py                 # Word table generation utility
+│   └── ...                                 # Cross-check and export scripts
+│
+├── config/                       # Model configuration
+│   └── un_scale_bands.yaml       # 6-band UN scale weights
+│
+├── data-raw/                     # Source data (CSV/XLSX)
+│   ├── UNGA_scale_of_assessment.csv   # UN Scale 2025–2027
+│   ├── cbd_cop16_budget_table.csv     # CBD Party list (source of truth)
+│   ├── manual_name_map.csv           # Party name concordance
+│   ├── CLASS_2025_10_07.xlsx         # World Bank income groups
+│   └── ...                           # Land area, EU, UNSD regions
+│
+├── model-tables/                 # Generated output tables (CSV, DOCX, MD)
+├── iplc-developed/               # IPLC developed-country analysis
+│   ├── specification.md           # Option 1 & 2 specification
+│   ├── iplc-integration-options.md # Structural options (A–D)
+│   ├── test_structural_validation.py # 40 structural validation tests
+│   └── validation_analysis.md    # Why Option 1 ≈ Option 2
+│
+├── sensitivity-reports/          # Generated sensitivity outputs
+├── band-analysis/                 # Break-point analysis
+├── reference/                     # Detailed documentation
+│   ├── methodology.md             # Formula, bands, balance points
+│   ├── data-sources.md            # Data pipeline and sources
+│   └── validation.md              # Test suite and integrity checks
+│
+├── requirements.txt               # Python dependencies
+├── change_log.md                  # Versioned change history
+└── AGENTS.md                     # AI agent instructions
+```
+
+## Application Layers
+
+### `app.py` — Main Negotiation App
+
+The primary interactive interface for exploring policy scenarios.
+
+**Features:**
+- Adjustable fund size ($2m–$10bn), IPLC split (50–80%), TSAC (0–15%), SOSAC (0–10%)
+- Five negotiation presets: Equality, Inverted UN Scale, Terrestrial Stewardship, Oceans Stewardship, Gini-minimum point
+- Band-based inversion (default) or raw inversion mode
+- High-income country exclusion (off by default for equality start)
+- Optional floor and ceiling constraints
+- **Negotiation Dashboard**: increases/decreases vs baseline, group impact charts, per-country waterfall, stewardship scenario comparison
+- Multi-perspective tabs: By Party, By Region, By Income Group, LDC, SIDS, Inversion Comparison
+- Plain-language and technical explanation toggles
+- Blend warnings when stewardship weights become strong or overriding
+
+### `sensitivity.py` — Sensitivity & Robustness App
+
+Dedicated parameter-sweep and reporting interface for reviewers and statisticians.
+
+**Features:**
+- Coarse (TSAC×SOSAC, 11×16 = 176 scenarios) and fine (21×21 = 441 scenarios) grids
+- Per-scenario Gini coefficient, Spearman ρ vs pure IUSAF, band-order preservation, TSAC/IUSAF ratios
+- Balance-point identification (Gini-minimum subject to structural constraints)
+- Integrity checks export (`integrity_checks.csv`)
+- Markdown summary generation
+- Named balance-point scenarios: `gini_minimum`, `band_order_overturn`, `stewardship_forward`
+
+### `banded_app.py` — Experimental Banded TSAC Variant
+
+**Available on the `terrestrial` branch only.** A parallel app using `tsac_mode="banded"` (log₁₀ land-area bands with geometric_base_2 weights) instead of linear land area. Extended sliders (0–30%), three balance-point presets (Strict, Gini-minimum, Boundary), and a Spearman-based overlay warning. See [banded_app_spec_v3.md](../banded_app_spec_v3.md) for details.
+
+## Balance Points (v4.0)
+
+The v4.0 methodology replaces the arbitrary Spearman ρ ≥ 0.85 threshold with **band-order preservation** (Band 5 mean > Band 6 mean) plus a Spearman safety floor of 0.80. Key reference points at SOSAC=3%:
+
+| Point | TSAC | Gini | Spearman ρ | Definition |
+|-------|------|------|-----------|-----------|
+| Gini-minimum | 2.5% | 0.0886 | 0.945 | Lowest Gini preserving band order |
+| Band-order overturn | 3.0% | — | 0.93 | Band 6 overtakes Band 5 |
+| Stewardship-forward | 5.0% | — | — | Exploratory reference |
+
+→ Full stewardship design: [reference/methodology.md](reference/methodology.md)
 
 ## Data Sources
-- **UN Scale of Assessments**: General assembly resolution 79/225.
-- **Regions**: UNSD M49 standard.
-- **Income Class**: World Bank Country and Lending Groups.
-- **Land Area**: World Bank indicator `AG.LND.TOTL.K2` (Land area in sq. km).
 
-## Floor Calculation (Minimum Share per Eligible Country)
+| Source | Purpose |
+|--------|---------|
+| UN Scale of Assessments (2025–2027) | Assessed budget shares per Party |
+| CBD COP16 Budget Table | Source of truth for 196 CBD Parties |
+| UNSD M49 | Region, sub-region classifications |
+| World Bank Income Classification | Income group labels |
+| World Bank Land Area (FAOSTAT) | Terrestrial stewardship weights |
 
-Floors and ceilings are currently unused in the model. They 
-are provided as options to be used only if necessary. 
-
-### Purpose
-The floor sets a minimum percentage of the total fund that each eligible country must receive under the allocation model.
-
-It is designed to prevent extremely small allocations that may be operationally insignificant, particularly when the fund size is large and the inverted UN scale produces very small shares for some countries.
-
-### How It Works
-- The model first calculates each eligible country’s share using the inverted UN scale of assessment.
-- If a country’s share falls below the selected floor percentage, it is raised to that minimum level.
-- The remaining available funds are then redistributed proportionally across the other eligible countries so that total allocations still sum to 100% of the fund.
-
-The floor applies only to eligible countries as defined by the model settings (e.g. exclusion of high-income countries if selected).
-
-### Mathematical Constraint
-The maximum feasible floor is determined dynamically by:
-> **Maximum floor (%) = 100 ÷ number of eligible countries**
-
-This ensures that the combined minimum shares do not exceed the total fund.
-For example:
-- If 150 countries are eligible, the maximum feasible floor is 0.67%.
-- If 100 countries are eligible, the maximum feasible floor is 1.00%.
-
-The slider is automatically limited to this value to ensure the model remains internally consistent.
-
-### Interpretation
-The floor does not represent entitlement or guaranteed disbursement.
-It is a modelling parameter that illustrates how a minimum allocation rule would alter the distribution of resources under the inverted UN framework.
-
-## Ceiling Calculation (Maximum Share per Eligible Country)
-
-Floors and ceilings are currently unused in the model. They 
-are provided as options to be used only if necessary. 
-
-### Purpose
-The ceiling sets a maximum percentage of the total fund that any eligible country may receive.
-
-It is designed to limit concentration of funding among countries with very small UN assessment shares (which receive higher allocations under the inverted model).
-
-### How It Works
-- The model first calculates each eligible country’s share using the inverted UN scale.
-- If a country’s share exceeds the selected ceiling percentage, it is reduced to that maximum level.
-- The remaining funds are redistributed proportionally among the other eligible countries.
-- Total allocations always sum to 100% of the fund.
-
-The ceiling applies only to eligible countries under the current model settings.
-
-### Interpretation
-The ceiling does not impose a political cap or entitlement rule.
-It is a scenario-setting tool that allows users to explore how limiting concentration affects overall distribution patterns.
-
-Lower ceilings produce more even distributions.
-Higher ceilings allow stronger differentiation under the inverted UN scale.
-
-### Combined Effect of Floor and Ceiling
-When both are enabled:
-- Countries below the floor are lifted upward.
-- Countries above the ceiling are reduced.
-- Remaining funds are redistributed proportionally.
-- The total allocation always remains equal to the total fund.
-
-These parameters are illustrative modelling controls intended to explore distributional outcomes under different policy assumptions.
-
-## Validation and Data Integrity
-
-The model undergoes rigorous automated validation to ensure statistical accuracy and completeness. For statisticians and developers, the following checks are enforced on every update:
-
-### 1. Party Count & Alignment
-The model is validated against the **CBD COP16 Budget Table** (`cbd_cop16_budget_table.csv`) as the primary source of truth for CBD Parties.
-- **Validation Rule**: Exactly **196 Parties** (including the European Union) must be present and correctly mapped.
-- **Location**: `tests/test_logic.py` -> `test_cbd_party_count` and `test_budget_table_alignment`.
-
-### 1b. IUSAF Inversion Logic (Raw and Banded)
-The model validates both inversion routes used for the IUSAF baseline.
-- **Validation Rule (raw inversion path)**: Default inversion path remains numerically consistent in full-allocation tests (sum integrity and eligibility behavior).
-- **Validation Rule (banded inversion path)**: Every eligible Party receives a valid band and band weight, and band-based IUSAF shares normalise correctly.
-- **Validation Rule (mode consistency)**: Baseline comparisons respect the selected `un_scale_mode`.
-- **Location**: `tests/test_tiny_scenarios.py`, `tests/test_band_inversion.py`, and `tests/test_negotiator_dashboard.py::test_un_scale_mode_consistency_in_baseline`.
-
-### 1c. TSAC & SOSAC Component Integrity
-New tests verify the blending of the three allocation components.
-- **Validation Rule**: `Sum(Final Share) = 1.0`.
-- **Validation Rule**: Isolation tests (e.g. if $\gamma=1.0$, only SIDS receive funds).
-- **Location**: `tests/test_tsac_sosac.py`.
-
-### 2. Metadata Completeness
-Every record is checked to ensure no missing values for regional or economic classifications.
-- **Validation Rule**: 100% of Parties must have an assigned **UN Region**, **WB Income Group**, and **LDC/SIDS status**.
-- **Location**: `tests/test_logic.py` -> `test_metadata_completeness` and `test_strict_data_integrity`.
-
-### 3. Allocation Consistency
-The mathematical core ensures that the sum of individual allocations matches the user-defined fund size precisely.
-- **Validation Rule**: `Sum(State Component + IPLC Component) = Total Fund Size`.
-- **Location**: `tests/test_logic.py` -> `test_allocation_sums_to_fund_size` and `test_tiny_scenarios.py`.
-
-### 4. Constraint Validation (Floor/Ceiling)
-The model supports user-defined floor and ceiling constraints on individual party shares.
-- **Validation Rule**: All eligible parties must receive a share within `[floor, ceiling]` while maintaining a total sum of 100%. The model handles iterative redistribution of shares when constraints are applied.
-- **Dynamic Floor Check**: The UI automatically limits the maximum floor percentage to `100 / n_eligible` to prevent mathematical impossibility.
-- **Location**: `tests/test_floor_ceiling.py`.
-
-### 5. Cross-Reference Mapping
-A systematic mapping layer (`manual_name_map.csv`) standardizes Party names across UN, World Bank, and CBD datasets.
-- **Illustration of the Join Strategy**:
-  ```sql
-  SELECT 
-      COALESCE(mapped.name, raw.name) as party,
-      COALESCE(regions.name, fallback_regions.name) as region
-  FROM parties
-  LEFT JOIN name_map ON raw.name = name_map.party_raw
-  LEFT JOIN unsd_regions ON mapped.name = unsd_regions.country
-  ```
-- **Location**: `logic/data_loader.py` -> `get_base_data()`.
+→ Full data pipeline: [reference/data-sources.md](reference/data-sources.md)
 
 ## Testing
-To run the validation suite locally:
+
 ```bash
-python3 -m pytest
+# Run full test suite (178+ tests)
+pytest tests/ -v
+
+# Run IPLC structural validation (40 tests)
+pytest iplc-developed/test_structural_validation.py -v
+
+# Run with coverage
+pytest tests/ --cov=src/cali_model --cov-report=term-missing
 ```
+
+→ Full test catalog: [reference/validation.md](reference/validation.md)
+
+## Branch Structure
+
+| Branch | Status | Description |
+|--------|--------|-------------|
+| `main` | Active | Production code, 178+ tests, app.py + sensitivity.py |
+| `terrestrial` | Parked | Banded TSAC variant (banded_app.py), calibration harness, v4.2 sensitivity reports |
+
+Archived/deleted branches: `iplc` (merged to main), `optiond` (merged to main as v4.0).
+
+## IPLC Developed-Country Analysis
+
+The `iplc-developed/` directory contains a paper-exercise calculating IPLC allocations for 9 developed countries (Australia, Canada, Denmark, Finland, Japan, New Zealand, Norway, Russia, Sweden) under two hypothetical scenarios:
+
+- **Option 1**: Raw equality for all Parties, filtered to the 9 countries (IPLC ≈ 2.30% of fund).
+- **Option 2**: Banded IUSAF with the 9 countries added to Bands 4–5 (IPLC ≈ 2.11% of fund).
+
+The closeness of these results is structurally expected: Band 4 countries gain relative to equality while Band 5 countries lose, and the effects partially cancel. See [iplc-developed/validation_analysis.md](iplc-developed/validation_analysis.md).
+
+Four structural integration options (A–D) are analysed in [iplc-developed/iplc-integration-options.md](iplc-developed/iplc-integration-options.md). Option D (unified pool with State-component return) is recommended.
+
+## Version History
+
+See [change_log.md](change_log.md) for the full versioned history. Key milestones:
+
+- **v3**: 6-band IUSAF, Gini reporting, balance-point analysis, 138 tests
+- **v4.0**: Band-order preservation replaces Spearman 0.85 threshold, gini_optimal → gini_minimum rename
+- **v4.1**: Balance-point ranking tables, IPLC developed-country tables, DuckDB fix
+- **v4.2**: Banded TSAC app, calibration harness, v4 sensitivity reports (terrestrial branch)
+- **v4.2.1**: DuckDB StringDtype fix on main, IPLC structural validation (40 tests)
+
+## Use of AI
+
+The code base is written in Python using Factory AI Droid as the development harness. Current main coding model: GLM-5 (Z.ai). High-level reasoning through Opus 4.6–4.7 and GPT-5.4 Codex. Code planning and automated peer review uses GPT-5 Codex, Claude Opus 4.6, and Gemini Pro. Independent review sessions with clean context are preferred. The responsible human is Dr. Paul Oldham.
