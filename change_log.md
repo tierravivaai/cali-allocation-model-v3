@@ -219,3 +219,25 @@
 - Branches `iplc` (merged into main) and `optiond` (merged into main as v4.0) deleted.
 - `app.py` unchanged on all branches.
 - `.gitignore` updated to exclude `banded_tsac_spec.html`.
+
+---
+
+## v4.2.1 — Main-branch maintenance (2026-04-24)
+
+### Bug fix: DuckDB StringDtype incompatibility
+- Fixed `data_loader.py` line 64: `select_dtypes(include=["string", "str"])` → `select_dtypes(include=["object"])`.
+- The original commit `aa3038b` introduced the incompatible form; pandas 2.3+ rejects numpy string dtypes.
+- Fix was previously only on the `terrestrial` branch; now applied to `main`.
+
+### IPLC developed-country structural validation
+- Added `iplc-developed/test_structural_validation.py`: 40 self-contained tests verifying 8 invariants across Option 1 (equality) and Option 2 (banded IUSAF) for 9 developed countries:
+  1. IPLC + State = Total allocation
+  2. IPLC = 50% of total
+  3. Fund conservation (eligible sum = fund size)
+  4. Scale invariance across fund sizes
+  5. Band assignments (Band 4: Denmark, Finland, NZ, Norway, Sweden; Band 5: Australia, Canada, Japan, Russia)
+  6. No non-SIDS HI leakage in Option 2 (HI SIDS correctly remain eligible under `exclude_except_sids` mode)
+  7. Option 1 total > Option 2 total (equality produces larger pool for this mixed-income group)
+  8. Cali Fund % constant across fund sizes
+- Added `iplc-developed/validation_analysis.md` explaining why Option 1 and Option 2 IPLC pools are close (2.30% vs 2.11%): Band 4 countries gain relative to equality, Band 5 countries lose; the gains and losses partially cancel within the mixed-income 9-country group.
+- Tests are self-contained (use calculator directly) and run on `main` without requiring the `terrestrial`-branch generation scripts.
