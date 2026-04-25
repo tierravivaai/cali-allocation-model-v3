@@ -1,5 +1,27 @@
 # Change Log
 
+## v4.3.0 — Party master consolidation (2026-04-25)
+
+### Data loader: consolidated override table (peer review §2.3)
+
+- Created `config/party_master.csv` as the single auditable source of truth for all name concordance and data overrides (60 entries covering name mappings, income groups, regions, LDC/SIDS flags, EU membership, and land area).
+- Eliminated `LAND_AREA_NAME_MAP` Python dict (26 entries) — now handled via `wb_land_area_name` column in `party_master.csv`.
+- Eliminated ~50 lines of `df.loc` manual patches for income groups, regions, LDC/SIDS flags, and land area — all replaced by `COALESCE(pm.income_group_override, ...)`, `COALESCE(NULLIF(pm.region_override, ''), ...)` etc. in the DuckDB SQL query.
+- Added land area for Republic of Korea, Slovakia, United Kingdom, and Netherlands via `wb_land_area_name` mapping; Monaco, Cook Islands, Niue, and State of Palestine via `land_area_km2_override`.
+- Each override row in `party_master.csv` includes a `reason` column for auditability.
+- All 138 tests pass identically (same `base_data` DataFrame output).
+
+### Config loading: robust path
+
+- `load_band_config()` now uses `Path(__file__)`-relative path for `un_scale_bands.yaml`.
+
+### Small-fixes.md audit
+
+- Marked items 2, 3, 4, 6, 7, 8 as resolved/moot.
+- Items 1 (isolated TSAC sweep) and 5 (TSAC overturn metadata) remain open.
+
+---
+
 ## v4.2.2 — Small fixes (2026-04-25)
 
 ### Data loader: land area for high-income CBD parties
