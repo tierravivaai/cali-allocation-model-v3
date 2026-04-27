@@ -1,0 +1,61 @@
+party,un_scale_name,wb_land_area_name,wb_income_name,income_group_override,region_override,sub_region_override,intermediate_region_override,is_ldc_override,is_sids_override,is_eu_ms_override,land_area_km2_override,reason
+Austria,,,,,,,,,,True,,
+Bahamas,,"Bahamas, The","Bahamas, The",High income,,,,,,,,"WB name mismatch (Bahamas, The); override ensures correct group"
+Belgium,,,,,,,,,,True,,
+Bolivia (Plurinational State of),,Bolivia,Bolivia,Lower middle income,,,,,,,,WB updated classification
+Bulgaria,,,,,,,,,,True,,
+Congo,,"Congo, Rep.","Congo, Rep.",,,,,,,,,
+Cook Islands,,,,High income,,,,,,,236.0,Not in WB classification; assigned per UN status; Not in WB land area dataset
+Croatia,,,,,,,,,,True,,
+Cyprus,,,,,,,,,,True,,
+Czechia,,,,,,,,,,True,,
+Côte d’Ivoire,,Cote d'Ivoire,Cote d'Ivoire,,,,,,,,,
+Democratic People's Republic of Korea,,"Korea, Dem. People's Rep.","Korea, Dem. People's Rep.",Low income,,,,,,,,Not in WB classification; assigned per UN status
+Democratic Republic of the Congo,,"Congo, Dem. Rep.","Congo, Dem. Rep.",Low income,Africa,Sub-Saharan Africa,Middle Africa,True,False,,,WB missing for DRC; UNSD name mismatch; full region data override
+Denmark,,,,,,,,,,True,,
+Egypt,,"Egypt, Arab Rep.","Egypt, Arab Rep.",,,,,,,,,
+Estonia,,,,,,,,,,True,,
+Ethiopia,,,,Low income,,,,,,,,WB updated classification
+European Union,,,,High income,Europe,Western Europe,,False,False,True,0.0,EU is not in WB income classification; assigned High income; EU is not a country; assigned region manually; EU is not assigned land area in this model
+Finland,,,,,,,,,,True,,
+France,,,,,,,,,,True,,
+Gambia,,"Gambia, The","Gambia, The",,,,,,,,,
+Germany,,,,,,,,,,True,,
+Greece,,,,,,,,,,True,,
+Hungary,,,,,,,,,,True,,
+Iran (Islamic Republic of),,"Iran, Islamic Rep.","Iran, Islamic Rep.",,,,,,,,,
+Ireland,,,,,,,,,,True,,
+Italy,,,,,,,,,,True,,
+Kyrgyzstan,,Kyrgyz Republic,Kyrgyz Republic,,,,,,,,,
+Lao People's Democratic Republic,,Lao PDR,Lao PDR,Lower middle income,,,,,,,,WB updated classification
+Latvia,,,,,,,,,,True,,
+Lithuania,,,,,,,,,,True,,
+Luxembourg,,,,,,,,,,True,,
+Malta,,,,,,,,,,True,,
+Micronesia (Federated States of),,"Micronesia, Fed. Sts.","Micronesia, Fed. Sts.",,,,,,,,,
+Monaco,,,,,,,,,,,2.02,Not in WB land area dataset
+Netherlands,,,,,,,,,,True,,
+Netherlands (Kingdom of the),,Netherlands,Netherlands,,,,,,,,,
+Niue,,,,High income,,,,,,,260.0,Not in WB classification; assigned per UN status; Not in WB land area dataset
+Poland,,,,,,,,,,True,,
+Portugal,,,,,,,,,,True,,
+Republic of Korea,,"Korea, Rep.","Korea, Rep.",,,,,,,,,
+Republic of Moldova,,Moldova,Moldova,,,,,,,,,
+Romania,,,,,,,,,,True,,
+Saint Kitts and Nevis,,St. Kitts and Nevis,St. Kitts and Nevis,,,,,,,,,
+Saint Lucia,,St. Lucia,St. Lucia,Upper middle income,,,,,,,,WB updated classification
+Saint Vincent and the Grenadines,,St. Vincent and the Grenadines,St. Vincent and the Grenadines,Upper middle income,,,,,,,,WB updated classification
+Sao Tome and Principe,,,,Lower middle income,,,,,,,,WB updated classification
+Slovakia,,Slovak Republic,Slovak Republic,High income,,,,,,True,,WB name mismatch (Slovak Republic); override ensures correct group
+Slovenia,,,,,,,,,,True,,
+Somalia,,"Somalia, Fed. Rep.",Somalia,,,,,,,,,
+Spain,,,,,,,,,,True,,
+State of Palestine,,,,Lower middle income,,,,,,,6020.0,Not in WB classification; assigned per UN status; Not in WB land area dataset
+Sweden,,,,,,,,,,True,,
+Türkiye,,Turkiye,Turkiye,,,,,,,,,
+United Kingdom of Great Britain and Northern Ireland,,United Kingdom,United Kingdom,High income,,,,,,,,WB name mismatch (United Kingdom); override ensures correct group
+United Republic of Tanzania,,Tanzania,Tanzania,Lower middle income,,,,,,,,WB updated classification
+United States of America,,,,High income,,,,,,,,WB name mismatch; override ensures correct group
+Venezuela (Bolivarian Republic of),,"Venezuela, RB","Venezuela, RB",Lower middle income,Americas,Latin America and the Caribbean,South America,False,False,,,WB 2024 classifies as Lower middle income; conflict year; UNSD name mismatch; full region data override
+Viet Nam,,,,Lower middle income,,,,,,,,WB updated classification
+Yemen,,"Yemen, Rep.","Yemen, Rep.",Low income,,,,,,,,WB updated classification

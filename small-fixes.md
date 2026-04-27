@@ -20,6 +20,12 @@
 
 ## Priority: Low
 
-6. ~~**Add land area for 4 high-income parties**~~ — **Resolved via name mapping.** Added `"Republic of Korea": "Korea, Rep."`, `"Slovakia": "Slovak Republic"`, `"United Kingdom of Great Britain and Northern Ireland": "United Kingdom"`, and `"Netherlands (Kingdom of the)": "Netherlands"` to `LAND_AREA_NAME_MAP` so the World Bank CSV JOIN resolves correctly. No hard-coded patches needed; data flows from the authoritative source.
+6. ~~**Add land area for 4 high-income parties**~~ — **Resolved via `config/party_master.csv`.** A consolidated override table now handles all name concordance and data patches. Republic of Korea, Slovakia, United Kingdom, and Netherlands get land area from the World Bank via `wb_land_area_name` mappings. Monaco, Cook Islands, Niue, and State of Palestine get manual values via `land_area_km2_override`.
 
 8. ~~**Fix relative path in `load_band_config()`**~~ — **Resolved.** Changed from `os.path.join("config", ...)` (CWD-dependent) to `Path(__file__).resolve().parent.parent.parent / "config" / "un_scale_bands.yaml"` (robust, `__file__`-relative).
+
+9. ~~**Consolidate manual overrides into auditable CSV (peer review §2.3)**~~ — **Resolved in v4.3.0.** Created `config/party_master.csv` as the single source of truth for all name concordance and data overrides. `data_loader.py` now uses DuckDB SQL JOINs against this table instead of ~50 lines of `df.loc` patches and the `LAND_AREA_NAME_MAP` Python dict. All 138 tests pass identically.
+
+## Deferred
+
+10. **Merge `manual_name_map.csv` into `party_master.csv`** — The UN Scale and CBD budget table name resolution (currently `data-raw/manual_name_map.csv`, ~40 entries mapping raw names to canonical CBD party names) could be consolidated into `party_master.csv` by populating the `un_scale_name` column and adding a `cbd_budget_name` column. This would eliminate the last separate concordance file and make the party master the single point of truth for all name mapping. The subtlety is that `manual_name_map.csv` is many-to-one (e.g. "Slovak Republic" and "Slovakia" both map to "Slovakia"), which means either multiple rows per canonical party (~100 rows total) or a parsed alias column. Recommend option 1 (multiple rows) for SQL JOIN simplicity. Not blocking; current dual-file approach works.
