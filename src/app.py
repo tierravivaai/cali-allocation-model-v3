@@ -190,13 +190,13 @@ with st.sidebar.expander("Negotiation Presets", expanded=True):
         
     # Row 3 (Full width)
     if st.button(
-        "5. Gini-optimal point",
-        help="TSAC=5%, SOSAC=3% — Gini-optimal point (minimises Gini, Spearman > 0.85)",
+        "5. Gini-minimum point",
+        help="TSAC=2.5%, SOSAC=3% — Gini-minimum point (minimises Gini, preserves IUSAF band order)",
         use_container_width=True,
     ):
-        st.session_state["tsac_beta"] = 0.05
+        st.session_state["tsac_beta"] = 0.025
         st.session_state["sosac_gamma"] = 0.03
-        st.session_state["tsac_beta_pct"] = 5
+        st.session_state["tsac_beta_pct"] = 2.5
         st.session_state["sosac_gamma_pct"] = 3
         st.session_state["exclude_hi"] = True
         st.session_state["equality_mode"] = False
@@ -1205,10 +1205,9 @@ with main_tabs[current_tab_idx]:
     st.markdown("Least Developed Countries (LDCs) are low-income countries as defined by the UN Committee for Development Policy (CDP) as described [here](https://policy.desa.un.org/least-developed-countries). There are currently 44 LDCs.")
     ldc_total, _ = aggregate_special_groups(results_df)
     
-    # Calculate non-LDC (broadly 'Developed/Other')
-    # To sum to 196, we count ALL CBD parties NOT in LDC group
-    mask_cbd = results_df['is_cbd_party']
-    non_ldc_df = results_df[mask_cbd & (~results_df['is_ldc'])]
+    # Calculate non-LDC among eligible parties
+    mask_eligible = results_df['is_cbd_party'] & results_df['eligible']
+    non_ldc_df = results_df[mask_eligible & (~results_df['is_ldc'])]
     non_ldc_total = non_ldc_df[['total_allocation', 'state_component', 'iplc_component']].sum()
     non_ldc_count = len(non_ldc_df)
     
@@ -1235,9 +1234,9 @@ with main_tabs[current_tab_idx]:
     st.subheader("Small Island Developing States (SIDS)")
     _, sids_total = aggregate_special_groups(results_df)
     
-    # Calculate non-SIDS
-    mask_cbd = results_df['is_cbd_party']
-    non_sids_df = results_df[mask_cbd & (~results_df['is_sids'])]
+    # Calculate non-SIDS among eligible parties
+    mask_eligible = results_df['is_cbd_party'] & results_df['eligible']
+    non_sids_df = results_df[mask_eligible & (~results_df['is_sids'])]
     non_sids_total = non_sids_df[['total_allocation', 'state_component', 'iplc_component']].sum()
     non_sids_count = len(non_sids_df)
     

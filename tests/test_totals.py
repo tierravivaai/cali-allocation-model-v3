@@ -55,26 +55,33 @@ def test_income_total_sum(mock_con):
 def test_ldc_sids_total_sum(mock_con):
     base_df = get_base_data(mock_con)
     fund_size = 1_000_000_000
-    results_df = calculate_allocations(base_df, fund_size, 50, exclude_high_income=False)
     
-    # Simulate the manual LDC/SIDS summary logic from app.py
+    # Case 1: exclude_hi=False — all 196 CBD parties are eligible
+    results_df = calculate_allocations(base_df, fund_size, 50, exclude_high_income=False)
     from cali_model.calculator import aggregate_special_groups
     ldc_total, sids_total = aggregate_special_groups(results_df)
     
-    # LDC summary validation
-    mask_cbd = results_df['is_cbd_party']
-    non_ldc_df = results_df[mask_cbd & (~results_df['is_ldc'])]
-    non_ldc_count = len(non_ldc_df)
+    mask_eligible = results_df['is_cbd_party'] & results_df['eligible']
+    non_ldc_df = results_df[mask_eligible & (~results_df['is_ldc'])]
+    non_sids_df = results_df[mask_eligible & (~results_df['is_sids'])]
     
-    total_countries_ldc_view = ldc_total['Countries (number)'] + non_ldc_count
+    total_countries_ldc_view = ldc_total['Countries (number)'] + len(non_ldc_df)
+    total_countries_sids_view = sids_total['Countries (number)'] + len(non_sids_df)
     assert total_countries_ldc_view == 196
-
-    # SIDS summary validation
-    non_sids_df = results_df[mask_cbd & (~results_df['is_sids'])]
-    non_sids_count = len(non_sids_df)
-    
-    total_countries_sids_view = sids_total['Countries (number)'] + non_sids_count
     assert total_countries_sids_view == 196
+
+    # Case 2: exclude_hi=True — only 142 eligible parties, tabs must sum to 142
+    results_df2 = calculate_allocations(base_df, fund_size, 50, exclude_high_income=True)
+    ldc_total2, sids_total2 = aggregate_special_groups(results_df2)
+    
+    mask_eligible2 = results_df2['is_cbd_party'] & results_df2['eligible']
+    non_ldc_df2 = results_df2[mask_eligible2 & (~results_df2['is_ldc'])]
+    non_sids_df2 = results_df2[mask_eligible2 & (~results_df2['is_sids'])]
+    
+    total_countries_ldc_view2 = ldc_total2['Countries (number)'] + len(non_ldc_df2)
+    total_countries_sids_view2 = sids_total2['Countries (number)'] + len(non_sids_df2)
+    assert total_countries_ldc_view2 == 142
+    assert total_countries_sids_view2 == 142
 
 def test_party_tab_total_sum(mock_con):
     base_df = get_base_data(mock_con)
@@ -142,17 +149,16 @@ def test_sids_filtering_logic(mock_con):
     
     # SIDS filter
     sids_df = results_df[results_df["is_sids"]].copy()
-    # There are 39 SIDS usually in this dataset (verify count or just check logic)
     assert len(sids_df) > 0
     assert all(sids_df["is_sids"])
     
-    # Non-SIDS filter (CBD Parties only)
-    mask_cbd = results_df['is_cbd_party']
-    non_sids_df = results_df[mask_cbd & (~results_df["is_sids"])].copy()
+    # Non-SIDS filter among eligible parties (matching app.py logic)
+    mask_eligible = results_df['is_cbd_party'] & results_df['eligible']
+    non_sids_df = results_df[mask_eligible & (~results_df["is_sids"])].copy()
     assert len(non_sids_df) > 0
     assert not any(non_sids_df["is_sids"])
     
-    # Total check
+    # When exclude_hi=False, eligible = CBD = 196
     assert len(sids_df) + len(non_sids_df) == 196
 
     # Check that Total row works for SIDS filtering
@@ -161,12 +167,6 @@ def test_sids_filtering_logic(mock_con):
     total_sids = add_total_row(sids_table, "party")
     assert total_sids.iloc[-1]["party"] == "Total"
     assert total_sids.iloc[-1]["Countries (number)"] == len(sids_df)
-    non_sids_df = results_df[mask_cbd & (~results_df["is_sids"])].copy()
-    assert len(non_sids_df) > 0
-    assert not any(non_sids_df["is_sids"])
-    
-    # Total check
-    assert len(sids_df) + len(non_sids_df) == 196
 
 def test_sids_membership_completeness(mock_con):
     base_df = get_base_data(mock_con)

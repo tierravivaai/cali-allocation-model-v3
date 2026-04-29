@@ -1,10 +1,10 @@
 import pandas as pd
 import yaml
-import os
+from pathlib import Path
 
 def load_band_config():
-    config_path = os.path.join("config", "un_scale_bands.yaml")
-    if not os.path.exists(config_path):
+    config_path = Path(__file__).resolve().parent.parent.parent / "config" / "un_scale_bands.yaml"
+    if not config_path.exists():
         return None
     with open(config_path, "r") as f:
         return yaml.safe_load(f)

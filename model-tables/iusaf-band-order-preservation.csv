@@ -1,0 +1,7 @@
+TSAC Level,Band 6 mean China (USD M),Band 5 mean Brazil India Mexico (USD M),Band 5 vs Band 6 margin (%),IUSAF Band Order Preserved
+0% (Pure IUSAF),2.27,4.26,46.7,YES
+1.5% (Strict),3.97,4.92,19.3,YES
+2.5% (Gini-minimum),5.15,5.44,5.4,YES (margin 5.4%)
+3.0% (Band-order overturn),5.74,5.7,-0.6,NO — Band 6 overtakes Band 5
+3.5% (Bounded),6.33,5.97,-6.0,NO — Band 6 overtakes Band 5
+9.2% (TSAC component overturn),13.04,8.95,-45.7,NO — Band 6 overtakes Band 5

@@ -14,12 +14,12 @@ from copy import deepcopy
 
 
 DEFAULT_BASELINE = {
-    "scenario_id": "gini_optimal_point",
+    "scenario_id": "gini_minimum_point",
     "fund_size": 1_000_000_000,
     "un_scale_mode": "band_inversion",
     "exclude_high_income": True,
     "iplc_share_pct": 50,
-    "tsac_beta": 0.05,
+    "tsac_beta": 0.025,
     "sosac_gamma": 0.03,
     "floor_pct": 0.0,
     "ceiling_pct": None,
@@ -53,12 +53,13 @@ def get_scenario_library() -> dict[str, dict]:
             tsac_beta=0.0,
             sosac_gamma=0.0,
         ),
-        "gini_optimal_point": _scenario(
-            scenario_id="gini_optimal_point",
+        "gini_minimum_point": _scenario(
+            scenario_id="gini_minimum_point",
             description=(
-                "Gini-optimal point: minimises Gini coefficient while keeping "
-                "Spearman vs pure IUSAF > 0.85. TSAC=5%, SOSAC=3%."
+                "Gini-minimum point: minimises Gini coefficient while preserving "
+                "IUSAF band order (Band 6 mean < Band 5 mean). TSAC=2.5%, SOSAC=3%."
             ),
+            tsac_beta=0.025,
         ),
         "tsac_strict_balance": {
             **DEFAULT_BASELINE,
@@ -74,21 +75,21 @@ def get_scenario_library() -> dict[str, dict]:
         },
         "terrestrial_max": _scenario(scenario_id="terrestrial_max", tsac_beta=0.15, sosac_gamma=0.0),
         "ocean_max": _scenario(scenario_id="ocean_max", tsac_beta=0.0, sosac_gamma=0.10),
-        "gini_optimal_floor_005": _scenario(
-            scenario_id="gini_optimal_floor_005",
+        "gini_minimum_floor_005": _scenario(
+            scenario_id="gini_minimum_floor_005",
             floor_pct=0.05,
-            description="Floor sensitivity at the gini-optimal point (0.05% floor).",
+            description="Floor sensitivity at the gini-minimum point (0.05% floor).",
         ),
-        "gini_optimal_ceiling_1": _scenario(
-            scenario_id="gini_optimal_ceiling_1",
+        "gini_minimum_ceiling_1": _scenario(
+            scenario_id="gini_minimum_ceiling_1",
             ceiling_pct=1.0,
-            description="Ceiling sensitivity at the gini-optimal point (1.0% ceiling).",
+            description="Ceiling sensitivity at the gini-minimum point (1.0% ceiling).",
         ),
-        "gini_optimal_floor_005_ceiling_1": _scenario(
-            scenario_id="gini_optimal_floor_005_ceiling_1",
+        "gini_minimum_floor_005_ceiling_1": _scenario(
+            scenario_id="gini_minimum_floor_005_ceiling_1",
             floor_pct=0.05,
             ceiling_pct=1.0,
-            description="Combined floor/ceiling sensitivity at the gini-optimal point.",
+            description="Combined floor/ceiling sensitivity at the gini-minimum point.",
         ),
         "exclude_hi_off_compare": _scenario(scenario_id="exclude_hi_off_compare", exclude_high_income=False),
         "exclude_hi_on_compare": _scenario(scenario_id="exclude_hi_on_compare", exclude_high_income=True),

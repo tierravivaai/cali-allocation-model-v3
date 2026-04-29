@@ -167,8 +167,16 @@ def _eligible(results_df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _spearman_by_party(current: pd.DataFrame, baseline: pd.DataFrame) -> float:
-    merged = current[["party", "final_share"]].merge(
-        baseline[["party", "final_share"]], on="party", how="inner", suffixes=("_cur", "_base")
+    """Spearman rank correlation of final_share between current and baseline.
+
+    Filters to eligible parties before computing. Callers may pass
+    pre-filtered dataframes (which is a no-op), but the function
+    also filters internally for robustness.
+    """
+    cur_elig = _eligible(current) if "eligible" in current.columns else current
+    base_elig = _eligible(baseline) if "eligible" in baseline.columns else baseline
+    merged = cur_elig[["party", "final_share"]].merge(
+        base_elig[["party", "final_share"]], on="party", how="inner", suffixes=("_cur", "_base")
     )
     if merged.empty:
         return float("nan")

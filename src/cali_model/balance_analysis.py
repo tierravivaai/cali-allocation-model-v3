@@ -21,6 +21,23 @@ import pandas as pd
 # Display labels in user-facing surfaces use “TSAC weight” and “SOSAC weight” for clarity.
 
 
+def _band_mean(eligible_df: pd.DataFrame, band_prefix: str) -> float | None:
+    """Mean per-party allocation for a band (e.g. 'Band 5' matches 'Band 5: ...')."""
+    if eligible_df.empty or "un_band" not in eligible_df.columns:
+        return None
+    band = eligible_df[eligible_df["un_band"].str.startswith(band_prefix, na=False)]
+    return float(band["total_allocation"].mean()) if not band.empty else None
+
+
+def _band_order_preserved(eligible_df: pd.DataFrame) -> bool | None:
+    """True if Band 6 mean allocation < Band 5 mean allocation."""
+    b6 = _band_mean(eligible_df, "Band 6")
+    b5 = _band_mean(eligible_df, "Band 5")
+    if b6 is None or b5 is None:
+        return None
+    return b6 < b5
+
+
 def run_fine_sweep(
     base_scenario: dict,
     base_df: "pd.DataFrame",
@@ -121,6 +138,9 @@ def run_fine_sweep(
                 "band1_pct_change_vs_iusaf": b1_pct_change,
                 "sids_total_m": sids_total,
                 "ldc_total_m": ldc_total,
+                "band6_mean_alloc_m": _band_mean(eligible, "Band 6"),
+                "band5_mean_alloc_m": _band_mean(eligible, "Band 5"),
+                "band_order_preserved": _band_order_preserved(eligible),
             }
         )
 
@@ -130,8 +150,15 @@ def run_fine_sweep(
 def identify_balance_points(
     tsac_sweep_df: pd.DataFrame,
     sosac_sweep_df: pd.DataFrame,
-    spearman_moderate_threshold: float = 0.85,
+    spearman_safety_floor: float = 0.80,
 ) -> dict:
+    """Identify balance points from sweep data.
+
+    The Gini-minimum point is identified by minimising Gini subject to
+    band-order preservation (Band 6 mean < Band 5 mean) and a Spearman
+    safety floor of 0.80. The band-order constraint is expected to bind;
+    the Spearman floor is a diagnostic safety check.
+    """
     def _last_row_where(df: pd.DataFrame, col: str, threshold: float):
         if df.empty or col not in df.columns:
             return None
@@ -155,16 +182,24 @@ def identify_balance_points(
             }
         return _fmt(_last_row_where(valid_df, col, threshold))
 
-    def _min_gini_above_spearman(df: pd.DataFrame, spearman_thresh: float):
+    def _min_gini_preserving_band_order(df: pd.DataFrame, spearman_floor: float):
+        """Minimise Gini subject to band-order preservation and Spearman floor."""
         if df.empty:
             return None
-        mask = (
-            df["spearman_vs_pure_iusaf"].notna()
-            & (df["spearman_vs_pure_iusaf"] > spearman_thresh)
-            & df["gini_coefficient"].notna()
-        )
+
+        # Band-order constraint: Band 6 mean < Band 5 mean
+        band_order_ok = df["band_order_preserved"].fillna(True).astype(bool)
+
+        # Spearman safety floor
+        spearman_ok = df["spearman_vs_pure_iusaf"].notna() & (df["spearman_vs_pure_iusaf"] > spearman_floor)
+
+        # Gini must be available
+        gini_ok = df["gini_coefficient"].notna()
+
+        mask = band_order_ok & spearman_ok & gini_ok
         if not mask.any():
             return None
+
         return df[mask].loc[df[mask]["gini_coefficient"].idxmin()]
 
     def _fmt(row):
@@ -173,7 +208,7 @@ def identify_balance_points(
     return {
         "strict": _fmt(_last_row_where(tsac_sweep_df, "china_tsac_iusaf_ratio", 1.0)),
         "modified": _fmt(_last_row_where(tsac_sweep_df, "brazil_tsac_iusaf_ratio", 1.0)),
-        "gini_optimal": _fmt(_min_gini_above_spearman(tsac_sweep_df, spearman_moderate_threshold)),
+        "gini_minimum": _fmt(_min_gini_preserving_band_order(tsac_sweep_df, spearman_safety_floor)),
         "sosac": _sosac_result(sosac_sweep_df, "max_sosac_iusaf_ratio", 1.0),
     }
 
@@ -216,7 +251,7 @@ def generate_balance_point_summary(
         "",
         "A parameter setting is **balanced** when, for every eligible Party, the IUSAF equity component is at least as large as the TSAC stewardship component. Formally: `tsac_component_i / iusaf_component_i ≤ 1.0` for all eligible Parties `i`.",
         "",
-        f"The **gini-optimal point** (TSAC={stewardship_forward_beta:.0%}, SOSAC={stewardship_forward_gamma:.0%}) is the setting that minimises the Gini coefficient while keeping Spearman rank correlation vs pure IUSAF above 0.85. It coincides with what was previously called the stewardship-forward baseline, which has now been retired. The gini-optimal point is the default reference scenario.",
+        f"The **gini-minimum point** (TSAC={stewardship_forward_beta:.0%}, SOSAC={stewardship_forward_gamma:.0%}) is the setting that minimises the Gini coefficient while preserving the IUSAF band hierarchy (Band 6 mean < Band 5 mean) and maintaining a Spearman rank correlation safety floor of 0.80 vs pure IUSAF. The band-order constraint binds; the Spearman floor is a diagnostic safety check. It coincides with what was previously called the gini-optimal point, which has been retired. The gini-minimum point is the default reference scenario.",
         "",
         "---",
         "",
@@ -233,9 +268,9 @@ def generate_balance_point_summary(
             "Modified balance point",
             "Highest TSAC weight where Brazil's TSAC/IUSAF ratio ≤ 1.0. Treats China separately (addressed by Band 6 weight); requires IUSAF dominance for all Band 5 Parties (Brazil, India, Mexico).",
         ),
-        "gini_optimal": (
-            "Gini-optimal point",
-            "TSAC weight that minimises the Gini coefficient while keeping Spearman rank correlation vs pure IUSAF > 0.85 (threshold for moderate rather than dominant overlay).",
+        "gini_minimum": (
+            "Gini-minimum point",
+            "TSAC weight that minimises the Gini coefficient while preserving the IUSAF band hierarchy (Band 6 mean < Band 5 mean) and maintaining a Spearman rank correlation safety floor of 0.80 vs pure IUSAF. The band-order constraint is expected to bind; the Spearman floor is a diagnostic safety check.",
         ),
         "sosac": (
             "SOSAC balance point",
@@ -260,14 +295,15 @@ def generate_balance_point_summary(
                 f"The analytical balance point is approximately {bp['analytical_estimate']:.1%}.*"
             )
         else:
-            if key == "gini_optimal":
+            if key == "gini_minimum":
                 sections.append(
                     "*Note: this point is identified by a different criterion from the strict and modified balance points. "
-                    "The Spearman constraint (> 0.85) binds: the unconstrained Gini minimum is at TSAC=5.5% "
-                    "(Spearman=0.822, which fails the threshold), so the constrained optimum is TSAC=5.0% — the last point where Spearman remains above 0.85. "
-                    "The description \"minimises the Gini coefficient while keeping Spearman rank correlation vs pure IUSAF > 0.85\" is therefore precise and should be kept exactly as written. "
-                    "This point does not satisfy the TSAC/IUSAF dominance balance condition — `tsac_balance_exceeded` is `True`, meaning TSAC exceeds IUSAF for China and Brazil. "
-                    "It is included here as a distributional optimum, not as a balanced setting in the TSAC/IUSAF sense.*"
+                    "The band-order constraint (Band 6 mean < Band 5 mean) binds: the unconstrained Gini minimum would "
+                    "occur at a higher TSAC where band order is already overturned, so the constrained optimum is the "
+                    "last point where band order is preserved. "
+                    "The Spearman safety floor (> 0.80) is slack at this point and does not bind. "
+                    "This point does not satisfy the TSAC/IUSAF dominance balance condition — `tsac_balance_exceeded` may be `True`. "
+                    "It is included here as a distributional optimum subject to structural preservation, not as a balanced setting in the TSAC/IUSAF sense.*"
                 )
                 sections.append("")
             sections.extend(_tbl(bp["metrics"]))
@@ -282,7 +318,7 @@ def generate_balance_point_summary(
         "",
         "- The **strict point** most faithfully preserves the IUSAF equity foundation for all Parties including China.",
         "- The **modified point** accepts that China is treated separately through Band 6 and focuses on IUSAF dominance for Band 5 Parties.",
-        "- The **Gini-optimal point** (TSAC=5%, SOSAC=3%) minimises the Gini coefficient within the constraint that the allocation remains a moderate overlay on the IUSAF base (Spearman > 0.85). It does not satisfy the TSAC/IUSAF balance condition and should not be read as a \"balanced\" setting in that sense. It is the default scenario in the application because it produces the most equal per-Party distribution measurable by Gini.",
+        "- The **Gini-minimum point** minimises the Gini coefficient within the constraint that the IUSAF band hierarchy is preserved (Band 6 mean < Band 5 mean) and a Spearman safety floor of 0.80 is maintained. It does not satisfy the TSAC/IUSAF balance condition and should not be read as a \"balanced\" setting in that sense. It is the default scenario in the application because it produces the most equal per-Party distribution measurable by Gini while respecting the band structure.",
         "",
         "## Note on China and TSAC",
         "",
