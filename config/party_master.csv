@@ -27,7 +27,7 @@ Iran (Islamic Republic of),,"Iran, Islamic Rep.","Iran, Islamic Rep.",,,,,,,,,
 Ireland,,,,,,,,,,True,,
 Italy,,,,,,,,,,True,,
 Kyrgyzstan,,Kyrgyz Republic,Kyrgyz Republic,,,,,,,,,
-Lao People's Democratic Republic,,Lao PDR,Lao PDR,Lower middle income,,,,,,,,WB updated classification
+Lao People's Democratic Republic,,Lao PDR,Lao PDR,Lower middle income,,,,True,,,,UNSD name mismatch; LDC override
 Latvia,,,,,,,,,,True,,
 Lithuania,,,,,,,,,,True,,
 Luxembourg,,,,,,,,,,True,,
@@ -46,6 +46,7 @@ Saint Kitts and Nevis,,St. Kitts and Nevis,St. Kitts and Nevis,,,,,,,,,
 Saint Lucia,,St. Lucia,St. Lucia,Upper middle income,,,,,,,,WB updated classification
 Saint Vincent and the Grenadines,,St. Vincent and the Grenadines,St. Vincent and the Grenadines,Upper middle income,,,,,,,,WB updated classification
 Sao Tome and Principe,,,,Lower middle income,,,,,,,,WB updated classification
+Sierra Leone,,,,Low income,Africa,Sub-Saharan Africa,Western Africa,True,False,,,CBD budget table has data entry error (SierraLeone no space); UNSD name mismatch; LDC and region override
 Slovakia,,Slovak Republic,Slovak Republic,High income,,,,,,True,,WB name mismatch (Slovak Republic); override ensures correct group
 Slovenia,,,,,,,,,,True,,
 Somalia,,"Somalia, Fed. Rep.",Somalia,,,,,,,,,

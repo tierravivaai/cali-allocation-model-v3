@@ -24,6 +24,9 @@ def load_data(con):
     # Read via pandas to control types — DuckDB read_csv_auto infers BOOLEAN which breaks NULLIF
     pm_df = pd.read_csv(config_path / "party_master.csv", dtype=str)
     pm_df = pm_df.fillna("")
+    # Convert StringDtype to object so DuckDB recognises the columns
+    for col in pm_df.columns:
+        pm_df[col] = pm_df[col].astype("object")
     con.register("party_master_df", pm_df)
     con.execute("CREATE TABLE party_master AS SELECT * FROM party_master_df")
     
